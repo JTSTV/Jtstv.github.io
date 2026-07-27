@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>我的资源列表</title>
     <style>
         /* --- 全局样式 --- */
@@ -11,6 +11,8 @@
             --play-blue: #007AFF;
             --bg-color: #f2f2f7;
             --card-bg: #ffffff;
+            --text-main: #1c1c1e;
+            --text-sub: #8e8e93;
         }
 
         body {
@@ -18,22 +20,22 @@
             background-color: var(--bg-color);
             margin: 0;
             padding: 20px;
-            color: #333;
+            color: var(--text-main);
+            -webkit-tap-highlight-color: transparent;
         }
 
         .container {
             max-width: 800px;
             margin: 0 auto;
             background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
             overflow: hidden;
-            min-height: 60vh; /* 保证容器有一定高度 */
         }
 
         .header {
             padding: 20px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #f0f0f0;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -42,10 +44,10 @@
         .header h2 {
             margin: 0;
             font-size: 1.2rem;
-            color: #000;
+            font-weight: 600;
         }
 
-        /* --- 列表项布局 --- */
+        /* --- 列表样式 --- */
         .file-list {
             list-style: none;
             padding: 0;
@@ -82,7 +84,7 @@
 
         .name-text {
             font-size: 1rem;
-            color: #333;
+            color: var(--text-main);
             word-break: break-all;
             line-height: 1.4;
         }
@@ -90,12 +92,12 @@
         .actions {
             display: flex;
             gap: 8px;
-            align-self: flex-end; 
+            align-self: flex-end;
         }
 
         .btn {
             padding: 8px 16px;
-            border-radius: 6px;
+            border-radius: 8px;
             text-decoration: none;
             font-size: 0.9rem;
             font-weight: 500;
@@ -113,39 +115,33 @@
         .btn-download { background-color: var(--primary-brown); }
         .btn-play { background-color: var(--play-blue); }
         .btn-open { background-color: #6c757d; }
-        
-        /* 新增：重试按钮样式 */
-        .btn-retry {
-            background-color: #ff3b30;
-            margin-top: 10px;
-        }
+        .btn-retry { background-color: #ff3b30; }
 
         .loading {
             text-align: center;
             padding: 40px;
-            color: #888;
+            color: var(--text-sub);
         }
 
-        /* --- 视频播放弹窗 (Modal) --- */
+        /* --- 视频播放器弹窗 --- */
         .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 1000; 
+            display: none;
+            position: fixed;
+            z-index: 1000;
             left: 0;
             top: 0;
-            width: 100%; 
-            height: 100%; 
-            background-color: rgba(0,0,0,0.95); /* 背景更黑一点 */
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.95);
             align-items: center;
             justify-content: center;
-            flex-direction: column;
+            overflow: hidden; /* 防止滚动条 */
         }
 
         .modal-content {
             width: 95%;
             max-width: 1000px;
             position: relative;
-            max-height: 80vh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -154,56 +150,59 @@
         video {
             max-width: 100%;
             max-height: 80vh;
-            border-radius: 4px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            transition: transform 0.2s ease;
         }
 
         .close-modal {
             position: absolute;
-            top: -40px;
+            top: -50px;
             right: 0;
             color: white;
-            font-size: 30px;
+            font-size: 40px;
             font-weight: bold;
             cursor: pointer;
             z-index: 1001;
         }
 
-        /* 右下角控制面板容器 */
+        /* --- 控制面板 --- */
         .control-panel {
             position: fixed;
             bottom: 20px;
             right: 20px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 15px;
             z-index: 1002;
         }
 
         .panel-group {
             background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-            border-radius: 8px;
-            padding: 5px;
+            backdrop-filter: blur(8px);
+            border-radius: 10px;
+            padding: 8px;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
         .panel-btn {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
             padding: 8px 12px;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
-            min-width: 40px;
+            min-width: 50px;
             text-align: center;
+            transition: background 0.2s;
         }
 
         .panel-btn:active {
-            background: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .speed-display {
@@ -213,6 +212,14 @@
             margin-bottom: 2px;
         }
 
+        /* --- 响应式适配 --- */
+        @media (max-width: 480px) {
+            .file-item { padding: 12px 15px; }
+            .btn { padding: 6px 12px; font-size: 0.8rem; }
+            .icon { font-size: 1.2rem; margin-right: 8px; }
+            .control-panel { bottom: 15px; right: 15px; }
+            .panel-btn { padding: 6px 10px; font-size: 13px; }
+        }
     </style>
 </head>
 <body>
@@ -220,10 +227,8 @@
 <div class="container">
     <div class="header">
         <h2>📂 GitHub 资源列表</h2>
-        <span style="font-size: 0.8rem; color: #666;">Powered by GitHub</span>
+        <span style="font-size: 0.8rem; color: var(--text-sub);">Powered by GitHub</span>
     </div>
-    
-    <!-- 列表容器 -->
     <div id="fileList" class="loading">正在加载文件列表...</div>
 </div>
 
@@ -231,8 +236,7 @@
 <div id="videoModal" class="modal" onclick="closeVideo()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <span class="close-modal" onclick="closeVideo()">&times;</span>
-        <!-- 增加 crossorigin 属性以尝试解决跨域问题 -->
-        <video id="videoPlayer" controls playsinline webkit-playsinline crossorigin="anonymous">
+        <video id="videoPlayer" controls playsinline webkit-playsinline>
             您的浏览器不支持 HTML5 视频播放。
         </video>
     </div>
@@ -263,8 +267,7 @@
     const path = 'sp';               
 
     // 核心链接生成逻辑
-    // 使用 fastly.jsdelivr.net 加速，如果不行可以尝试 ghproxy.com
-    const cdnBaseUrl = `https://fastly.jsdelivr.net/gh/${owner}/${repo}@latest`;
+    const cdnBaseUrl = `https://cdn.jsdelivr.net/gh/${owner}/${repo}@latest`;
     const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
 
     const fileListEl = document.getElementById('fileList');
@@ -273,7 +276,6 @@
         fileListEl.innerHTML = '<div class="loading">正在加载文件列表...</div>';
         
         try {
-            // 添加超时处理，防止无限等待
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
 
@@ -344,16 +346,12 @@
             let buttonsHtml = '';
             
             if (isFolder) {
-                // 注意：这里简单的通过 URL 参数传递路径，实际可能需要更复杂的路由逻辑
-                // 简单起见，这里假设只读取根目录下的 path，如果是子文件夹，建议单独做页面
-                // 为了演示，这里暂时只做展示，点击文件夹暂不跳转（除非你有多级目录需求）
                 buttonsHtml = `<span style="color:#999; font-size:0.8rem;">文件夹</span>`;
             } else {
                 const downloadLink = `${cdnBaseUrl}/${file.path}`;
                 buttonsHtml += `<a href="${downloadLink}" class="btn btn-download" target="_blank">下载</a>`;
                 
                 if (isVideo) {
-                    // 转义单引号防止 JS 报错
                     const safeLink = downloadLink.replace(/'/g, "\\'"); 
                     buttonsHtml += `<button onclick="playVideo('${safeLink}')" class="btn btn-play">播放</button>`;
                 }
@@ -419,12 +417,6 @@
 
     function applyZoom() {
         player.style.transform = `scale(${currentScale})`;
-        // 当放大时，允许滚动查看
-        if(currentScale > 1) {
-            player.style.cursor = 'grab';
-        } else {
-            player.style.cursor = 'default';
-        }
     }
 
     // 启动加载
