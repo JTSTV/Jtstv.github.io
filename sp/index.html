@@ -193,28 +193,6 @@
             font-size: 0.9rem;
         }
 
-        /* --- 新增：返回按钮样式 --- */
-        .back-to-index {
-            margin-top: 15px;
-            text-align: center;
-        }
-
-        .btn-back {
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 6px;
-            background-color: #4CAF50; /* 绿色背景，与关闭按钮区分 */
-            color: white;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: opacity 0.2s;
-        }
-
-        .btn-back:hover {
-            opacity: 0.8;
-        }
-
         /* 手机端适配微调 */
         @media (max-width: 480px) {
             .file-item {
@@ -249,8 +227,7 @@
         <video id="videoPlayer" controls playsinline webkit-playsinline>
             您的浏览器不支持 HTML5 视频播放。
         </video>
-        
-        <!-- 播放速度选择器 -->
+        <!-- 新增：播放速度选择器 -->
         <div class="playback-controls">
             <label for="playbackSpeed">播放速度:</label>
             <select id="playbackSpeed" onchange="changePlaybackSpeed(this.value)">
@@ -261,11 +238,6 @@
                 <option value="1.5">1.5x</option>
                 <option value="2">2.0x</option>
             </select>
-        </div>
-
-        <!-- 新增：返回 sp 文件夹按钮 -->
-        <div class="back-to-index">
-            <a href="index.html" class="btn-back">🔙 返回 sp 文件夹</a>
         </div>
     </div>
 </div>
@@ -349,7 +321,7 @@
 
     // --- 视频播放逻辑 ---
 
-    // 改变播放速度的函数
+    // 新增：改变播放速度的函数
     function changePlaybackSpeed(speed) {
         const player = document.getElementById('videoPlayer');
         player.playbackRate = parseFloat(speed);
