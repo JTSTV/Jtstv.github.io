@@ -217,6 +217,7 @@
 
     async function loadFiles() {
         const fileListEl = document.getElementById('fileList');
+        
         try {
             const response = await fetch(apiUrl);
             if (!response.ok) throw new Error('无法连接 GitHub API，请检查网络或仓库配置');
@@ -230,6 +231,7 @@
                 return;
             }
 
+            // 排序：文件夹优先，然后按名称排序
             files.sort((a, b) => {
                 if (a.type === b.type) return a.name.localeCompare(b.name);
                 return a.type === 'dir' ? -1 : 1;
@@ -242,19 +244,23 @@
                 const isFolder = file.type === 'dir';
                 const isVideo = file.name.match(/\.(mp4|mov|webm)$/i);
                 
+                // 图标处理
                 let icon = '📄';
                 if (isFolder) icon = '📁';
                 else if (isVideo) icon = '🎬';
                 else if (file.name.match(/\.(jpg|jpeg|png|gif)$/i)) icon = '🖼️';
 
+                // 构建按钮 HTML
                 let buttonsHtml = '';
+                
                 if (isFolder) {
                     buttonsHtml = `<a href="?path=${file.path}" class="btn btn-open">打开</a>`;
                 } else {
                     const downloadLink = `${cdnBaseUrl}/${file.path}`;
                     buttonsHtml += `<a href="${downloadLink}" class="btn btn-download" target="_blank">下载</a>`;
+                    
                     if (isVideo) {
-                        const safeLink = downloadLink.replace(/'/g, "\\'");
+                        const safeLink = downloadLink.replace(/'/g, "\\'"); 
                         buttonsHtml += `<button onclick="playVideo('${safeLink}')" class="btn btn-play">播放</button>`;
                     }
                 }
@@ -282,7 +288,7 @@
         const player = document.getElementById('videoPlayer');
         player.src = url;
         modal.style.display = 'flex'; // 与CSS中的flex布局对应
-        player.play().catch(e => console.log("自动播放被浏览器策略阻止"));
+        player.play();
     }
 
     function closeVideo() {
@@ -293,6 +299,7 @@
         player.src = '';
     }
 
+    // 启动加载
     loadFiles();
 </script>
 
