@@ -2,15 +2,17 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>我的资源列表</title>
     <style>
         /* --- 全局样式 --- */
         :root {
-            --primary-brown: #8B3A3A; /* 棕红色 */
-            --play-blue: #007AFF;     /* 播放按钮蓝 */
-            --bg-color: #f2f2f7;      /* 浅灰背景 */
+            --primary-brown: #8B3A3A;
+            --play-blue: #007AFF;
+            --bg-color: #f2f2f7;
             --card-bg: #ffffff;
+            --text-main: #1c1c1e;
+            --text-sub: #8e8e93;
         }
 
         body {
@@ -18,86 +20,58 @@
             background-color: var(--bg-color);
             margin: 0;
             padding: 20px;
-            color: #333;
+            color: var(--text-main);
+            -webkit-tap-highlight-color: transparent;
         }
 
         .container {
             max-width: 800px;
             margin: 0 auto;
             background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
             overflow: hidden;
         }
 
         .header {
             padding: 20px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #f0f0f0;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            background: #fff;
         }
 
-        .header h2 {
-            margin: 0;
-            font-size: 1.2rem;
-            color: #000;
-        }
+        .header h2 { margin: 0; font-size: 1.2rem; }
 
-        /* --- 列表项布局 (Flexbox) --- */
-        .file-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
+        /* --- 列表项布局 --- */
+        .file-list { list-style: none; padding: 0; margin: 0; }
+        
         .file-item {
             display: flex;
-            flex-direction: column; /* 关键修改：改为垂直布局 */
+            flex-direction: column;
             padding: 16px 20px;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid #f5f5f5;
             transition: background-color 0.2s;
         }
 
-        .file-item:last-child {
-            border-bottom: none;
-        }
+        .file-item:last-child { border-bottom: none; }
+        .file-item:hover { background-color: #fafafa; }
 
-        .file-item:hover {
-            background-color: #fafafa;
-        }
-
-        /* --- 左侧文件名区域 --- */
         .file-info {
             display: flex;
             align-items: center;
-            margin-bottom: 12px; /* 与下方按钮区域的间距 */
+            margin-bottom: 12px;
         }
 
-        .icon {
-            font-size: 1.5rem;
-            margin-right: 12px;
-            flex-shrink: 0;
-        }
+        .icon { font-size: 1.4rem; margin-right: 12px; }
+        .name-text { font-size: 1rem; color: var(--text-main); word-break: break-all; line-height: 1.4; }
 
-        .name-text {
-            font-size: 1rem;
-            color: #333;
-            word-break: break-all;
-            line-height: 1.4;
-        }
-
-        /* --- 右侧按钮区域 --- */
-        .actions {
-            display: flex;
-            gap: 8px;
-            /* 让按钮组靠右对齐 */
-            align-self: flex-end; 
-        }
+        .actions { display: flex; gap: 8px; justify-content: flex-end; }
 
         .btn {
             padding: 8px 16px;
-            border-radius: 6px;
+            border-radius: 8px;
             text-decoration: none;
             font-size: 0.9rem;
             font-weight: 500;
@@ -108,104 +82,111 @@
             white-space: nowrap;
         }
 
-        .btn:hover {
-            opacity: 0.9;
-        }
+        .btn-download { background-color: var(--primary-brown); }
+        .btn-play { background-color: var(--play-blue); }
+        .btn-open { background-color: #6c757d; }
+        .btn:hover { opacity: 0.85; }
 
-        /* 下载按钮 - 棕红色 */
-        .btn-download {
-            background-color: var(--primary-brown);
-        }
+        .loading { text-align: center; padding: 40px; color: var(--text-sub); }
 
-        /* 播放按钮 - 蓝色 */
-        .btn-play {
-            background-color: var(--play-blue);
-        }
-
-        /* 文件夹打开按钮 - 灰色 */
-        .btn-open {
-            background-color: #6c757d;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #888;
-        }
-
-        /* --- 视频播放弹窗 (Modal) --- */
+        /* --- 视频弹窗与自适应逻辑 (核心修改) --- */
         .modal {
             display: none; 
             position: fixed; 
-            z-index: 1000; 
-            left: 0;
-            top: 0;
-            width: 100%; 
-            height: 100%; 
-            background-color: rgba(0,0,0,0.9); 
+            z-index: 2000; 
+            left: 0; top: 0;
+            width: 100%; height: 100%; 
+            background-color: rgba(0,0,0,0.95); 
+            /* 使用 Flex 居中内容 */
             align-items: center;
             justify-content: center;
+            overflow: hidden; /* 防止放大后出现滚动条 */
         }
 
-        .modal-content {
-            width: 90%;
-            max-width: 900px;
+        /* 视频容器：限制最大尺寸，防止溢出 */
+        .video-wrapper {
             position: relative;
-        }
-
-        video {
-            width: 100%;
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(255,255,255,0.1);
-        }
-
-        .close-modal {
-            position: absolute;
-            top: -40px;
-            right: 0;
-            color: white;
-            font-size: 30px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* --- 新增：播放速度选择器样式 --- */
-        .playback-controls {
-            margin-top: 10px;
+            width: 95vw;      /* 宽度不超过屏幕95% */
+            max-width: 1200px;
+            height: 80vh;     /* 高度不超过屏幕80% */
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 0.9rem;
         }
 
-        .playback-controls label {
-            margin-right: 10px;
+        video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* 保持比例，不裁剪 */
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            transition: transform 0.2s ease-out; /* 缩放时的平滑过渡 */
+            transform-origin: center center;
+            cursor: grab; /* 提示可拖拽 */
         }
 
-        .playback-controls select {
-            padding: 5px 10px;
-            border-radius: 4px;
-            border: none;
-            background-color: #fff;
-            color: #333;
+        video:active { cursor: grabbing; }
+
+        .close-modal {
+            position: absolute;
+            top: 20px; right: 20px;
+            color: rgba(255,255,255,0.7);
+            font-size: 32px;
+            font-weight: 300;
             cursor: pointer;
-            font-size: 0.9rem;
+            z-index: 2010;
+            line-height: 1;
         }
 
-        /* 手机端适配微调 */
+        /* --- 右下角控制面板 (变速 + 缩放) --- */
+        .control-panel {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 2010;
+            align-items: flex-end;
+        }
+
+        /* 通用浮窗样式 */
+        .float-box {
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 8px;
+            display: flex;
+            gap: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .float-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .float-btn:hover { background: rgba(255,255,255,0.2); }
+        .float-btn.active { background: var(--play-blue); color: white; font-weight: bold; }
+
+        /* 手机端适配 */
         @media (max-width: 480px) {
-            .file-item {
-                padding: 12px 15px;
-            }
-            .btn {
-                padding: 6px 12px;
-                font-size: 0.8rem;
-            }
-            .icon {
-                font-size: 1.2rem;
-                margin-right: 8px;
-            }
+            body { padding: 10px; }
+            .file-item { padding: 12px 15px; }
+            .btn { padding: 6px 12px; font-size: 0.8rem; }
+            .video-wrapper { width: 100vw; height: 60vh; }
+            .control-panel { bottom: 20px; right: 20px; }
+            .float-btn { padding: 6px 10px; font-size: 12px; }
         }
     </style>
 </head>
@@ -214,143 +195,224 @@
 <div class="container">
     <div class="header">
         <h2>📂 GitHub 资源列表</h2>
-        <span style="font-size: 0.8rem; color: #666;">Powered by GitHub</span>
+        <span style="font-size: 0.8rem; color: #888;">Powered by GitHub</span>
     </div>
     
     <div id="fileList" class="loading">正在加载文件列表...</div>
 </div>
 
-<!-- 视频播放器弹窗 -->
-<div id="videoModal" class="modal" onclick="closeVideo()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <span class="close-modal" onclick="closeVideo()">&times;</span>
-        <video id="videoPlayer" controls playsinline webkit-playsinline>
+<!-- 视频播放弹窗 -->
+<div id="videoModal" class="modal">
+    <span class="close-modal" onclick="closeVideo()">&times;</span>
+    
+    <div class="video-wrapper">
+        <!-- 增加 crossorigin 属性解决部分跨域问题 -->
+        <video id="videoPlayer" controls playsinline webkit-playsinline crossorigin="anonymous">
             您的浏览器不支持 HTML5 视频播放。
         </video>
-        <!-- 新增：播放速度选择器 -->
-        <div class="playback-controls">
-            <label for="playbackSpeed">播放速度:</label>
-            <select id="playbackSpeed" onchange="changePlaybackSpeed(this.value)">
-                <option value="0.5">0.5x</option>
-                <option value="0.75">0.75x</option>
-                <option value="1" selected>1.0x (正常)</option>
-                <option value="1.25">1.25x</option>
-                <option value="1.5">1.5x</option>
-                <option value="2">2.0x</option>
-            </select>
+    </div>
+
+    <!-- 右下角控制面板 -->
+    <div class="control-panel">
+        <!-- 变速控制 -->
+        <div class="float-box" id="speedControls">
+            <button class="float-btn" onclick="setSpeed(1.0)">1.0x</button>
+            <button class="float-btn" onclick="setSpeed(1.5)">1.5x</button>
+            <button class="float-btn" onclick="setSpeed(2.0)">2.0x</button>
+            <button class="float-btn" onclick="setSpeed(3.0)">3.0x</button>
+        </div>
+
+        <!-- 缩放控制 -->
+        <div class="float-box">
+            <button class="float-btn" onclick="adjustZoom(-0.5)">➖</button>
+            <button class="float-btn" id="zoomDisplay" onclick="resetZoom()">1.0x</button>
+            <button class="float-btn" onclick="adjustZoom(0.5)">➕</button>
         </div>
     </div>
 </div>
 
 <script>
-    // ⚠️ 配置区域：请修改为你自己的仓库信息
+    // ⚠️ 配置区域
     const owner = 'Jtstv';           
     const repo = 'Jtstv.github.io';  
     const path = 'sp';               
 
-    // 核心链接生成逻辑
     const cdnBaseUrl = `https://cdn.jsdelivr.net/gh/${owner}/${repo}@latest`;
     const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+
+    // 全局变量
+    let currentZoom = 1.0;
+    let isDragging = false;
+    let startX, startY, translateX = 0, translateY = 0;
+    const videoPlayer = document.getElementById('videoPlayer');
+    const modal = document.getElementById('videoModal');
 
     async function loadFiles() {
         const fileListEl = document.getElementById('fileList');
         
         try {
-            const response = await fetch(apiUrl);
-            if (!response.ok) throw new Error('无法连接 GitHub API，请检查网络或仓库配置');
-            
-            const files = await response.json();
-            fileListEl.innerHTML = '<ul class="file-list"></ul>';
-            const listContainer = fileListEl.querySelector('ul');
+            // 尝试从缓存读取，提升打开速度
+            const cachedData = localStorage.getItem('github_files_cache');
+            const cacheTime = localStorage.getItem('github_files_time');
+            const now = new Date().getTime();
 
-            if (files.length === 0) {
-                fileListEl.innerHTML = '<div class="loading">该目录下空空如也</div>';
-                return;
+            // 如果缓存存在且在10分钟内，先显示缓存
+            if (cachedData && cacheTime && (now - cacheTime < 10 * 60 * 1000)) {
+                renderList(JSON.parse(cachedData));
             }
 
-            // 排序：文件夹优先，然后按名称排序
-            files.sort((a, b) => {
-                if (a.type === b.type) return a.name.localeCompare(b.name);
-                return a.type === 'dir' ? -1 : 1;
-            });
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error('无法连接 GitHub API');
+            
+            const files = await response.json();
+            
+            // 更新缓存
+            localStorage.setItem('github_files_cache', JSON.stringify(files));
+            localStorage.setItem('github_files_time', now);
 
-            files.forEach(file => {
-                const li = document.createElement('li');
-                li.className = 'file-item';
-                
-                const isFolder = file.type === 'dir';
-                const isVideo = file.name.match(/\.(mp4|mov|webm)$/i);
-                
-                // 图标处理
-                let icon = '📄';
-                if (isFolder) icon = '📁';
-                else if (isVideo) icon = '🎬';
-                else if (file.name.match(/\.(jpg|jpeg|png|gif)$/i)) icon = '🖼️';
-
-                // 构建按钮 HTML
-                let buttonsHtml = '';
-                
-                if (isFolder) {
-                    buttonsHtml = `<a href="?path=${file.path}" class="btn btn-open">打开</a>`;
-                } else {
-                    const downloadLink = `${cdnBaseUrl}/${file.path}`;
-                    buttonsHtml += `<a href="${downloadLink}" class="btn btn-download" target="_blank">下载</a>`;
-                    
-                    if (isVideo) {
-                        const safeLink = downloadLink.replace(/'/g, "\\'"); 
-                        buttonsHtml += `<button onclick="playVideo('${safeLink}')" class="btn btn-play">播放</button>`;
-                    }
-                }
-
-                li.innerHTML = `
-                    <div class="file-info">
-                        <span class="icon">${icon}</span>
-                        <span class="name-text">${file.name}</span>
-                    </div>
-                    <div class="actions">
-                        ${buttonsHtml}
-                    </div>
-                `;
-                listContainer.appendChild(li);
-            });
+            // 如果之前没缓存，或者为了刷新数据，重新渲染
+            if (!cachedData) {
+                renderList(files);
+            }
 
         } catch (error) {
-            fileListEl.innerHTML = `<div class="loading" style="color:red;">${error.message} <small>${apiUrl}</small></div>`;
+            fileListEl.innerHTML = `<div class="loading" style="color:red;">加载失败: ${error.message} <small>请检查网络或仓库配置</small></div>`;
         }
     }
 
-    // --- 视频播放逻辑 ---
+    function renderList(files) {
+        const fileListEl = document.getElementById('fileList');
+        fileListEl.innerHTML = '<ul class="file-list"></ul>';
+        const listContainer = fileListEl.querySelector('ul');
 
-    // 新增：改变播放速度的函数
-    function changePlaybackSpeed(speed) {
-        const player = document.getElementById('videoPlayer');
-        player.playbackRate = parseFloat(speed);
+        if (files.length === 0) {
+            fileListEl.innerHTML = '<div class="loading">该目录下空空如也</div>';
+            return;
+        }
+
+        files.sort((a, b) => {
+            if (a.type === b.type) return a.name.localeCompare(b.name);
+            return a.type === 'dir' ? -1 : 1;
+        });
+
+        files.forEach(file => {
+            const li = document.createElement('li');
+            li.className = 'file-item';
+            
+            const isFolder = file.type === 'dir';
+            const isVideo = file.name.match(/\.(mp4|mov|webm|m4v)$/i);
+            
+            let icon = '📄';
+            if (isFolder) icon = '📁';
+            else if (isVideo) icon = '🎬';
+            else if (file.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) icon = '🖼️';
+
+            let buttonsHtml = '';
+            
+            if (isFolder) {
+                buttonsHtml = `<a href="?path=${file.path}" class="btn btn-open">打开</a>`;
+            } else {
+                const downloadLink = `${cdnBaseUrl}/${file.path}`;
+                buttonsHtml += `<a href="${downloadLink}" class="btn btn-download" target="_blank">下载</a>`;
+                
+                if (isVideo) {
+                    // 转义单引号防止JS报错
+                    const safeLink = downloadLink.replace(/'/g, "\\'"); 
+                    buttonsHtml += `<button onclick="playVideo('${safeLink}')" class="btn btn-play">播放</button>`;
+                }
+            }
+
+            li.innerHTML = `
+                <div class="file-info">
+                    <span class="icon">${icon}</span>
+                    <span class="name-text">${file.name}</span>
+                </div>
+                <div class="actions">
+                    ${buttonsHtml}
+                </div>
+            `;
+            listContainer.appendChild(li);
+        });
     }
 
+    // --- 视频播放与交互逻辑 ---
+
     function playVideo(url) {
-        const modal = document.getElementById('videoModal');
-        const player = document.getElementById('videoPlayer');
-        
-        // 每次打开新视频时，重置播放速度为 1.0x
-        player.playbackRate = 1.0;
-        document.getElementById('playbackSpeed').value = 1;
-        
-        player.src = url;
         modal.style.display = 'flex';
-        player.play();
+        videoPlayer.src = url;
+        videoPlayer.load(); // 强制重新加载
+        
+        // 重置状态
+        resetZoom();
+        setSpeed(1.0);
+        
+        // 尝试自动播放
+        videoPlayer.play().catch(e => console.log("自动播放被拦截，需手动点击"));
     }
 
     function closeVideo() {
-        const modal = document.getElementById('videoModal');
-        const player = document.getElementById('videoPlayer');
         modal.style.display = 'none';
-        player.pause();
-        player.src = '';
+        videoPlayer.pause();
+        videoPlayer.src = '';
+        resetZoom();
     }
 
-    // 启动加载
-    loadFiles();
-</script>
+    // 变速功能
+    function setSpeed(rate) {
+        videoPlayer.playbackRate = rate;
+        // 更新按钮高亮状态
+        const btns = document.querySelectorAll('#speedControls .float-btn');
+        btns.forEach(btn => {
+            if(btn.innerText.includes(rate)) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+    }
 
-</body>
-</html>
+    // 缩放功能
+    function adjustZoom(delta) {
+        currentZoom += delta;
+        // 限制缩放范围 0.5x - 4.0x
+        if (currentZoom < 0.5) currentZoom = 0.5;
+        if (currentZoom > 4.0) currentZoom = 4.0;
+        updateTransform();
+    }
+
+    function resetZoom() {
+        currentZoom = 1.0;
+        translateX = 0;
+        translateY = 0;
+        updateTransform();
+    }
+
+    function updateTransform() {
+        // 更新视频样式
+        videoPlayer.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentZoom})`;
+        // 更新显示文字
+        document.getElementById('zoomDisplay').innerText = currentZoom.toFixed(1) + 'x';
+    }
+
+    // --- 拖拽逻辑 (当放大后可用) ---
+    videoPlayer.addEventListener('mousedown', startDrag);
+    videoPlayer.addEventListener('touchstart', startDrag, {passive: false});
+
+    window.addEventListener('mousemove', drag);
+    window.addEventListener('touchmove', drag, {passive: false});
+
+    window.addEventListener('mouseup', endDrag);
+    window.addEventListener('touchend', endDrag);
+
+    function startDrag(e) {
+        if (currentZoom <= 1.0) return; // 只有放大时才允许拖拽
+        isDragging = true;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        startX = clientX - translateX;
+        startY = clientY - translateY;
+        videoPlayer.style.cursor = 'grabbing';
+    }
+
+    function drag(e) {
+        if (!isDragging) return;
+        e.preventDefault(); // 防止页面滚动
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const
