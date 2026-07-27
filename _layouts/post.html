@@ -1,0 +1,199 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }} - {{ site.title }}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #fff; color: #2c2c2c; font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        .container { max-width: 680px; margin: 0 auto; padding: 20px 30px; }
+        a { color: #a0522d; text-decoration: none; transition: opacity 0.2s; }
+        a:hover { opacity: 0.7; }
+
+        /* 顶部导航 */
+        .nav-header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .back-link { font-size: 14px; color: #999; }
+        .back-link:hover { color: #a0522d; }
+
+        /* 文章头部 */
+        .post-header { margin-bottom: 30px; }
+        .post-title { 
+            font-family: "STKaiti", "KaiTi", "楷体", serif; 
+            font-size: 24px; 
+            line-height: 1.4; 
+            color: #333; 
+            margin-bottom: 10px; 
+        }
+        .post-meta { font-size: 12px; color: #bbb; }
+
+        /* 文章内容区 */
+        .post-content { 
+            font-size: 17px; 
+            line-height: 1.8; 
+            color: #444; 
+        }
+        .post-content p { margin-bottom: 20px; }
+        .post-content img { max-width: 100%; height: auto; border-radius: 4px; margin: 10px 0; }
+        
+        /* 引用块样式 */
+        blockquote { 
+            border-left: 3px solid #a0522d; 
+            padding-left: 15px; 
+            margin: 20px 0; 
+            color: #666; 
+            font-style: italic; 
+        }
+
+        /* --- 加密遮罩层样式 --- */
+        #encrypt-mask {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .lock-icon { font-size: 40px; margin-bottom: 20px; color: #a0522d; }
+        .lock-msg { font-size: 18px; margin-bottom: 30px; color: #333; }
+        .pwd-input {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+            text-align: center;
+            outline: none;
+        }
+        .pwd-input:focus { border-color: #a0522d; }
+        .unlock-btn {
+            margin-top: 15px;
+            padding: 8px 25px;
+            background: #a0522d;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .unlock-btn:hover { background: #8a4524; }
+        .error-msg { color: #d9534f; font-size: 14px; margin-top: 10px; display: none; }
+
+        /* 底部 */
+        .footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #f0f0f0; text-align: center; font-size: 12px; color: #ccc; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 顶部导航 -->
+    <div class="nav-header">
+        <a href="/" class="back-link">← 返回首页</a>
+        <span style="font-size:12px; color:#ddd;">{{ site.title }}</span>
+    </div>
+
+    <!-- 文章主体 -->
+    <article class="post">
+        <header class="post-header">
+            <h1 class="post-title">{{ page.title }}</h1>
+            <div class="post-meta">{{ page.date | date: "%Y年%m月%d日" }}</div>
+        </header>
+
+        <!-- 
+           核心逻辑：
+           如果页面设置了 pw 变量，则给 content 加上 display:none
+           否则直接显示内容
+        -->
+        {% if page.pw %}
+        <div id="secret-content" class="post-content" style="display:none;">
+            {{ content }}
+        </div>
+        
+        <!-- 加密遮罩层 -->
+        <div id="encrypt-mask">
+            <div class="lock-icon">🔒</div>
+            <div class="lock-msg">这篇文章受密码保护 请输入密码继续阅读</div>
+            <input type="password" id="pwd-input" class="pwd-input" placeholder="输入密码" onkeydown="if(event.keyCode==13) checkPwd()">
+            <button onclick="checkPwd()" class="unlock-btn">确 定</button>
+            <div id="error-msg" class="error-msg">密码错误，请重试</div>
+        </div>
+        
+        {% else %}
+        <!-- 未加密直接显示 -->
+        <div class="post-content">
+            {{ content }}
+        </div>
+        {% endif %}
+    </article>
+
+    <div class="footer">
+        &copy; {{ site.time | date: '%Y' }} {{ site.title }}
+    </div>
+</div>
+
+<script>
+    // 只有当页面存在加密遮罩层时才执行脚本
+    var mask = document.getElementById('encrypt-mask');
+    if (mask) {
+        // 获取正确的密码 (Liquid 渲染，这里必须加引号)
+        var correctPwd = "{{ page.pw }}"; 
+        var contentDiv = document.getElementById('secret-content');
+        var input = document.getElementById('pwd-input');
+        var errorDiv = document.getElementById('error-msg');
+
+        // 核心验证函数
+        function checkPwd() {
+            var val = input.value;
+            if (!val) return;
+            
+            if (val === correctPwd) {
+                // 密码正确：隐藏遮罩，显示内容
+                mask.style.display = 'none';
+                contentDiv.style.display = 'block';
+                // 将密码存入 sessionStorage，刷新页面不用再次输入
+                sessionStorage.setItem('post_pwd_' + window.location.pathname, val);
+            } else {
+                // 密码错误
+                errorDiv.style.display = 'block';
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        // 页面加载时检查 URL 参数 (来自首页跳转)
+        window.onload = function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var urlPwd = urlParams.get('pwd');
+            
+            // 如果 URL 里有 pwd 参数，先自动试一次
+            if (urlPwd) {
+                input.value = urlPwd;
+                checkPwd();
+            } 
+            // 或者检查之前是否已经输对过密码 (Session缓存)
+            else if (sessionStorage.getItem('post_pwd_' + window.location.pathname) === correctPwd) {
+                 mask.style.display = 'none';
+                 contentDiv.style.display = 'block';
+            }
+            
+            // 自动聚焦输入框
+            input.focus();
+        };
+    }
+</script>
+
+</body>
+</html>
