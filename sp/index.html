@@ -249,35 +249,35 @@
         <h2>📂 GitHub 资源列表</h2>
         <span style="font-size: 0.8rem; color: #666;">Powered by GitHub</span>
     </div>
+    
     <div id="fileList" class="loading">正在加载文件列表...</div>
 </div>
 
 <!-- 视频播放器弹窗 -->
 <div id="videoModal" class="modal" onclick="closeVideo()">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <!-- 视频标签 -->
+        <!-- 关闭按钮 -->
+        <button class="close-modal" onclick="closeVideo()">&times;</button>
+        
+        <!-- 变速浮窗 -->
+        <div class="speed-control">
+            <button class="speed-btn" onclick="changeSpeed(0.25)">0.25x</button>
+            <button class="speed-btn" onclick="changeSpeed(0.5)">0.5x</button>
+            <button class="speed-btn" onclick="changeSpeed(1.25)">1.25x</button>
+            <button class="speed-btn" onclick="changeSpeed(1.5)">1.5x</button>
+        </div>
+
         <video id="videoPlayer" controls playsinline webkit-playsinline>
             您的浏览器不支持 HTML5 视频播放。
         </video>
-        
-        <!-- 变速浮窗 -->
-        <div class="speed-control" id="speedControl">
-            <button class="speed-btn" onclick="setSpeed(0.25)">0.25x</button>
-            <button class="speed-btn" onclick="setSpeed(0.5)">0.5x</button>
-            <button class="speed-btn" onclick="setSpeed(1.25)">1.25x</button>
-            <button class="speed-btn" onclick="setSpeed(1.5)">1.5x</button>
-        </div>
-
-        <!-- 关闭按钮 -->
-        <button class="close-modal" onclick="closeVideo()">&times;</button>
     </div>
 </div>
 
 <script>
     // ⚠️ 配置区域：请修改为你自己的仓库信息
-    const owner = 'Jtstv';
-    const repo = 'Jtstv.github.io';
-    const path = 'sp';
+    const owner = 'Jtstv';           
+    const repo = 'Jtstv.github.io';  
+    const path = 'sp';               
 
     // 核心链接生成逻辑
     const cdnBaseUrl = `https://cdn.jsdelivr.net/gh/${owner}/${repo}@latest`;
@@ -328,7 +328,7 @@
                     buttonsHtml += `<a href="${downloadLink}" class="btn btn-download" target="_blank">下载</a>`;
                     
                     if (isVideo) {
-                        const safeLink = downloadLink.replace(/'/g, "\\'");
+                        const safeLink = downloadLink.replace(/'/g, "\\'"); 
                         buttonsHtml += `<button onclick="playVideo('${safeLink}')" class="btn btn-play">播放</button>`;
                     }
                 }
@@ -346,7 +346,7 @@
             });
 
         } catch (error) {
-            fileListEl.innerHTML = `<div class="loading" style="color:red;">${error.message} <small>${apiUrl}</small></div>`;
+            fileListEl.innerHTML = `<div class="loading" style="color:red;">${error.message}<small>${apiUrl}</small></div>`;
         }
     }
 
@@ -359,7 +359,6 @@
         player.play();
         // 播放时禁止背景滚动
         document.body.style.overflow = 'hidden';
-        resetSpeedUI();
     }
 
     function closeVideo() {
@@ -373,11 +372,11 @@
     }
 
     // --- 新增：变速逻辑 ---
-    function setSpeed(speed) {
+    function changeSpeed(speed) {
         const player = document.getElementById('videoPlayer');
         player.playbackRate = speed;
         
-        // 更新UI，高亮当前选中的速度
+        // 更新按钮激活状态
         const buttons = document.querySelectorAll('.speed-btn');
         buttons.forEach(btn => {
             btn.classList.remove('active');
@@ -385,12 +384,6 @@
                 btn.classList.add('active');
             }
         });
-    }
-
-    function resetSpeedUI() {
-        // 重置UI，默认1.0x没有高亮，或者可以高亮最接近的
-        const buttons = document.querySelectorAll('.speed-btn');
-        buttons.forEach(btn => btn.classList.remove('active'));
     }
 
     // 启动加载
