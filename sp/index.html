@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的资源列表</title>
     <style>
         /* --- 全局样式 --- */
@@ -11,8 +11,6 @@
             --play-blue: #007AFF;
             --bg-color: #f2f2f7;
             --card-bg: #ffffff;
-            --text-main: #1c1c1e;
-            --text-sub: #8e8e93;
         }
 
         body {
@@ -20,22 +18,21 @@
             background-color: var(--bg-color);
             margin: 0;
             padding: 20px;
-            color: var(--text-main);
-            -webkit-tap-highlight-color: transparent;
+            color: #333;
         }
 
         .container {
             max-width: 800px;
             margin: 0 auto;
             background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             overflow: hidden;
         }
 
         .header {
             padding: 20px;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid #eee;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -44,10 +41,10 @@
         .header h2 {
             margin: 0;
             font-size: 1.2rem;
-            font-weight: 600;
+            color: #000;
         }
 
-        /* --- 列表样式 --- */
+        /* --- 列表项布局 (Flexbox) --- */
         .file-list {
             list-style: none;
             padding: 0;
@@ -70,6 +67,7 @@
             background-color: #fafafa;
         }
 
+        /* --- 左侧文件名区域 --- */
         .file-info {
             display: flex;
             align-items: center;
@@ -84,20 +82,21 @@
 
         .name-text {
             font-size: 1rem;
-            color: var(--text-main);
+            color: #333;
             word-break: break-all;
             line-height: 1.4;
         }
 
+        /* --- 右侧按钮区域 --- */
         .actions {
             display: flex;
             gap: 8px;
-            align-self: flex-end;
+            align-self: flex-end; 
         }
 
         .btn {
             padding: 8px 16px;
-            border-radius: 8px;
+            border-radius: 6px;
             text-decoration: none;
             font-size: 0.9rem;
             font-weight: 500;
@@ -115,32 +114,31 @@
         .btn-download { background-color: var(--primary-brown); }
         .btn-play { background-color: var(--play-blue); }
         .btn-open { background-color: #6c757d; }
-        .btn-retry { background-color: #ff3b30; }
 
         .loading {
             text-align: center;
             padding: 40px;
-            color: var(--text-sub);
+            color: #888;
         }
 
-        /* --- 视频播放器弹窗 --- */
+        /* --- 视频播放弹窗 (Modal) --- */
         .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
             left: 0;
             top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.95);
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0,0,0,0.9); 
             align-items: center;
             justify-content: center;
-            overflow: hidden; /* 防止滚动条 */
+            overflow: hidden; /* 关键：防止滚动条 */
         }
 
         .modal-content {
             width: 95%;
-            max-width: 1000px;
+            max-width: 900px;
             position: relative;
             display: flex;
             justify-content: center;
@@ -149,76 +147,54 @@
 
         video {
             max-width: 100%;
-            max-height: 80vh;
+            max-height: 80vh; /* 关键：限制最大高度，实现自适应 */
             border-radius: 8px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            transition: transform 0.2s ease;
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
         }
 
         .close-modal {
             position: absolute;
-            top: -50px;
+            top: -40px;
             right: 0;
             color: white;
-            font-size: 40px;
+            font-size: 30px;
             font-weight: bold;
             cursor: pointer;
-            z-index: 1001;
         }
 
-        /* --- 控制面板 --- */
-        .control-panel {
+        /* --- 新增：变速控制面板 --- */
+        .speed-control {
             position: fixed;
             bottom: 20px;
             right: 20px;
+            z-index: 1001;
             display: flex;
-            flex-direction: column;
-            gap: 15px;
-            z-index: 1002;
-        }
-
-        .panel-group {
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            border-radius: 10px;
-            padding: 8px;
-            display: flex;
-            flex-direction: column;
             gap: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
-        .panel-btn {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .speed-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             color: white;
             padding: 8px 12px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
-            min-width: 50px;
-            text-align: center;
+            backdrop-filter: blur(5px);
             transition: background 0.2s;
         }
 
-        .panel-btn:active {
+        .speed-btn:hover {
             background: rgba(255, 255, 255, 0.3);
         }
 
-        .speed-display {
-            color: #fff;
-            font-size: 12px;
-            text-align: center;
-            margin-bottom: 2px;
-        }
-
-        /* --- 响应式适配 --- */
+        /* 手机端适配微调 */
         @media (max-width: 480px) {
             .file-item { padding: 12px 15px; }
             .btn { padding: 6px 12px; font-size: 0.8rem; }
             .icon { font-size: 1.2rem; margin-right: 8px; }
-            .control-panel { bottom: 15px; right: 15px; }
-            .panel-btn { padding: 6px 10px; font-size: 13px; }
+            .speed-control { bottom: 15px; right: 15px; }
+            .speed-btn { padding: 6px 10px; font-size: 13px; }
         }
     </style>
 </head>
@@ -227,8 +203,9 @@
 <div class="container">
     <div class="header">
         <h2>📂 GitHub 资源列表</h2>
-        <span style="font-size: 0.8rem; color: var(--text-sub);">Powered by GitHub</span>
+        <span style="font-size: 0.8rem; color: #666;">Powered by GitHub</span>
     </div>
+    
     <div id="fileList" class="loading">正在加载文件列表...</div>
 </div>
 
@@ -240,24 +217,13 @@
             您的浏览器不支持 HTML5 视频播放。
         </video>
     </div>
+</div>
 
-    <!-- 右下角控制面板 -->
-    <div class="control-panel" onclick="event.stopPropagation()">
-        <!-- 变速控制 -->
-        <div class="panel-group">
-            <div class="speed-display" id="speedText">1.0x</div>
-            <button class="panel-btn" onclick="changeSpeed(0.5)">⏪ 慢速</button>
-            <button class="panel-btn" onclick="changeSpeed(1.0)">▶️ 正常</button>
-            <button class="panel-btn" onclick="changeSpeed(2.0)">⏩ 快速</button>
-        </div>
-        
-        <!-- 缩放控制 -->
-        <div class="panel-group">
-             <button class="panel-btn" onclick="zoomVideo(0.2)">➕ 放大</button>
-             <button class="panel-btn" onclick="zoomVideo(-0.2)">➖ 缩小</button>
-             <button class="panel-btn" onclick="resetZoom()">🔄 重置</button>
-        </div>
-    </div>
+<!-- 新增：变速控制按钮 -->
+<div id="speedControl" class="speed-control" style="display: none;">
+    <button class="speed-btn" onclick="setSpeed(0.5)">0.5x</button>
+    <button class="speed-btn" onclick="setSpeed(1.0)">1.0x</button>
+    <button class="speed-btn" onclick="setSpeed(2.0)">2.0x</button>
 </div>
 
 <script>
@@ -270,153 +236,106 @@
     const cdnBaseUrl = `https://cdn.jsdelivr.net/gh/${owner}/${repo}@latest`;
     const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
 
-    const fileListEl = document.getElementById('fileList');
-
     async function loadFiles() {
-        fileListEl.innerHTML = '<div class="loading">正在加载文件列表...</div>';
+        const fileListEl = document.getElementById('fileList');
         
         try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
-
-            const response = await fetch(apiUrl, { signal: controller.signal });
-            clearTimeout(timeoutId);
-
-            if (!response.ok) {
-                if(response.status === 404) throw new Error('找不到该文件夹 (404)');
-                if(response.status === 403) throw new Error('API 访问受限 (403)，可能是访问太频繁');
-                throw new Error(`连接失败 (状态码: ${response.status})`);
-            }
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error('无法连接 GitHub API，请检查网络或仓库配置');
             
             const files = await response.json();
-            
-            if (!Array.isArray(files)) {
-                 throw new Error('获取到的数据格式不正确');
+            fileListEl.innerHTML = '<ul class="file-list"></ul>';
+            const listContainer = fileListEl.querySelector('ul');
+
+            if (files.length === 0) {
+                fileListEl.innerHTML = '<div class="loading">该目录下空空如也</div>';
+                return;
             }
 
-            renderList(files);
+            // 排序：文件夹优先，然后按名称排序
+            files.sort((a, b) => {
+                if (a.type === b.type) return a.name.localeCompare(b.name);
+                return a.type === 'dir' ? -1 : 1;
+            });
+
+            files.forEach(file => {
+                const li = document.createElement('li');
+                li.className = 'file-item';
+                
+                const isFolder = file.type === 'dir';
+                const isVideo = file.name.match(/\.(mp4|mov|webm)$/i);
+                
+                // 图标处理
+                let icon = '📄';
+                if (isFolder) icon = '📁';
+                else if (isVideo) icon = '🎬';
+                else if (file.name.match(/\.(jpg|jpeg|png|gif)$/i)) icon = '🖼️';
+
+                // 构建按钮 HTML
+                let buttonsHtml = '';
+                
+                if (isFolder) {
+                    buttonsHtml = `<a href="?path=${file.path}" class="btn btn-open">打开</a>`;
+                } else {
+                    const downloadLink = `${cdnBaseUrl}/${file.path}`;
+                    buttonsHtml += `<a href="${downloadLink}" class="btn btn-download" target="_blank">下载</a>`;
+                    
+                    if (isVideo) {
+                        const safeLink = downloadLink.replace(/'/g, "\\'"); 
+                        buttonsHtml += `<button onclick="playVideo('${safeLink}')" class="btn btn-play">播放</button>`;
+                    }
+                }
+
+                li.innerHTML = `
+                    <div class="file-info">
+                        <span class="icon">${icon}</span>
+                        <span class="name-text">${file.name}</span>
+                    </div>
+                    <div class="actions">
+                        ${buttonsHtml}
+                    </div>
+                `;
+                listContainer.appendChild(li);
+            });
 
         } catch (error) {
-            console.error(error);
-            let msg = error.message;
-            if (error.name === 'AbortError') {
-                msg = '网络连接超时，请检查网络';
-            }
-            
-            // 显示错误信息和重试按钮
-            fileListEl.innerHTML = `
-                <div class="loading" style="color:#ff3b30;">
-                    <p>❌ 加载失败</p>
-                    <p style="font-size:0.9rem; color:#666;">${msg}</p>
-                    <button onclick="loadFiles()" class="btn btn-retry">🔄 点击重试</button>
-                </div>
-            `;
+            fileListEl.innerHTML = `<div class="loading" style="color:red;">${error.message} <small>${apiUrl}</small></div>`;
         }
-    }
-
-    function renderList(files) {
-        fileListEl.innerHTML = '<ul class="file-list"></ul>';
-        const listContainer = fileListEl.querySelector('ul');
-
-        if (files.length === 0) {
-            fileListEl.innerHTML = '<div class="loading">该目录下空空如也</div>';
-            return;
-        }
-
-        // 排序：文件夹优先，然后按名称排序
-        files.sort((a, b) => {
-            if (a.type === b.type) return a.name.localeCompare(b.name);
-            return a.type === 'dir' ? -1 : 1;
-        });
-
-        files.forEach(file => {
-            const li = document.createElement('li');
-            li.className = 'file-item';
-            
-            const isFolder = file.type === 'dir';
-            const isVideo = file.name.match(/\.(mp4|mov|webm|m4v)$/i);
-            
-            // 图标处理
-            let icon = '📄';
-            if (isFolder) icon = '📁';
-            else if (isVideo) icon = '🎬';
-            else if (file.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) icon = '🖼️';
-
-            // 构建按钮 HTML
-            let buttonsHtml = '';
-            
-            if (isFolder) {
-                buttonsHtml = `<span style="color:#999; font-size:0.8rem;">文件夹</span>`;
-            } else {
-                const downloadLink = `${cdnBaseUrl}/${file.path}`;
-                buttonsHtml += `<a href="${downloadLink}" class="btn btn-download" target="_blank">下载</a>`;
-                
-                if (isVideo) {
-                    const safeLink = downloadLink.replace(/'/g, "\\'"); 
-                    buttonsHtml += `<button onclick="playVideo('${safeLink}')" class="btn btn-play">播放</button>`;
-                }
-            }
-
-            li.innerHTML = `
-                <div class="file-info">
-                    <span class="icon">${icon}</span>
-                    <span class="name-text">${file.name}</span>
-                </div>
-                <div class="actions">
-                    ${buttonsHtml}
-                </div>
-            `;
-            listContainer.appendChild(li);
-        });
     }
 
     // --- 视频播放逻辑 ---
-    const modal = document.getElementById('videoModal');
-    const player = document.getElementById('videoPlayer');
-    const speedText = document.getElementById('speedText');
-    
-    // 缩放相关变量
-    let currentScale = 1.0;
-
     function playVideo(url) {
+        const modal = document.getElementById('videoModal');
+        const player = document.getElementById('videoPlayer');
+        const speedControl = document.getElementById('speedControl');
+        
         player.src = url;
         modal.style.display = 'flex';
-        // 重置状态
-        resetZoom();
-        changeSpeed(1.0);
+        speedControl.style.display = 'flex'; // 显示变速按钮
+        player.play();
         
-        // 尝试自动播放
-        player.play().catch(e => console.log("自动播放被拦截，需手动点击"));
+        // 锁定背景滚动
+        document.body.style.overflow = 'hidden';
     }
 
     function closeVideo() {
+        const modal = document.getElementById('videoModal');
+        const player = document.getElementById('videoPlayer');
+        const speedControl = document.getElementById('speedControl');
+        
         modal.style.display = 'none';
         player.pause();
         player.src = '';
+        speedControl.style.display = 'none'; // 隐藏变速按钮
+        
+        // 恢复背景滚动
+        document.body.style.overflow = '';
     }
 
-    // 变速功能
-    function changeSpeed(rate) {
-        player.playbackRate = rate;
-        speedText.innerText = rate + 'x';
-    }
-
-    // 缩放功能
-    function zoomVideo(delta) {
-        currentScale += delta;
-        // 限制最小 0.5倍，最大 3倍
-        if (currentScale < 0.5) currentScale = 0.5;
-        if (currentScale > 3.0) currentScale = 3.0;
-        applyZoom();
-    }
-
-    function resetZoom() {
-        currentScale = 1.0;
-        applyZoom();
-    }
-
-    function applyZoom() {
-        player.style.transform = `scale(${currentScale})`;
+    // --- 新增：变速功能 ---
+    function setSpeed(speed) {
+        const player = document.getElementById('videoPlayer');
+        player.playbackRate = speed;
     }
 
     // 启动加载
