@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>我的资源列表</title>
     <style>
         /* --- 全局样式 --- */
@@ -88,16 +88,17 @@
             background-color: rgba(0,0,0,0.95);
             align-items: center;
             justify-content: center;
-            flex-direction: column;
-            overflow: hidden; /* 彻底取消背景滚动条 */
+            /* 核心：彻底禁止弹窗出现任何滚动条 */
+            overflow: hidden !important; 
         }
 
-        /* 视频容器：确保不超出屏幕且各元素互不遮挡 */
+        /* 视频容器：严格限制高度，确保所有内容不超出浏览器边界 */
         .video-wrapper {
             position: relative;
             width: 90%;
             max-width: 900px;
-            max-height: 85vh; /* 限制最大高度，留出上下空间给按钮和浮窗 */
+            /* 限制最大高度为视口的 85%，留出上下安全边距 */
+            max-height: 85vh; 
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -105,26 +106,24 @@
 
         video {
             width: 100%;
-            height: auto;
-            max-height: 100%;
-            border-radius: 8px;
+            /* 核心：视频自适应缩放，绝不超出容器高度 */
+            max-height: 100%; 
             background: #000;
             object-fit: contain;
         }
 
-        /* --- 关闭按钮：右下角，完整醒目 --- */
+        /* --- 关闭按钮：右下角，在容器内部，绝对不超出边界 --- */
         .close-modal {
-            position: absolute;
-            bottom: -55px; /* 放在视频正下方 */
-            right: 0;
-            width: 44px;
-            height: 44px;
+            align-self: flex-end; /* 靠右对齐 */
+            margin-top: 15px;     /* 与视频保持间距 */
+            width: 40px;
+            height: 40px;
             background: rgba(255, 255, 255, 0.95);
             color: #000;
             border-radius: 50%;
             text-align: center;
-            line-height: 44px;
-            font-size: 32px;
+            line-height: 40px;
+            font-size: 28px;
             font-weight: bold;
             cursor: pointer;
             z-index: 1002;
@@ -132,11 +131,12 @@
             border: none;
             outline: none;
             padding: 0;
+            flex-shrink: 0; /* 防止被挤压 */
         }
 
-        /* --- 变速浮窗：底部居中，避开进度条 --- */
+        /* --- 变速浮窗：底部居中，在容器内部 --- */
         .speed-control {
-            margin-top: 15px; /* 放在视频正下方，绝对不遮挡视频画面和进度条 */
+            margin-top: 10px;
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
@@ -146,6 +146,7 @@
             display: flex;
             gap: 8px;
             z-index: 1001;
+            flex-shrink: 0; /* 防止被挤压 */
         }
 
         .speed-btn {
@@ -170,9 +171,8 @@
             .file-item { padding: 12px 15px; }
             .btn { padding: 6px 12px; font-size: 0.8rem; }
             .icon { font-size: 1.2rem; margin-right: 8px; }
-            .video-wrapper { width: 100%; max-height: 80vh; }
-            video { border-radius: 0; }
-            .close-modal { bottom: -50px; right: 5px; width: 40px; height: 40px; line-height: 40px; font-size: 28px; }
+            .video-wrapper { width: 100%; max-height: 90vh; }
+            .close-modal { width: 36px; height: 36px; line-height: 36px; font-size: 24px; }
         }
     </style>
 </head>
@@ -194,10 +194,7 @@
             您的浏览器不支持 HTML5 视频播放。
         </video>
         
-        <!-- 关闭按钮 -->
-        <button class="close-modal" onclick="closeVideo()">&times;</button>
-        
-        <!-- 底部变速浮窗 -->
+        <!-- 变速浮窗 -->
         <div class="speed-control">
             <button class="speed-btn" onclick="changeSpeed(0.25)">0.25x</button>
             <button class="speed-btn" onclick="changeSpeed(0.5)">0.5x</button>
@@ -205,6 +202,9 @@
             <button class="speed-btn" onclick="changeSpeed(1.25)">1.25x</button>
             <button class="speed-btn" onclick="changeSpeed(1.5)">1.5x</button>
         </div>
+
+        <!-- 关闭按钮 -->
+        <button class="close-modal" onclick="closeVideo()">&times;</button>
     </div>
 </div>
 
