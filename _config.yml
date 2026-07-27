@@ -1,0 +1,80 @@
+title: KsirBlog
+SEOTitle: ksirBlog
+# header-img: img/home-bg.jpg
+future: true
+permalink: pretty
+paginate: 6
+# exclude: ["less","node_modules","Gruntfile.js","package.json","README.md","README.zh.md"]
+anchorjs: true                          
+plugins: [jekyll-paginate]
+markdown: kramdown
+kramdown:
+  input: GFM                           
+  syntax_highlighter_opts:
+    span:
+      line_numbers: false
+    block:
+      line_numbers: true
+      start_line: 1
+sidebar: true                           # whether or not using Sidebar.
+featured-tags: true                     # whether or not using Feature-Tags
+featured-condition-size: 1              # A tag will be featured if the size of it is more than this condition value
+friends: [
+    {
+      title: "抖音去水印",
+      href: "https://3g.gljlw.com/diy/douyin.php"
+    },{
+      title: "永顺e盘",
+      href: "http://sj.ysupan.com/zjkgf"
+    },{
+        title: "抖音",
+        href: "https://www.iesdouyin.com/share/user/MS4wLjABAAAATE8xICluCm9y1DSER2FUkbKWP_uWXFsXjwQ803MuAHthXwGKplJrkI1Vz1E4pcSn?u_code=1e054ag2mcgb&did=MS4wLjABAAAAU2I8iJAMjMS-An2PwSb1MDRxd3iQu-PdnpZK8l4Y6Xw&iid=MS4wLjABAAAAUi-gJnMx37uA5fY_6Z3hN4930RdNSujuIGAU2FxDy2Q&with_sec_did=1&sec_uid=MS4wLjABAAAATE8xICluCm9y1DSER2FUkbKWP_uWXFsXjwQ803MuAHthXwGKplJrkI1Vz1E4pcSn&from_ssr=1&from_aid=2329&life_share_ext=%7B%22life_share_id%22:%22181eafa0373e4ae6ae812ddd890cbf9f%22,%22from_user_id%22:1533187673307667%7D&utm_campaign=client_share&app=douyin_lite&utm_medium=ios&tt_from=copy&utm_source=copy"
+    },{
+        title: "琴妹427774279",
+        href: "https://v.kuaishou.com/z1HiAI"
+    },{
+        title: "抖音号直达",
+        href: "https://v.douyin.com/iN/"
+    },{
+        title: "广告招商",
+        href: ""
+    },{
+        title: "南方泵业",
+        href: "https://twitterxz.com"
+    },{
+        title: "专业防水技术",
+        href: "https://rsxj.github.1io/"
+    },{
+        title: "GitHub",
+        href: "https://www.github.com/"
+    },{
+        title: "回主页",
+        href: "https://jy365.github.io/"
+    },{
+        title: "google mail",
+        href: "https://mail.google.com"
+    },{
+        title: "git写博",
+        href: "https://github.com/jy365/jy365.github.io/tree/master/_posts"
+    } ,{
+        title: "梁山立鸿二手设备买卖",
+        href: "https://v.kuaishou.com/zRZMUU"
+    } ,{
+        title: "我的精灵",
+        href: "https://v.kuaishou.com/kAUmBE "
+    },{
+        
+        title: "草料网",
+        href: "https://cli.im/tools"
+    } ,{
+    title: "首页",
+        href: "https://jy365.github.io"
+    } ,{
+        title: "图片压缩",
+        href: "https://yasuo.xunjiepdf.com/img/"
+    } ,{
+        title: "视频解析",
+        href: "https://youtube.iiilab.com/"
+    } 
+]
+theme: jekyll-theme-cayman
