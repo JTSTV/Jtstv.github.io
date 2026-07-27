@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>我的资源列表</title>
     <style>
         /* --- 全局样式 --- */
@@ -11,6 +11,7 @@
             --play-blue: #007AFF;
             --bg-color: #f2f2f7;
             --card-bg: #ffffff;
+            --text-main: #333;
         }
 
         body {
@@ -18,7 +19,9 @@
             background-color: var(--bg-color);
             margin: 0;
             padding: 20px;
-            color: #333;
+            color: var(--text-main);
+            /* 默认允许滚动，播放时通过JS禁止 */
+            overflow-x: hidden; 
         }
 
         .container {
@@ -28,6 +31,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             overflow: hidden;
+            min-height: 200px;
         }
 
         .header {
@@ -38,18 +42,10 @@
             justify-content: space-between;
         }
 
-        .header h2 {
-            margin: 0;
-            font-size: 1.2rem;
-            color: #000;
-        }
+        .header h2 { margin: 0; font-size: 1.2rem; }
 
-        /* --- 列表项布局 (Flexbox) --- */
-        .file-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+        /* --- 列表项布局 --- */
+        .file-list { list-style: none; padding: 0; margin: 0; }
 
         .file-item {
             display: flex;
@@ -59,40 +55,19 @@
             transition: background-color 0.2s;
         }
 
-        .file-item:last-child {
-            border-bottom: none;
-        }
+        .file-item:last-child { border-bottom: none; }
+        .file-item:hover { background-color: #fafafa; }
 
-        .file-item:hover {
-            background-color: #fafafa;
-        }
-
-        /* --- 左侧文件名区域 --- */
         .file-info {
             display: flex;
             align-items: center;
             margin-bottom: 12px;
         }
 
-        .icon {
-            font-size: 1.5rem;
-            margin-right: 12px;
-            flex-shrink: 0;
-        }
+        .icon { font-size: 1.5rem; margin-right: 12px; flex-shrink: 0; }
+        .name-text { font-size: 1rem; word-break: break-all; line-height: 1.4; }
 
-        .name-text {
-            font-size: 1rem;
-            color: #333;
-            word-break: break-all;
-            line-height: 1.4;
-        }
-
-        /* --- 右侧按钮区域 --- */
-        .actions {
-            display: flex;
-            gap: 8px;
-            align-self: flex-end; 
-        }
+        .actions { display: flex; gap: 8px; align-self: flex-end; }
 
         .btn {
             padding: 8px 16px;
@@ -107,19 +82,12 @@
             white-space: nowrap;
         }
 
-        .btn:hover {
-            opacity: 0.9;
-        }
-
+        .btn:hover { opacity: 0.9; }
         .btn-download { background-color: var(--primary-brown); }
         .btn-play { background-color: var(--play-blue); }
         .btn-open { background-color: #6c757d; }
 
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #888;
-        }
+        .loading { text-align: center; padding: 40px; color: #888; }
 
         /* --- 视频播放弹窗 (Modal) --- */
         .modal {
@@ -130,71 +98,83 @@
             top: 0;
             width: 100%; 
             height: 100%; 
-            background-color: rgba(0,0,0,0.9); 
+            background-color: rgba(0,0,0,0.95); 
             align-items: center;
             justify-content: center;
-            overflow: hidden; /* 关键：防止滚动条 */
+            /* 播放时禁止背景滚动 */
+            overflow: hidden; 
         }
 
         .modal-content {
-            width: 95%;
+            width: 90%;
             max-width: 900px;
             position: relative;
+            /* 确保视频不超出屏幕高度 */
+            max-height: 100vh; 
             display: flex;
             justify-content: center;
-            align-items: center;
         }
 
         video {
-            max-width: 100%;
-            max-height: 80vh; /* 关键：限制最大高度，实现自适应 */
+            width: 100%;
+            height: auto;
+            max-height: 100vh;
             border-radius: 8px;
-            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+            object-fit: contain; /* 关键：保持比例且不被裁剪 */
+            background: #000;
         }
 
+        /* --- 新增：关闭按钮样式优化 --- */
         .close-modal {
             position: absolute;
-            top: -40px;
-            right: 0;
-            color: white;
-            font-size: 30px;
+            top: 10px;
+            right: 10px;
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #000;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 34px;
+            font-size: 28px;
             font-weight: bold;
             cursor: pointer;
+            z-index: 1002;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            padding: 0;
+            border: none;
+            outline: none;
         }
 
-        /* --- 新增：变速控制面板 --- */
+        /* --- 新增：变速浮窗样式 --- */
         .speed-control {
-            position: fixed;
+            position: absolute;
             bottom: 20px;
             right: 20px;
-            z-index: 1001;
-            display: flex;
-            gap: 8px;
-        }
-
-        .speed-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
             cursor: pointer;
-            font-size: 14px;
-            backdrop-filter: blur(5px);
+            z-index: 1001;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.2);
+            user-select: none;
             transition: background 0.2s;
         }
-
-        .speed-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+        
+        .speed-control:active {
+            background: rgba(0, 0, 0, 0.8);
         }
 
-        /* 手机端适配微调 */
+        /* 手机端适配 */
         @media (max-width: 480px) {
             .file-item { padding: 12px 15px; }
             .btn { padding: 6px 12px; font-size: 0.8rem; }
             .icon { font-size: 1.2rem; margin-right: 8px; }
-            .speed-control { bottom: 15px; right: 15px; }
-            .speed-btn { padding: 6px 10px; font-size: 13px; }
+            .modal-content { width: 100%; height: 100%; border-radius: 0; }
+            video { border-radius: 0; height: 100%; }
         }
     </style>
 </head>
@@ -205,43 +185,39 @@
         <h2>📂 GitHub 资源列表</h2>
         <span style="font-size: 0.8rem; color: #666;">Powered by GitHub</span>
     </div>
-    
     <div id="fileList" class="loading">正在加载文件列表...</div>
 </div>
 
 <!-- 视频播放器弹窗 -->
 <div id="videoModal" class="modal" onclick="closeVideo()">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <span class="close-modal" onclick="closeVideo()">&times;</span>
+        <!-- 关闭按钮 -->
+        <button class="close-modal" onclick="closeVideo()">&times;</button>
+        
+        <!-- 视频标签 -->
         <video id="videoPlayer" controls playsinline webkit-playsinline>
             您的浏览器不支持 HTML5 视频播放。
         </video>
+        
+        <!-- 变速浮窗 -->
+        <div class="speed-control" id="speedBtn" onclick="changeSpeed(event)">1.0x</div>
     </div>
 </div>
 
-<!-- 新增：变速控制按钮 -->
-<div id="speedControl" class="speed-control" style="display: none;">
-    <button class="speed-btn" onclick="setSpeed(0.5)">0.5x</button>
-    <button class="speed-btn" onclick="setSpeed(1.0)">1.0x</button>
-    <button class="speed-btn" onclick="setSpeed(2.0)">2.0x</button>
-</div>
-
 <script>
-    // ⚠️ 配置区域：请修改为你自己的仓库信息
+    // ⚠️ 配置区域
     const owner = 'Jtstv';           
     const repo = 'Jtstv.github.io';  
     const path = 'sp';               
 
-    // 核心链接生成逻辑
     const cdnBaseUrl = `https://cdn.jsdelivr.net/gh/${owner}/${repo}@latest`;
     const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
 
     async function loadFiles() {
         const fileListEl = document.getElementById('fileList');
-        
         try {
             const response = await fetch(apiUrl);
-            if (!response.ok) throw new Error('无法连接 GitHub API，请检查网络或仓库配置');
+            if (!response.ok) throw new Error('无法连接 GitHub API');
             
             const files = await response.json();
             fileListEl.innerHTML = '<ul class="file-list"></ul>';
@@ -252,7 +228,6 @@
                 return;
             }
 
-            // 排序：文件夹优先，然后按名称排序
             files.sort((a, b) => {
                 if (a.type === b.type) return a.name.localeCompare(b.name);
                 return a.type === 'dir' ? -1 : 1;
@@ -265,21 +240,17 @@
                 const isFolder = file.type === 'dir';
                 const isVideo = file.name.match(/\.(mp4|mov|webm)$/i);
                 
-                // 图标处理
                 let icon = '📄';
                 if (isFolder) icon = '📁';
                 else if (isVideo) icon = '🎬';
                 else if (file.name.match(/\.(jpg|jpeg|png|gif)$/i)) icon = '🖼️';
 
-                // 构建按钮 HTML
                 let buttonsHtml = '';
-                
                 if (isFolder) {
                     buttonsHtml = `<a href="?path=${file.path}" class="btn btn-open">打开</a>`;
                 } else {
                     const downloadLink = `${cdnBaseUrl}/${file.path}`;
                     buttonsHtml += `<a href="${downloadLink}" class="btn btn-download" target="_blank">下载</a>`;
-                    
                     if (isVideo) {
                         const safeLink = downloadLink.replace(/'/g, "\\'"); 
                         buttonsHtml += `<button onclick="playVideo('${safeLink}')" class="btn btn-play">播放</button>`;
@@ -299,46 +270,54 @@
             });
 
         } catch (error) {
-            fileListEl.innerHTML = `<div class="loading" style="color:red;">${error.message} <small>${apiUrl}</small></div>`;
+            fileListEl.innerHTML = `<div class="loading" style="color:red;">${error.message}</div>`;
         }
     }
 
-    // --- 视频播放逻辑 ---
+    // --- 视频播放与变速逻辑 ---
+    const speeds = [0.5, 1.0, 1.25, 1.5, 2.0];
+    let currentSpeedIndex = 1; // 默认 1.0
+
     function playVideo(url) {
         const modal = document.getElementById('videoModal');
         const player = document.getElementById('videoPlayer');
-        const speedControl = document.getElementById('speedControl');
+        const speedBtn = document.getElementById('speedBtn');
         
         player.src = url;
-        modal.style.display = 'flex';
-        speedControl.style.display = 'flex'; // 显示变速按钮
-        player.play();
+        player.playbackRate = 1.0; // 重置倍速
+        currentSpeedIndex = 1;
+        speedBtn.innerText = "1.0x";
         
-        // 锁定背景滚动
-        document.body.style.overflow = 'hidden';
+        modal.style.display = 'flex';
+        // 防止背景滚动
+        document.body.style.overflow = 'hidden'; 
+        
+        player.play().catch(e => console.log("播放被阻止", e));
+    }
+
+    function changeSpeed(e) {
+        e.stopPropagation(); // 防止点击时触发关闭
+        const player = document.getElementById('videoPlayer');
+        const speedBtn = document.getElementById('speedBtn');
+        
+        // 循环切换倍速
+        currentSpeedIndex = (currentSpeedIndex + 1) % speeds.length;
+        const newSpeed = speeds[currentSpeedIndex];
+        
+        player.playbackRate = newSpeed;
+        speedBtn.innerText = newSpeed + "x";
     }
 
     function closeVideo() {
         const modal = document.getElementById('videoModal');
         const player = document.getElementById('videoPlayer');
-        const speedControl = document.getElementById('speedControl');
-        
         modal.style.display = 'none';
         player.pause();
         player.src = '';
-        speedControl.style.display = 'none'; // 隐藏变速按钮
-        
         // 恢复背景滚动
-        document.body.style.overflow = '';
+        document.body.style.overflow = ''; 
     }
 
-    // --- 新增：变速功能 ---
-    function setSpeed(speed) {
-        const player = document.getElementById('videoPlayer');
-        player.playbackRate = speed;
-    }
-
-    // 启动加载
     loadFiles();
 </script>
 
