@@ -18,15 +18,12 @@ layout: null
         .post-list{list-style:none}
         .post-item{padding:12px 0}
         
-        /* 核心修改：边框渐变融入背景 */
+        /* 核心修改：去除所有边框，仅保留圆角和磨砂效果 */
         .post-title{
             font-family:"STKaiti","KaiTi","楷体","AR PL UKai CN",serif;
             font-size:18px;line-height:1.5;padding:15px 20px 35px;
             position:relative;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-            border-radius:12px;color:#444;
-            border:2px solid transparent; /* 必须设置透明边框作为基底 */
-            background-clip:padding-box; /* 防止背景色溢出到边框区域 */
-            border-image:linear-gradient(135deg, rgba(232,232,232,0), rgba(255,255,255,0.8), rgba(232,232,232,0)) 1; /* 边框渐变融入 #e8e8e8 */
+            border-radius:12px;color:#444;border:none;
         }
         
         .post-title a{color:#444;display:block}
@@ -71,15 +68,17 @@ document.querySelectorAll('.encrypted-link').forEach(l=>{
     l.onclick=e=>{e.preventDefault();const p=prompt("🔒 这是一篇加密文章，请输入密码查看：");if(p)location.href=l.dataset.url+"?pwd="+encodeURIComponent(p)}
 });
 document.addEventListener('DOMContentLoaded',()=>{
-    let lastHue = 0; // 记录上一个卡片的主色相
+    let lastHue = 0; 
     document.querySelectorAll('.post-title').forEach(t=>{
-        // 确保相邻颜色差异大于 120 度，视觉上明显不同
+        // 确保相邻颜色差异大于 120 度
         let h1 = (lastHue + 120 + Math.random() * 120) % 360; 
         let h2 = (h1 + 30 + Math.random() * 60) % 360;
-        lastHue = h1; // 更新记录
+        lastHue = h1; 
         
-        // 仅设置背景渐变，边框由 CSS 的 border-image 处理
+        // 应用渐变背景，并叠加与背景色完全相同的巨大模糊阴影
+        // 40px 的模糊半径能让边界100%融入 #e8e8e8 背景中，完全看不出方框边缘
         t.style.background = `linear-gradient(135deg,hsla(${h1},65%,85%,.85),hsla(${h2},65%,75%,.85))`;
+        t.style.boxShadow = `0 0 40px 10px rgba(232, 232, 232, 1)`;
     })
 });
 </script>
