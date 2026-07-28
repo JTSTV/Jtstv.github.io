@@ -9,16 +9,25 @@ layout: null
     <title>{{ site.title }}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #fff; color: #2c2c2c; font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        
+        /* 核心修改：将全局文本颜色统一设置为浅灰色 */
+        body { 
+            background: #fff; 
+            color: #999; 
+            font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+        }
+        
         .container { max-width: 680px; margin: 0 auto; padding: 20px 30px; }
-        a { color: #a0522d; text-decoration: none; transition: opacity 0.2s; }
+        
+        /* 链接也改为浅灰色 */
+        a { color: #999; text-decoration: none; transition: opacity 0.2s; }
         a:hover { opacity: 0.7; }
 
-        /* 标题区域：改为浅色背景，去除深色渐变 */
+        /* 标题区域 */
         header {
             position: relative;
             overflow: hidden;
-            background: #ffffff; /* 改为纯白背景，与页面融合 */
+            background: #ffffff; 
             border-radius: 6px;
             min-height: 60px; 
             margin-bottom: 20px; 
@@ -28,12 +37,13 @@ layout: null
             padding: 15px 30px;
         }
 
+        /* 网站标题改为浅灰色 */
         .site-title { 
             position: relative;
             z-index: 2;
             font: 600 20px/1.4 sans-serif; 
-            color: #a0522d; /* 改为与主题一致的棕红色，确保在浅色背景下清晰 */
-            text-shadow: none; /* 去除深色阴影 */
+            color: #999; 
+            text-shadow: none; 
             text-align: right;
         }
 
@@ -44,7 +54,7 @@ layout: null
             position: relative; 
         } 
         
-        /* 磨玻璃 + 阴影 + 正楷字体 */
+        /* 文章卡片样式 */
         .post-title { 
             font-family: "STKaiti", "KaiTi", "楷体", "AR PL UKai CN", serif; 
             font-size: 18px; 
@@ -57,19 +67,20 @@ layout: null
             border: 1px solid rgba(255, 255, 255, 0.6);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1); 
             border-radius: 8px; 
-            color: #666; 
+            color: #999; /* 卡片内文字设为浅灰色 */
         }
         
+        /* 文章链接设为浅灰色 */
         .post-title a { 
-            color: #777; 
+            color: #999; 
             text-decoration: none;
             cursor: pointer;
             display: block;
         }
         
-        .post-title a:hover { color: #a0522d; opacity: 1; }
+        .post-title a:hover { opacity: 0.7; }
         
-        /* 日期紧贴底部 */
+        /* 日期设为浅灰色 */
         .post-date { 
             position: absolute;
             bottom: 10px; 
@@ -81,7 +92,7 @@ layout: null
             letter-spacing: 1px;
         }
 
-        /* 底部翻页 */
+        /* 底部翻页区域 */
         .pagination { 
             display: flex; 
             justify-content: center; 
@@ -92,11 +103,15 @@ layout: null
             border-top: 1px solid #f0f0f0; 
             font: 600 16px sans-serif; 
         }
-        .pagination a, .pagination span { color: #a0522d; min-width: 60px; text-align: center; }
+        
+        /* 翻页按钮设为浅灰色 */
+        .pagination a, .pagination span { color: #999; min-width: 60px; text-align: center; }
         .pagination span { color: #ccc; }
+        
+        /* 邮箱地址设为浅灰色 */
         .contact-email { font: 400 11px sans-serif; }
-        .contact-email a { color: #bbb; }
-        .contact-email a:hover { color: #a0522d; opacity: 1; }
+        .contact-email a { color: #999; }
+        .contact-email a:hover { opacity: 0.7; }
 
         /* 手机端适配 */
         @media (max-width: 600px) {
@@ -110,7 +125,6 @@ layout: null
 <body>
 <div class="container">
     <header>
-        <!-- 已移除雪花画布 <canvas id="snow-canvas"></canvas> -->
         <h1 class="site-title"><a href="/">{{ site.title }}</a></h1>
     </header>
 
@@ -156,8 +170,6 @@ layout: null
             }
         });
     });
-
-    // 已移除极简暴雪脚本
 </script>
 </body>
 </html>
