@@ -44,7 +44,8 @@
 </div>
 <div id="videoModal" class="modal" onclick="closeVideo()">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <video id="videoPlayer" controls playsinline webkit-playsinline>您的浏览器不支持 HTML5 视频播放。</video>
+        <!-- 核心修改：添加 preload="auto"，让浏览器提前加载视频数据实现秒开 -->
+        <video id="videoPlayer" controls playsinline webkit-playsinline preload="auto">您的浏览器不支持 HTML5 视频播放。</video>
         <div class="speed-control" id="speedControl">
             <button class="speed-btn" onclick="setSpeed(0.25)">0.25x</button>
             <button class="speed-btn" onclick="setSpeed(0.5)">0.5x</button>
@@ -55,9 +56,21 @@
     </div>
 </div>
 <script>
-const owner='Jtstv',repo='Jtstv.github.io',path='sp';
-const cdnBaseUrl=`https://cdn.jsdelivr.net/gh/${owner}/${repo}@latest`;
-const apiUrl=`https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+const owner='Jtstv', repo='Jtstv.github.io', path='sp';
+
+// 配置国内极速 CDN 加速源（按推荐优先级排序）
+const cdnSources = [
+    // 1. 国内极速代理（首选，大文件下载最稳）
+    (f) => `https://ghproxy.com/https://raw.githubusercontent.com/${owner}/${repo}/main/${f}`,
+    // 2. jsDelivr（备选）
+    (f) => `https://cdn.jsdelivr.net/gh/${owner}/${repo}@latest/${f}`,
+    // 3. FastGit（兜底）
+    (f) => `https://raw.fastgit.org/${owner}/${repo}/main/${f}`
+];
+
+// 默认使用第一个源生成下载和播放链接
+const getPrimaryUrl = (f) => cdnSources[0](f);
+const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
 
 async function loadFiles(){
     const el=document.getElementById('fileList');
@@ -68,27 +81,39 @@ async function loadFiles(){
         el.innerHTML='<ul class="file-list"></ul>';
         const ul=el.querySelector('ul');
         if(!files.length){el.innerHTML='<div class="loading">该目录下空空如也</div>';return}
+        
         files.sort((a,b)=>a.type===b.type?a.name.localeCompare(b.name):a.type==='dir'?-1:1);
         files.forEach(f=>{
             const li=document.createElement('li');li.className='file-item';
             const isDir=f.type==='dir',isVid=/\.(mp4|mov|webm)$/i.test(f.name);
             let icon=isDir?'📁':isVid?'🎬':/\.(jpg|jpeg|png|gif)$/i.test(f.name)?'🖼️':'📄';
+            
             let btns=isDir?`<a href="?path=${f.path}" class="btn btn-open">打开</a>`:(()=>{
-                const url=`${cdnBaseUrl}/${f.path}`;
+                const url=getPrimaryUrl(f.path);
                 let h=`<a href="${url}" class="btn btn-download" target="_blank">下载</a>`;
                 if(isVid)h+=`<button onclick="playVideo('${url.replace(/'/g,"\\'")}')" class="btn btn-play">播放</button>`;
                 return h;
             })();
+            
             li.innerHTML=`<div class="file-info"><span class="icon">${icon}</span><span class="name-text">${f.name}</span></div><div class="actions">${btns}</div>`;
             ul.appendChild(li);
         });
     }catch(e){el.innerHTML=`<div class="loading" style="color:red">${e.message} <small>${apiUrl}</small></div>`}
 }
 
+// 视频播放逻辑（保持秒开缓冲机制）
 const playVideo=url=>{
     const m=document.getElementById('videoModal'),p=document.getElementById('videoPlayer');
-    p.src=url;m.style.display='flex';p.play();document.body.style.overflow='hidden';resetSpeedUI();
+    p.src=url;
+    m.style.display='flex';
+    document.body.style.overflow='hidden';
+    resetSpeedUI();
+    // 当视频缓冲到可以播放时，再触发播放
+    p.oncanplay=()=>{
+        p.play().catch(err=>console.log('自动播放被浏览器阻止:',err));
+    };
 };
+
 const closeVideo=()=>{
     const m=document.getElementById('videoModal'),p=document.getElementById('videoPlayer');
     m.style.display='none';p.pause();p.src='';document.body.style.overflow='';
