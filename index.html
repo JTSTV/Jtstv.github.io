@@ -49,7 +49,7 @@ layout: null
             position: relative; 
         } 
         
-        /* 核心修改：边框模糊淡化处理 */
+        /* 核心修改：去除所有阴影和边框，让边界与背景完美融合 */
         .post-title { 
             font-family: "STKaiti", "KaiTi", "楷体", "AR PL UKai CN", serif; 
             font-size: 18px; 
@@ -63,14 +63,9 @@ layout: null
             border-radius: 12px; 
             color: #444; 
             
-            /* 1. 添加半透明的白色边框，弱化与灰色背景的对比 */
-            border: 1px solid rgba(255, 255, 255, 0.6); 
-            
-            /* 2. 使用与背景同色的巨大模糊阴影，形成边缘光晕，彻底淡化分界线 */
-            box-shadow: 0 0 30px 5px rgba(232, 232, 232, 0.9); 
-            
-            /* 3. 增加极淡的内阴影，柔化卡片内部边缘 */
-            /* inset 阴影放在这里作为默认，会被JS的background覆盖，所以放在JS里动态设置 */
+            /* 彻底去除边框和阴影，使边界与 #e8e8e8 背景无缝衔接 */
+            border: none; 
+            box-shadow: none; 
         }
         
         .post-title a { 
@@ -168,7 +163,7 @@ layout: null
         });
     });
 
-    // 为每个文章列表项添加随机渐变背景，并保留内阴影
+    // 为每个文章列表项添加随机渐变背景
     document.addEventListener('DOMContentLoaded', function() {
         const postTitles = document.querySelectorAll('.post-title');
         
@@ -183,13 +178,8 @@ layout: null
             const color1 = `hsla(${hue1}, ${saturation}, ${lightness1}, 0.85)`;
             const color2 = `hsla(${hue2}, ${saturation}, ${lightness2}, 0.85)`;
 
-            // 应用线性渐变背景，同时保留内阴影(inset)来柔化边缘
-            // 注意：JS设置background时，会覆盖CSS中的box-shadow，因此需要在这里重新声明
+            // 仅应用渐变背景，保持无边框、无阴影的融合状态
             title.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
-            title.style.boxShadow = `
-                0 0 30px 5px rgba(232, 232, 232, 0.9), 
-                inset 0 0 15px rgba(255, 255, 255, 0.5)
-            `;
         });
     });
 </script>
