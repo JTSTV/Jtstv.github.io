@@ -49,7 +49,7 @@ layout: null
             position: relative; 
         } 
         
-        /* 核心修改：移除阴影，淡化背景，增加条纹效果 */
+        /* 核心修改：为随机渐变背景做准备 */
         .post-title { 
             font-family: "STKaiti", "KaiTi", "楷体", "AR PL UKai CN", serif; 
             font-size: 18px; 
@@ -57,29 +57,18 @@ layout: null
             padding: 15px 20px 35px 20px; 
             position: relative; 
             
-            /* 淡化背景颜色，不透明度从 0.85 降至 0.7 */
-            background: rgba(235, 235, 235, 0.7); 
+            /* 移除固定背景色，由JS动态添加 */
+            /* background: rgba(235, 235, 235, 0.7); */
+            
             backdrop-filter: blur(12px); 
             -webkit-backdrop-filter: blur(12px);
             
             border: none; 
             border-radius: 12px; 
             color: #444; 
-            
-            /* 移除了 box-shadow 属性 */
         }
         
-        /* 利用伪元素叠加 SVG 条纹，实现淡淡的条纹背景效果 */
-        .post-title::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 12px;
-            /* 使用一个内联的 SVG 来创建斜向条纹图案 */
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.05' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
-            pointer-events: none; /* 让鼠标点击穿透伪元素 */
-            z-index: -1;
-        }
+        /* 移除了 .post-title::before 的条纹背景样式 */
         
         .post-title a { 
             color: #444; 
@@ -173,6 +162,30 @@ layout: null
             if (pwd) {
                 window.location.href = url + "?pwd=" + encodeURIComponent(pwd);
             }
+        });
+    });
+
+    // 新增：为每个文章列表项添加随机渐变背景
+    document.addEventListener('DOMContentLoaded', function() {
+        const postTitles = document.querySelectorAll('.post-title');
+        
+        postTitles.forEach(function(title) {
+            // 生成两个随机色相，确保它们之间有足够的差异以形成渐变
+            const hue1 = Math.floor(Math.random() * 360);
+            // 第二个颜色的色相在第一个颜色的基础上偏移 30-90 度，避免颜色过于接近
+            const hue2 = (hue1 + 30 + Math.floor(Math.random() * 60)) % 360;
+            
+            // 固定饱和度和亮度，以获得柔和、协调的色彩
+            const saturation = '65%'; 
+            const lightness1 = '85%';
+            const lightness2 = '75%';
+
+            // 构建 HSLA 颜色字符串
+            const color1 = `hsla(${hue1}, ${saturation}, ${lightness1}, 0.85)`;
+            const color2 = `hsla(${hue2}, ${saturation}, ${lightness2}, 0.85)`;
+
+            // 应用线性渐变背景
+            title.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
         });
     });
 </script>
