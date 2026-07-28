@@ -38,13 +38,12 @@
 <div class="container">
     <div class="header">
         <h2>📂 GitHub 资源列表</h2>
-        <span style="font-size:.8rem;color:#666">Powered by GitHub</span>
+        <span id="cdnStatus" style="font-size:.8rem;color:#666">⚡ 正在极速测速...</span>
     </div>
     <div id="fileList" class="loading">正在加载文件列表...</div>
 </div>
 <div id="videoModal" class="modal" onclick="closeVideo()">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <!-- 核心修改：添加 preload="auto"，让浏览器提前加载视频数据实现秒开 -->
         <video id="videoPlayer" controls playsinline webkit-playsinline preload="auto">您的浏览器不支持 HTML5 视频播放。</video>
         <div class="speed-control" id="speedControl">
             <button class="speed-btn" onclick="setSpeed(0.25)">0.25x</button>
@@ -57,21 +56,52 @@
 </div>
 <script>
 const owner='Jtstv', repo='Jtstv.github.io', path='sp';
-
-// 配置国内极速 CDN 加速源（按推荐优先级排序）
-const cdnSources = [
-    // 1. 国内极速代理（首选，大文件下载最稳）
-    (f) => `https://ghproxy.com/https://raw.githubusercontent.com/${owner}/${repo}/main/${f}`,
-    // 2. jsDelivr（备选）
-    (f) => `https://cdn.jsdelivr.net/gh/${owner}/${repo}@latest/${f}`,
-    // 3. FastGit（兜底）
-    (f) => `https://raw.fastgit.org/${owner}/${repo}/main/${f}`
-];
-
-// 默认使用第一个源生成下载和播放链接
-const getPrimaryUrl = (f) => cdnSources[0](f);
 const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
 
+// 1. 配置所有可用的 CDN 加速源
+const cdnConfigs = [
+    { name: 'GHProxy', getUrl: (f) => `https://ghproxy.com/https://raw.githubusercontent.com/${owner}/${repo}/main/${f}` },
+    { name: 'jsDelivr', getUrl: (f) => `https://cdn.jsdelivr.net/gh/${owner}/${repo}@latest/${f}` },
+    { name: 'FastGit', getUrl: (f) => `https://raw.fastgit.org/${owner}/${repo}/main/${f}` }
+];
+
+let activeCdn = cdnConfigs[0]; // 默认首选
+
+// 2. 极速测速逻辑
+async function testCdnSpeed() {
+    const results = await Promise.all(cdnConfigs.map(async (cdn) => {
+        const testUrl = cdn.getUrl('README.md'); // 假设仓库有 README，用于测速
+        const start = performance.now();
+        try {
+            // 发送 HEAD 请求，超时时间设为 2000ms
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 2000);
+            await fetch(testUrl, { method: 'HEAD', signal: controller.signal });
+            clearTimeout(timeout);
+            const duration = performance.now() - start;
+            return { ...cdn, duration };
+        } catch (e) {
+            return { ...cdn, duration: Infinity }; // 失败或超时记为无穷大
+        }
+    }));
+
+    // 按耗时从小到大排序，选出最快的
+    results.sort((a, b) => a.duration - b.duration);
+    const best = results[0];
+    
+    // 更新界面提示
+    const statusEl = document.getElementById('cdnStatus');
+    if (best.duration !== Infinity) {
+        activeCdn = best;
+        statusEl.innerText = `⚡ 已连接: ${best.name} (${Math.round(best.duration)}ms)`;
+        statusEl.style.color = '#007AFF';
+    } else {
+        statusEl.innerText = '⚠️ 所有加速源均不可用';
+        statusEl.style.color = 'red';
+    }
+}
+
+// 3. 文件列表加载逻辑
 async function loadFiles(){
     const el=document.getElementById('fileList');
     try{
@@ -89,7 +119,8 @@ async function loadFiles(){
             let icon=isDir?'📁':isVid?'🎬':/\.(jpg|jpeg|png|gif)$/i.test(f.name)?'🖼️':'📄';
             
             let btns=isDir?`<a href="?path=${f.path}" class="btn btn-open">打开</a>`:(()=>{
-                const url=getPrimaryUrl(f.path);
+                // 使用测速后选出的最快 CDN 生成链接
+                const url=activeCdn.getUrl(f.path);
                 let h=`<a href="${url}" class="btn btn-download" target="_blank">下载</a>`;
                 if(isVid)h+=`<button onclick="playVideo('${url.replace(/'/g,"\\'")}')" class="btn btn-play">播放</button>`;
                 return h;
@@ -101,14 +132,13 @@ async function loadFiles(){
     }catch(e){el.innerHTML=`<div class="loading" style="color:red">${e.message} <small>${apiUrl}</small></div>`}
 }
 
-// 视频播放逻辑（保持秒开缓冲机制）
+// 4. 视频播放逻辑（秒开缓冲机制）
 const playVideo=url=>{
     const m=document.getElementById('videoModal'),p=document.getElementById('videoPlayer');
     p.src=url;
     m.style.display='flex';
     document.body.style.overflow='hidden';
     resetSpeedUI();
-    // 当视频缓冲到可以播放时，再触发播放
     p.oncanplay=()=>{
         p.play().catch(err=>console.log('自动播放被浏览器阻止:',err));
     };
@@ -124,7 +154,11 @@ const setSpeed=s=>{
 };
 const resetSpeedUI=()=>document.querySelectorAll('.speed-btn').forEach(b=>b.classList.remove('active'));
 
-loadFiles();
+// 5. 启动：先测速，再加载文件列表
+(async () => {
+    await testCdnSpeed();
+    loadFiles();
+})();
 </script>
 </body>
 </html>
