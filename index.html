@@ -49,20 +49,43 @@ layout: null
             position: relative; 
         } 
         
-        /* 核心修改：去除边框，增强阴影模糊度，让边界尽可能柔和 */
+        /* 核心修改：磨砂玻璃 + 粗糙颗粒感 + 浮雕阴影 */
         .post-title { 
             font-family: "STKaiti", "KaiTi", "楷体", "AR PL UKai CN", serif; 
             font-size: 18px; 
             line-height: 1.5;
             padding: 15px 20px 35px 20px; 
             position: relative; 
-            background: rgba(255, 255, 255, 0.85); 
+            
+            /* 稍微深一点的背景色，配合磨砂模糊 */
+            background: rgba(235, 235, 235, 0.85); 
             backdrop-filter: blur(12px); 
             -webkit-backdrop-filter: blur(12px);
-            border: none; /* 去除生硬的边框 */
-            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.06); /* 大幅增加阴影模糊半径，产生柔和晕染感 */
-            border-radius: 12px; /* 稍微增加圆角，配合模糊效果更自然 */
+            
+            /* 去除边框，使用圆角 */
+            border: none; 
+            border-radius: 12px; 
             color: #444; 
+            
+            /* 浮雕效果：左上角高光 + 右下角阴影 */
+            box-shadow: 
+                -3px -3px 6px rgba(255, 255, 255, 0.7), /* 左上亮 */
+                3px 3px 8px rgba(0, 0, 0, 0.12);        /* 右下暗 */
+                
+            /* 增加粗糙的磨砂颗粒感 */
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* 利用伪元素叠加 SVG 噪点，实现粗糙感 */
+        .post-title::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 12px;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none; /* 让鼠标点击穿透伪元素 */
+            z-index: -1;
         }
         
         .post-title a { 
