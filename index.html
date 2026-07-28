@@ -8,180 +8,63 @@ layout: null
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ site.title }}</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body { 
-            background: #e8e8e8; 
-            color: #444; 
-            font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-        }
-        
-        .container { max-width: 680px; margin: 0 auto; padding: 20px 30px; }
-        
-        a { color: #444; text-decoration: none; transition: opacity 0.2s; }
-        a:hover { opacity: 0.7; }
-
-        header {
-            position: relative;
-            overflow: hidden;
-            background: #e8e8e8; 
-            border-radius: 6px;
-            min-height: 60px; 
-            margin-bottom: 20px; 
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 15px 30px;
-        }
-
-        .site-title { 
-            position: relative;
-            z-index: 2;
-            font: 600 20px/1.4 sans-serif; 
-            color: #444; 
-            text-shadow: none; 
-            text-align: right;
-        }
-
-        .post-list { list-style: none; }
-        .post-item { 
-            padding: 12px 0; 
-            position: relative; 
-        } 
-        
-        /* 核心修改：去除所有阴影和边框，让边界与背景完美融合 */
-        .post-title { 
-            font-family: "STKaiti", "KaiTi", "楷体", "AR PL UKai CN", serif; 
-            font-size: 18px; 
-            line-height: 1.5;
-            padding: 15px 20px 35px 20px; 
-            position: relative; 
-            
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px);
-            
-            border-radius: 12px; 
-            color: #444; 
-            
-            /* 彻底去除边框和阴影，使边界与 #e8e8e8 背景无缝衔接 */
-            border: none; 
-            box-shadow: none; 
-        }
-        
-        .post-title a { 
-            color: #444; 
-            text-decoration: none;
-            cursor: pointer;
-            display: block;
-        }
-        
-        .post-title a:hover { opacity: 0.7; }
-        
-        .post-date { 
-            position: absolute;
-            bottom: 10px; 
-            right: 15px;  
-            font-family: -apple-system, sans-serif; 
-            font-size: 11px; 
-            color: #666; 
-            white-space: nowrap;
-            letter-spacing: 1px;
-        }
-
-        .pagination { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            gap: 20px; 
-            margin-top: 24px; 
-            padding-top: 20px; 
-            border-top: 1px solid #d0d0d0; 
-            font: 600 16px sans-serif; 
-        }
-        
-        .pagination a, .pagination span { color: #444; min-width: 60px; text-align: center; }
-        .pagination span { color: #aaa; }
-        
-        .contact-email { font: 400 11px sans-serif; }
-        .contact-email a { color: #666; }
-        .contact-email a:hover { opacity: 0.7; }
-
-        @media (max-width: 600px) {
-            .container { padding: 15px 20px; }
-            .site-title { font-size: 18px; }
-            .post-title { font-size: 16px; padding: 12px 15px 30px 15px; }
-            .post-date { bottom: 8px; right: 12px; font-size: 10px; }
-        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#e8e8e8;color:#444;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+        .container{max-width:680px;margin:0 auto;padding:20px 30px}
+        a{color:#444;text-decoration:none;transition:opacity .2s}
+        a:hover{opacity:.7}
+        header{background:#e8e8e8;border-radius:6px;min-height:60px;margin-bottom:20px;display:flex;align-items:center;justify-content:flex-end;padding:15px 30px}
+        .site-title{font:600 20px/1.4 sans-serif;color:#444;text-align:right}
+        .post-list{list-style:none}
+        .post-item{padding:12px 0}
+        .post-title{font-family:"STKaiti","KaiTi","楷体","AR PL UKai CN",serif;font-size:18px;line-height:1.5;padding:15px 20px 35px;position:relative;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:12px;color:#444}
+        .post-title a{color:#444;display:block}
+        .post-date{position:absolute;bottom:10px;right:15px;font:11px -apple-system,sans-serif;color:#666;white-space:nowrap;letter-spacing:1px}
+        .pagination{display:flex;justify-content:center;align-items:center;gap:20px;margin-top:24px;padding-top:20px;border-top:1px solid #d0d0d0;font:600 16px sans-serif}
+        .pagination a,.pagination span{color:#444;min-width:60px;text-align:center}
+        .pagination span{color:#aaa}
+        .contact-email{font:400 11px sans-serif}
+        .contact-email a{color:#666}
+        @media(max-width:600px){.container{padding:15px 20px}.site-title{font-size:18px}.post-title{font-size:16px;padding:12px 15px 30px}.post-date{bottom:8px;right:12px;font-size:10px}}
     </style>
 </head>
 <body>
 <div class="container">
-    <header>
-        <h1 class="site-title"><a href="/">{{ site.title }}</a></h1>
-    </header>
-
+    <header><h1 class="site-title"><a href="/">{{ site.title }}</a></h1></header>
     <main>
         <ul class="post-list">
             {% for post in paginator.posts %}
             <li class="post-item">
                 <div class="post-title">
                     {% if post.pw %}
-                        <a class="encrypted-link" data-url="{{ post.url | relative_url }}">
-                            🔒 {{ post.title }}
-                        </a>
+                        <a class="encrypted-link" data-url="{{ post.url | relative_url }}">🔒 {{ post.title }}</a>
                     {% else %}
                         <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
                     {% endif %}
-                    
                     <span class="post-date">{{ post.date | date: "%Y-%m-%d" }}</span>
                 </div>
             </li>
             {% endfor %}
         </ul>
     </main>
-
     {% if paginator.total_pages > 1 %}
     <div class="pagination">
-        {% if paginator.previous_page %}<a href="{{ paginator.previous_page_path | relative_url }}" class="page-link">上一页</a>{% else %}<span></span>{% endif %}
+        {% if paginator.previous_page %}<a href="{{ paginator.previous_page_path | relative_url }}">上一页</a>{% else %}<span></span>{% endif %}
         <div class="contact-email"><a href="mailto:jtstv@outlook.com">jtstv@outlook.com</a></div>
-        {% if paginator.next_page %}<a href="{{ paginator.next_page_path | relative_url }}" class="page-link">下一页</a>{% else %}<span></span>{% endif %}
+        {% if paginator.next_page %}<a href="{{ paginator.next_page_path | relative_url }}">下一页</a>{% else %}<span></span>{% endif %}
     </div>
     {% endif %}
 </div>
-
 <script>
-    // 密码验证逻辑
-    document.querySelectorAll('.encrypted-link').forEach(function(link) {
-        link.addEventListener('click', function(e) {
-            e.preventDefault(); 
-            var url = this.getAttribute('data-url'); 
-            var pwd = prompt("🔒 这是一篇加密文章，请输入密码查看：");
-            if (pwd === null) return; 
-            if (pwd) {
-                window.location.href = url + "?pwd=" + encodeURIComponent(pwd);
-            }
-        });
-    });
-
-    // 为每个文章列表项添加随机渐变背景
-    document.addEventListener('DOMContentLoaded', function() {
-        const postTitles = document.querySelectorAll('.post-title');
-        
-        postTitles.forEach(function(title) {
-            const hue1 = Math.floor(Math.random() * 360);
-            const hue2 = (hue1 + 30 + Math.floor(Math.random() * 60)) % 360;
-            
-            const saturation = '65%'; 
-            const lightness1 = '85%';
-            const lightness2 = '75%';
-
-            const color1 = `hsla(${hue1}, ${saturation}, ${lightness1}, 0.85)`;
-            const color2 = `hsla(${hue2}, ${saturation}, ${lightness2}, 0.85)`;
-
-            // 仅应用渐变背景，保持无边框、无阴影的融合状态
-            title.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
-        });
-    });
+document.querySelectorAll('.encrypted-link').forEach(l=>{
+    l.onclick=e=>{e.preventDefault();const p=prompt("🔒 这是一篇加密文章，请输入密码查看：");if(p)location.href=l.dataset.url+"?pwd="+encodeURIComponent(p)}
+});
+document.addEventListener('DOMContentLoaded',()=>{
+    document.querySelectorAll('.post-title').forEach(t=>{
+        const h1=Math.random()*360,h2=(h1+30+Math.random()*60)%360;
+        t.style.background=`linear-gradient(135deg,hsla(${h1},65%,85%,.85),hsla(${h2},65%,75%,.85))`
+    })
+});
 </script>
 </body>
 </html>
