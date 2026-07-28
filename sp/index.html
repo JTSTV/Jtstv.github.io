@@ -5,366 +5,235 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>我的资源列表</title>
     <style>
-        /* 基础样式重置与变量定义 */
-        :root {
-            --primary: #007AFF;
-            --bg: #f2f2f7;
-            --card: #ffffff;
-            --text: #1c1c1e;
-            --sub-text: #8e8e93;
-        }
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg: #000000;
-                --card: #1c1c1e;
-                --text: #ffffff;
-                --sub-text: #98989d;
-            }
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .header {
-            margin-bottom: 20px;
-            padding: 0 5px;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin: 0 0 5px 0;
-        }
-
-        .header p {
-            font-size: 14px;
-            color: var(--sub-text);
-            margin: 0;
-        }
-
-        /* 列表样式 */
-        .file-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .file-item {
-            background-color: var(--card);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            cursor: pointer;
-            transition: transform 0.2s ease, background-color 0.2s;
-        }
-
-        .file-item:active {
-            transform: scale(0.98);
-            opacity: 0.8;
-        }
-
-        .file-info {
-            display: flex;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        .icon-box {
-            width: 40px;
-            height: 40px;
-            background-color: rgba(0, 122, 255, 0.1);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 12px;
-            color: var(--primary);
-            flex-shrink: 0;
-        }
-
-        .icon-box svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-        }
-
-        .file-details {
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .file-name {
-            font-size: 16px;
-            font-weight: 500;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-bottom: 4px;
-        }
-
-        .file-meta {
-            font-size: 12px;
-            color: var(--sub-text);
-        }
-
-        .play-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            flex-shrink: 0;
-        }
-
-        .play-btn svg {
-            width: 14px;
-            height: 14px;
-            fill: currentColor;
-            margin-left: 2px; /* 视觉修正 */
-        }
-
+        :root { --primary: #007AFF; --bg: #f2f2f7; --card: #ffffff; --text: #1c1c1e; }
+        @media (prefers-color-scheme: dark) { :root { --bg: #000000; --card: #1c1c1e; --text: #ffffff; } }
+        
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: var(--text); -webkit-tap-highlight-color: transparent; }
+        
+        /* 顶部导航 */
+        .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 15px 20px; border-bottom: 1px solid rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+        @media (prefers-color-scheme: dark) { .header { background: rgba(28,28,30,0.8); border-bottom: 1px solid rgba(255,255,255,0.1); } }
+        .header h2 { margin: 0; font-size: 18px; font-weight: 600; }
+        
+        /* 列表容器 */
+        .container { max-width: 800px; margin: 0 auto; padding-bottom: 40px; }
+        .file-list { list-style: none; padding: 0; margin: 0; }
+        
+        /* 文件项 */
+        .file-item { display: flex; align-items: center; padding: 16px 20px; border-bottom: 1px solid rgba(0,0,0,0.05); transition: background 0.2s; cursor: pointer; }
+        @media (prefers-color-scheme: dark) { .file-item { border-bottom: 1px solid rgba(255,255,255,0.05); } }
+        .file-item:active { background: rgba(128,128,128,0.1); }
+        
+        .icon-box { width: 40px; height: 40px; border-radius: 8px; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; font-size: 12px; font-weight: bold; }
+        .file-info { flex: 1; overflow: hidden; }
+        .file-name { font-size: 16px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
+        .file-meta { font-size: 12px; color: #8e8e93; }
+        
         /* 全屏播放器遮罩 */
-        .player-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            z-index: 1000;
-            display: none; /* 默认隐藏 */
-            flex-direction: column;
-        }
+        .player-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; }
+        .player-overlay.active { display: flex; }
+        
+        /* 视频容器 */
+        .video-wrapper { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; background: #000; }
+        video { width: 100%; height: 100%; max-height: 100vh; object-fit: contain; }
+        
+        /* 关闭按钮 */
+        .close-btn { position: absolute; bottom: 30px; right: 30px; width: 50px; height: 50px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1001; border: 1px solid rgba(255,255,255,0.3); transition: transform 0.2s; }
+        .close-btn:active { transform: scale(0.9); }
+        .close-btn svg { width: 24px; height: 24px; fill: white; }
 
-        .player-overlay.active {
-            display: flex;
-        }
-
-        .video-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #000;
-            position: relative;
-        }
-
-        video {
-            width: 100%;
-            max-height: 100vh;
-            outline: none;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 1001;
-            color: white;
-            transition: background 0.3s;
-        }
-
-        .close-btn:hover {
-            background: rgba(255, 255, 255, 0.4);
-        }
-
-        .close-btn svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-        }
-
-        /* 加载状态 */
-        .loading-tip {
-            position: absolute;
-            color: white;
-            font-size: 14px;
-            opacity: 0.7;
-        }
-
+        /* 状态指示器 (调试用) */
+        .cdn-status { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.6); color: #0f0; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-family: monospace; pointer-events: none; z-index: 1002; opacity: 0.8; }
+        
+        /* 加载动画 */
+        .loader { position: absolute; width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; display: none; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>资源列表</h1>
-        <p>共 <span id="count">0</span> 个文件</p>
+        <h2>资源列表</h2>
+        <span id="speed-indicator" style="font-size:12px; color:#8e8e93;">测速中...</span>
     </div>
-    
-    <ul class="file-list" id="list">
-        <!-- 列表项将通过 JS 插入 -->
-        <li style="text-align:center; padding: 20px; color: var(--sub-text);">正在加载...</li>
+    <ul class="file-list" id="fileList">
+        <!-- 列表将由 JS 生成 -->
     </ul>
 </div>
 
-<!-- 播放器遮罩 -->
+<!-- 播放器 -->
 <div class="player-overlay" id="playerOverlay">
+    <div class="video-wrapper">
+        <div class="loader" id="videoLoader"></div>
+        <div class="cdn-status" id="cdnStatus">CDN: 检测中...</div>
+        <video id="mainVideo" playsinline webkit-playsinline x5-video-player-type="h5"></video>
+    </div>
     <div class="close-btn" onclick="closePlayer()">
         <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-    </div>
-    <div class="video-container">
-        <div class="loading-tip" id="loadingTip">正在连接服务器...</div>
-        <video id="videoPlayer" controls playsinline webkit-playsinline x5-video-player-type="h5"></video>
     </div>
 </div>
 
 <script>
-    // ================= 配置区域 =================
+    // ================= 配置区 =================
     const CONFIG = {
-        owner: 'Jtstv',          // GitHub 用户名
-        repo: 'Jtstv.github.io', // 仓库名称
-        path: 'sp',              // 文件夹路径 (如果是根目录留空 '')
-        branch: 'main'           // 分支名称，通常是 main 或 master
+        owner: 'Jtstv',
+        repo: 'Jtstv.github.io',
+        path: 'sp', // 您的文件夹路径
+        branch: 'main' // 分支名，通常是 main 或 master
     };
-    // ===========================================
 
-    const listEl = document.getElementById('list');
-    const countEl = document.getElementById('count');
-    const overlay = document.getElementById('playerOverlay');
-    const video = document.getElementById('videoPlayer');
-    const loadingTip = document.getElementById('loadingTip');
+    // CDN 源列表 (按推荐顺序，但会被测速结果打乱)
+    const CDN_SOURCES = [
+        { name: 'GhProxy', url: (o,r,b,f) => `https://ghproxy.com/https://raw.githubusercontent.com/${o}/${r}/${b}/${f}` },
+        { name: 'JsDelivr', url: (o,r,b,f) => `https://cdn.jsdelivr.net/gh/${o}/${r}@${b}/${f}` },
+        { name: 'FastGit', url: (o,r,b,f) => `https://raw.fastgit.org/${o}/${r}/${b}/${f}` }
+    ];
 
-    // 构建 GitHub Raw 内容链接 (直连)
-    function getRawUrl(filename) {
-        let url = `https://raw.githubusercontent.com/${CONFIG.owner}/${CONFIG.repo}/${CONFIG.branch}`;
-        if (CONFIG.path) {
-            url += `/${CONFIG.path}`;
-        }
-        return `${url}/${filename}`;
-    }
+    let currentBestCdn = null; // 存储测速后最好的 CDN 对象
 
-    // 格式化文件大小
-    function formatSize(bytes) {
-        if (!bytes) return '未知大小';
-        if (bytes < 1024) return bytes + ' B';
-        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-    }
+    // ================= 核心逻辑 =================
 
-    // 获取文件列表
-    async function fetchFiles() {
-        try {
-            let apiUrl = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents`;
-            if (CONFIG.path) {
-                apiUrl += `/${CONFIG.path}`;
+    // 1. 极速测速函数 (Ping 机制)
+    async function findFastestCdn() {
+        const indicator = document.getElementById('speed-indicator');
+        let fastest = null;
+        let minTime = Infinity;
+
+        // 构造测试文件路径 (取列表第一个文件，如果没有则用个假路径测试连通性)
+        // 注意：HEAD 请求在某些 CDN 上可能不支持，这里我们尝试 fetch 并立即 abort
+        const testFile = 'test.mp4'; // 仅用于测试连通性
+        
+        const promises = CDN_SOURCES.map(async (cdn) => {
+            const start = performance.now();
+            const testUrl = cdn.url(CONFIG.owner, CONFIG.repo, CONFIG.branch, 'README.md'); // 用 README.md 测试通常更稳
+            
+            try {
+                // 使用 abort controller 设置超时
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 3000); // 3秒超时
+                
+                await fetch(testUrl, { method: 'HEAD', signal: controller.signal });
+                clearTimeout(timeoutId);
+                
+                const duration = performance.now() - start;
+                
+                if (duration < minTime) {
+                    minTime = duration;
+                    fastest = cdn;
+                }
+                return { name: cdn.name, time: duration };
+            } catch (e) {
+                console.warn(`${cdn.name} 连接失败`);
+                return { name: cdn.name, time: Infinity };
             }
+        });
 
-            const response = await fetch(apiUrl);
-            if (!response.ok) throw new Error('无法获取列表');
-            
-            const data = await response.json();
-            
-            // 过滤：只保留文件，排除目录（如果需要包含子目录需递归，这里简化为单层）
-            const files = data.filter(item => item.type === 'file').sort((a, b) => a.name.localeCompare(b.name));
-            
-            renderList(files);
-        } catch (error) {
-            console.error(error);
-            listEl.innerHTML = `<li style="text-align:center; padding: 20px; color: red;">加载失败: ${error.message} 请检查网络或配置</li>`;
+        const results = await Promise.all(promises);
+        console.log('CDN 测速结果:', results);
+
+        if (fastest) {
+            currentBestCdn = fastest;
+            indicator.innerText = `已加速: ${fastest.name} (${Math.round(minTime)}ms)`;
+            indicator.style.color = '#007AFF';
+        } else {
+            // 如果都挂了，默认用第一个
+            currentBestCdn = CDN_SOURCES[0];
+            indicator.innerText = `加速失败，使用默认源`;
+            indicator.style.color = 'red';
+        }
+        
+        // 测速完成后，重新渲染列表以更新链接（虽然点击时才生成链接，但为了保险）
+        renderList(); 
+    }
+
+    // 2. 获取 GitHub 目录内容
+    async function fetchFiles() {
+        const apiUrl = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`;
+        try {
+            const res = await fetch(apiUrl);
+            if (!res.ok) throw new Error('API 请求失败');
+            const data = await res.json();
+            // 过滤只要文件，不要文件夹（如果需要文件夹递归需更复杂逻辑，这里假设是扁平列表）
+            return data.filter(item => item.type === 'file');
+        } catch (e) {
+            document.getElementById('fileList').innerHTML = `<li style="padding:20px;text-align:center;color:red">加载失败: ${e.message} 请检查网络或仓库配置</li>`;
+            return [];
         }
     }
 
-    // 渲染列表
-    function renderList(files) {
-        countEl.textContent = files.length;
+    // 3. 渲染列表
+    async function renderList() {
+        const files = await fetchFiles();
+        const listEl = document.getElementById('fileList');
         listEl.innerHTML = '';
-
-        if (files.length === 0) {
-            listEl.innerHTML = '<li style="text-align:center; padding: 20px;">该目录下没有文件</li>';
-            return;
-        }
 
         files.forEach(file => {
             const li = document.createElement('li');
             li.className = 'file-item';
             
-            // 判断是否为视频文件
-            const isVideo = /\.(mp4|webm|ogg|mov)$/i.test(file.name);
-            const iconSvg = isVideo 
-                ? '<svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>' 
-                : '<svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>';
-
+            // 获取扩展名
+            const ext = file.name.split('.').pop().toUpperCase();
+            
             li.innerHTML = `
+                <div class="icon-box">${ext}</div>
                 <div class="file-info">
-                    <div class="icon-box">${iconSvg}</div>
-                    <div class="file-details">
-                        <div class="file-name">${file.name}</div>
-                        <div class="file-meta">${formatSize(file.size)}</div>
-                    </div>
+                    <div class="file-name">${file.name}</div>
+                    <div class="file-meta">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
                 </div>
-                ${isVideo ? '<div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>' : ''}
             `;
-
-            // 点击事件
-            li.onclick = () => {
-                if (isVideo) {
-                    playVideo(getRawUrl(file.name), file.name);
-                } else {
-                    window.open(getRawUrl(file.name), '_blank');
-                }
-            };
-
+            
+            // 点击播放
+            li.onclick = () => playVideo(file.name);
             listEl.appendChild(li);
         });
     }
 
-    // 播放视频逻辑
-    function playVideo(url, name) {
-        overlay.classList.add('active');
-        loadingTip.style.display = 'block';
-        loadingTip.textContent = `正在加载: ${name}...`;
+    // 4. 播放逻辑
+    function playVideo(fileName) {
+        if (!currentBestCdn) return alert('CDN 尚未初始化完成，请稍候...');
         
-        video.src = url;
+        const overlay = document.getElementById('playerOverlay');
+        const video = document.getElementById('mainVideo');
+        const loader = document.getElementById('videoLoader');
+        const status = document.getElementById('cdnStatus');
+
+        overlay.classList.add('active');
+        loader.style.display = 'block';
+        status.innerText = `Source: ${currentBestCdn.name}`;
+
+        // 构建最终 URL
+        const finalUrl = currentBestCdn.url(CONFIG.owner, CONFIG.repo, CONFIG.branch, `${CONFIG.path}/${fileName}`);
+        
+        video.src = finalUrl;
         video.load();
         
         // 尝试自动播放
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(error => {
-                console.log("自动播放被拦截，等待用户点击播放");
-            });
-        }
+        video.play().catch(e => console.log('自动播放被拦截，需手动点击'));
+
+        // 监听事件
+        video.oncanplay = () => { loader.style.display = 'none'; };
+        video.onerror = () => { 
+            loader.style.display = 'none'; 
+            status.innerText = '加载错误，请检查源';
+            status.style.color = 'red';
+        };
     }
 
-    // 关闭播放器
     function closePlayer() {
-        overlay.classList.remove('active');
+        const overlay = document.getElementById('playerOverlay');
+        const video = document.getElementById('mainVideo');
+        
         video.pause();
-        video.src = ''; // 清空源以停止缓冲
-        loadingTip.style.display = 'none';
+        video.src = ''; // 清空缓冲
+        overlay.classList.remove('active');
     }
 
     // 初始化
-    fetchFiles();
+    window.onload = () => {
+        findFastestCdn(); // 先测速
+        renderList();     // 再渲染
+    };
 
 </script>
 </body>
