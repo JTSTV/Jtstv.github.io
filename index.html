@@ -49,7 +49,7 @@ layout: null
             position: relative; 
         } 
         
-        /* 核心修改：为随机渐变背景做准备 */
+        /* 核心修改：边框模糊淡化处理 */
         .post-title { 
             font-family: "STKaiti", "KaiTi", "楷体", "AR PL UKai CN", serif; 
             font-size: 18px; 
@@ -57,18 +57,21 @@ layout: null
             padding: 15px 20px 35px 20px; 
             position: relative; 
             
-            /* 移除固定背景色，由JS动态添加 */
-            /* background: rgba(235, 235, 235, 0.7); */
-            
             backdrop-filter: blur(12px); 
             -webkit-backdrop-filter: blur(12px);
             
-            border: none; 
             border-radius: 12px; 
             color: #444; 
+            
+            /* 1. 添加半透明的白色边框，弱化与灰色背景的对比 */
+            border: 1px solid rgba(255, 255, 255, 0.6); 
+            
+            /* 2. 使用与背景同色的巨大模糊阴影，形成边缘光晕，彻底淡化分界线 */
+            box-shadow: 0 0 30px 5px rgba(232, 232, 232, 0.9); 
+            
+            /* 3. 增加极淡的内阴影，柔化卡片内部边缘 */
+            /* inset 阴影放在这里作为默认，会被JS的background覆盖，所以放在JS里动态设置 */
         }
-        
-        /* 移除了 .post-title::before 的条纹背景样式 */
         
         .post-title a { 
             color: #444; 
@@ -165,27 +168,28 @@ layout: null
         });
     });
 
-    // 新增：为每个文章列表项添加随机渐变背景
+    // 为每个文章列表项添加随机渐变背景，并保留内阴影
     document.addEventListener('DOMContentLoaded', function() {
         const postTitles = document.querySelectorAll('.post-title');
         
         postTitles.forEach(function(title) {
-            // 生成两个随机色相，确保它们之间有足够的差异以形成渐变
             const hue1 = Math.floor(Math.random() * 360);
-            // 第二个颜色的色相在第一个颜色的基础上偏移 30-90 度，避免颜色过于接近
             const hue2 = (hue1 + 30 + Math.floor(Math.random() * 60)) % 360;
             
-            // 固定饱和度和亮度，以获得柔和、协调的色彩
             const saturation = '65%'; 
             const lightness1 = '85%';
             const lightness2 = '75%';
 
-            // 构建 HSLA 颜色字符串
             const color1 = `hsla(${hue1}, ${saturation}, ${lightness1}, 0.85)`;
             const color2 = `hsla(${hue2}, ${saturation}, ${lightness2}, 0.85)`;
 
-            // 应用线性渐变背景
+            // 应用线性渐变背景，同时保留内阴影(inset)来柔化边缘
+            // 注意：JS设置background时，会覆盖CSS中的box-shadow，因此需要在这里重新声明
             title.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
+            title.style.boxShadow = `
+                0 0 30px 5px rgba(232, 232, 232, 0.9), 
+                inset 0 0 15px rgba(255, 255, 255, 0.5)
+            `;
         });
     });
 </script>
