@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的资源列表</title>
+    <title>我的资源列表 - 极速版</title>
     <style>
         :root{--primary-brown:#8B3A3A;--play-blue:#007AFF;--bg-color:#f2f2f7;--card-bg:#fff}
         body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background-color:var(--bg-color);margin:0;padding:20px;color:#333;overflow-x:hidden}
@@ -24,6 +24,7 @@
         .btn-play{background-color:var(--play-blue)}
         .btn-open{background-color:#6c757d}
         .loading{text-align:center;padding:40px;color:#888}
+        /* 模态框样式 */
         .modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background-color:rgba(0,0,0,.95);align-items:center;justify-content:center;overflow:hidden}
         .modal-content{width:90%;max-width:900px;position:relative;max-height:100vh;display:flex;justify-content:center}
         video{width:100%;height:auto;max-height:100vh;border-radius:8px;object-fit:contain;background:#000}
@@ -38,127 +39,143 @@
 <div class="container">
     <div class="header">
         <h2>📂 GitHub 资源列表</h2>
-        <span id="cdnStatus" style="font-size:.8rem;color:#666">⚡ 正在极速测速...</span>
+        <!-- 状态显示 -->
+        <span id="cdnStatus" style="font-size:.8rem;color:#007AFF">⚡ 已连接专属加速通道</span>
     </div>
     <div id="fileList" class="loading">正在加载文件列表...</div>
 </div>
+
+<!-- 视频播放弹窗 -->
 <div id="videoModal" class="modal" onclick="closeVideo()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <video id="videoPlayer" controls playsinline webkit-playsinline preload="auto">您的浏览器不支持 HTML5 视频播放。</video>
         <div class="speed-control" id="speedControl">
-            <button class="speed-btn" onclick="setSpeed(0.25)">0.25x</button>
             <button class="speed-btn" onclick="setSpeed(0.5)">0.5x</button>
+            <button class="speed-btn" onclick="setSpeed(1.0)">1.0x</button>
             <button class="speed-btn" onclick="setSpeed(1.25)">1.25x</button>
             <button class="speed-btn" onclick="setSpeed(1.5)">1.5x</button>
+            <button class="speed-btn" onclick="setSpeed(2.0)">2.0x</button>
         </div>
         <button class="close-modal" onclick="closeVideo()">&times;</button>
     </div>
 </div>
+
 <script>
-const owner='Jtstv', repo='Jtstv.github.io', path='sp';
+// ================= 配置区域 =================
+const owner = 'Jtstv'; 
+const repo = 'Jtstv.github.io'; 
+const path = 'sp'; // 你的仓库文件夹路径
+
+// 【关键修改】这里直接填入你的 Worker 域名，后面必须带斜杠 /
+const MY_WORKER_BASE = 'https://sp.hhzj.hair/'; 
+
 const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
 
-// 1. 配置所有可用的 CDN 加速源
-const cdnConfigs = [
-    { name: 'GHProxy', getUrl: (f) => `https://ghproxy.com/https://raw.githubusercontent.com/${owner}/${repo}/main/${f}` },
-    { name: 'jsDelivr', getUrl: (f) => `https://cdn.jsdelivr.net/gh/${owner}/${repo}@latest/${f}` },
-    { name: 'FastGit', getUrl: (f) => `https://raw.fastgit.org/${owner}/${repo}/main/${f}` }
-];
+// 生成最终播放/下载链接的函数
+function getFastUrl(filePath) {
+    // 构造 GitHub 原始链接
+    const rawGithubUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${filePath}`;
+    // 拼接在你的 Worker 后面
+    return MY_WORKER_BASE + rawGithubUrl;
+}
 
-let activeCdn = cdnConfigs[0]; // 默认首选
+// ================= 逻辑区域 =================
 
-// 2. 极速测速逻辑
-async function testCdnSpeed() {
-    const results = await Promise.all(cdnConfigs.map(async (cdn) => {
-        const testUrl = cdn.getUrl('README.md'); // 假设仓库有 README，用于测速
-        const start = performance.now();
-        try {
-            // 发送 HEAD 请求，超时时间设为 2000ms
-            const controller = new AbortController();
-            const timeout = setTimeout(() => controller.abort(), 2000);
-            await fetch(testUrl, { method: 'HEAD', signal: controller.signal });
-            clearTimeout(timeout);
-            const duration = performance.now() - start;
-            return { ...cdn, duration };
-        } catch (e) {
-            return { ...cdn, duration: Infinity }; // 失败或超时记为无穷大
+// 加载文件列表
+async function loadFiles(){
+    const el = document.getElementById('fileList');
+    try{
+        const res = await fetch(apiUrl);
+        if(!res.ok) throw new Error('无法连接 GitHub API');
+        
+        const files = await res.json();
+        el.innerHTML = '<ul class="file-list"></ul>';
+        const ul = el.querySelector('ul');
+        
+        if(!files.length){
+            el.innerHTML = '<div class="loading">该目录下空空如也</div>';
+            return;
         }
-    }));
-
-    // 按耗时从小到大排序，选出最快的
-    results.sort((a, b) => a.duration - b.duration);
-    const best = results[0];
-    
-    // 更新界面提示
-    const statusEl = document.getElementById('cdnStatus');
-    if (best.duration !== Infinity) {
-        activeCdn = best;
-        statusEl.innerText = `⚡ 已连接: ${best.name} (${Math.round(best.duration)}ms)`;
-        statusEl.style.color = '#007AFF';
-    } else {
-        statusEl.innerText = '⚠️ 所有加速源均不可用';
-        statusEl.style.color = 'red';
+        
+        // 排序：文件夹在前，文件在后
+        files.sort((a,b) => a.type === b.type ? a.name.localeCompare(b.name) : a.type === 'dir' ? -1 : 1);
+        
+        files.forEach(f => {
+            const li = document.createElement('li');
+            li.className = 'file-item';
+            const isDir = f.type === 'dir';
+            const isVid = /\.(mp4|mov|webm|m3u8)$/i.test(f.name);
+            
+            let icon = isDir ? '📁' : isVid ? '🎬' : /\.(jpg|jpeg|png|gif)$/i.test(f.name) ? '🖼️' : '📄';
+            
+            let btns = '';
+            if(isDir) {
+                // 如果是文件夹，暂时只做展示或你可以扩展点击进入
+                btns = `<span style="font-size:0.8rem;color:#999">文件夹</span>`;
+            } else {
+                // 获取加速后的链接
+                const fastUrl = getFastUrl(f.path);
+                
+                // 下载按钮
+                btns += `<a href="${fastUrl}" class="btn btn-download" target="_blank">下载</a>`;
+                
+                // 播放按钮 (仅视频)
+                if(isVid) {
+                    // 注意：这里对单引号进行了转义，防止报错
+                    const safeUrl = fastUrl.replace(/'/g, "\\'");
+                    btns += `<button onclick="playVideo('${safeUrl}')" class="btn btn-play">播放</button>`;
+                }
+            }
+            
+            li.innerHTML = `
+                <div class="file-info">
+                    <span class="icon">${icon}</span>
+                    <span class="name-text">${f.name}</span>
+                </div>
+                <div class="actions">${btns}</div>
+            `;
+            ul.appendChild(li);
+        });
+        
+    } catch(e) {
+        el.innerHTML = `<div class="loading" style="color:red">加载失败: ${e.message}</div>`;
     }
 }
 
-// 3. 文件列表加载逻辑
-async function loadFiles(){
-    const el=document.getElementById('fileList');
-    try{
-        const res=await fetch(apiUrl);
-        if(!res.ok)throw new Error('无法连接 GitHub API，请检查网络或仓库配置');
-        const files=await res.json();
-        el.innerHTML='<ul class="file-list"></ul>';
-        const ul=el.querySelector('ul');
-        if(!files.length){el.innerHTML='<div class="loading">该目录下空空如也</div>';return}
-        
-        files.sort((a,b)=>a.type===b.type?a.name.localeCompare(b.name):a.type==='dir'?-1:1);
-        files.forEach(f=>{
-            const li=document.createElement('li');li.className='file-item';
-            const isDir=f.type==='dir',isVid=/\.(mp4|mov|webm)$/i.test(f.name);
-            let icon=isDir?'📁':isVid?'🎬':/\.(jpg|jpeg|png|gif)$/i.test(f.name)?'🖼️':'📄';
-            
-            let btns=isDir?`<a href="?path=${f.path}" class="btn btn-open">打开</a>`:(()=>{
-                // 使用测速后选出的最快 CDN 生成链接
-                const url=activeCdn.getUrl(f.path);
-                let h=`<a href="${url}" class="btn btn-download" target="_blank">下载</a>`;
-                if(isVid)h+=`<button onclick="playVideo('${url.replace(/'/g,"\\'")}')" class="btn btn-play">播放</button>`;
-                return h;
-            })();
-            
-            li.innerHTML=`<div class="file-info"><span class="icon">${icon}</span><span class="name-text">${f.name}</span></div><div class="actions">${btns}</div>`;
-            ul.appendChild(li);
-        });
-    }catch(e){el.innerHTML=`<div class="loading" style="color:red">${e.message} <small>${apiUrl}</small></div>`}
-}
-
-// 4. 视频播放逻辑（秒开缓冲机制）
-const playVideo=url=>{
-    const m=document.getElementById('videoModal'),p=document.getElementById('videoPlayer');
-    p.src=url;
-    m.style.display='flex';
-    document.body.style.overflow='hidden';
-    resetSpeedUI();
-    p.oncanplay=()=>{
-        p.play().catch(err=>console.log('自动播放被浏览器阻止:',err));
-    };
+// 视频播放逻辑
+const playVideo = url => {
+    const m = document.getElementById('videoModal');
+    const p = document.getElementById('videoPlayer');
+    
+    // 设置视频源
+    p.src = url;
+    m.style.display = 'flex';
+    document.body.style.overflow = 'hidden'; // 禁止背景滚动
+    
+    // 尝试自动播放
+    p.play().catch(err => console.log('需用户交互才能播放'));
 };
 
-const closeVideo=()=>{
-    const m=document.getElementById('videoModal'),p=document.getElementById('videoPlayer');
-    m.style.display='none';p.pause();p.src='';document.body.style.overflow='';
+const closeVideo = () => {
+    const m = document.getElementById('videoModal');
+    const p = document.getElementById('videoPlayer');
+    m.style.display = 'none';
+    p.pause();
+    p.src = '';
+    document.body.style.overflow = '';
 };
-const setSpeed=s=>{
-    const p=document.getElementById('videoPlayer');p.playbackRate=s;
-    document.querySelectorAll('.speed-btn').forEach(b=>b.classList.toggle('active',parseFloat(b.textContent)===s));
-};
-const resetSpeedUI=()=>document.querySelectorAll('.speed-btn').forEach(b=>b.classList.remove('active'));
 
-// 5. 启动：先测速，再加载文件列表
-(async () => {
-    await testCdnSpeed();
-    loadFiles();
-})();
+const setSpeed = s => {
+    const p = document.getElementById('videoPlayer');
+    p.playbackRate = s;
+    document.querySelectorAll('.speed-btn').forEach(b => {
+        b.classList.toggle('active', parseFloat(b.textContent) === s);
+    });
+};
+
+// 启动加载
+loadFiles();
+
 </script>
 </body>
 </html>
