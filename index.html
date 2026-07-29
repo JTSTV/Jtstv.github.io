@@ -20,7 +20,10 @@ header{background:#e8e8e8;border-radius:6px;min-height:60px;margin-bottom:20px;d
 .post-title{font-family:"STKaiti","KaiTi","楷体","AR PL UKai CN",serif;font-size:18px;line-height:1.5;padding:15px 20px 35px;position:relative;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:12px;color:#444}
 .post-title a{color:#444;display:block}
 .post-date{position:absolute;bottom:10px;right:15px;font:11px -apple-system,sans-serif;color:#666;white-space:nowrap;letter-spacing:1px}
-.pagination{display:flex;justify-content:center;align-items:center;gap:15px;margin-top:24px;padding:12px 20px;border-radius:30px;font:600 16px sans-serif;filter:blur(30px);box-shadow:0 0 40px 10px rgba(232,232,232,1);transition:filter .3s}
+/* 分页外层容器：负责定位和文字显示 */
+.pagination{position:relative;display:flex;justify-content:center;align-items:center;gap:15px;margin-top:24px;padding:12px 20px;border-radius:30px;font:600 16px sans-serif;z-index:1}
+/* 分页背景层：负责彩虹色和模糊效果，绝对定位垫在文字下方 */
+.pagination::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;border-radius:30px;filter:blur(20px);opacity:.8;z-index:-1;box-shadow:0 0 30px 10px rgba(232,232,232,1)}
 .pagination a,.pagination span{color:#333;min-width:60px;text-align:center;padding:5px 10px;border-radius:20px;transition:background .3s}
 .pagination a:hover{background:rgba(255,255,255,.4);opacity:1}
 .pagination span.disabled{color:#666;cursor:default;opacity:.8}
@@ -70,12 +73,13 @@ t.style.boxShadow=`0 0 40px 10px rgba(232,232,232,1)`;
 const pag=document.getElementById('rainbowPag');
 if(pag){
 let c=[];
-for(let i=0;i<7;i++){c.push(`hsla(${Math.random()*360},70%,85%,.3)`)}
-pag.style.background=`linear-gradient(90deg,${c.join(',')})`;
-pag.onmouseenter=()=>pag.style.filter='blur(10px)';
-pag.onmouseleave=()=>pag.style.filter='blur(30px)';
+for(let i=0;i<7;i++){c.push(`hsla(${Math.random()*360},70%,85%,.4)`)}
+pag.style.setProperty('--rainbow',`linear-gradient(90deg,${c.join(',')})`);
 }
 });
 </script>
+<style>
+.pagination::before{background:var(--rainbow,linear-gradient(90deg,#ff9a9e,#fecfef,#fdfcfb,#a1c4fd,#c2e9fb,#d4fc79,#96e6a1))}
+</style>
 </body>
 </html>
