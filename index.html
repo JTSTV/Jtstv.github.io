@@ -20,7 +20,7 @@ header{background:#e8e8e8;border-radius:6px;min-height:60px;margin-bottom:20px;d
 .post-title{font-family:"STKaiti","KaiTi","楷体","AR PL UKai CN",serif;font-size:18px;line-height:1.5;padding:15px 20px 35px;position:relative;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:12px;color:#444}
 .post-title a{color:#444;display:block}
 .post-date{position:absolute;bottom:10px;right:15px;font:11px -apple-system,sans-serif;color:#666;white-space:nowrap;letter-spacing:1px}
-.pagination{display:flex;justify-content:center;align-items:center;gap:15px;margin-top:24px;padding:12px 20px;border-radius:30px;font:600 16px sans-serif;background:linear-gradient(90deg,#ff9a9e,#fecfef,#fdfcfb,#a1c4fd,#c2e9fb,#d4fc79,#96e6a1);box-shadow:0 4px 15px rgba(0,0,0,.1)}
+.pagination{display:flex;justify-content:center;align-items:center;gap:15px;margin-top:24px;padding:12px 20px;border-radius:30px;font:600 16px sans-serif;filter:blur(30px);box-shadow:0 0 40px 10px rgba(232,232,232,1);transition:filter .3s}
 .pagination a,.pagination span{color:#333;min-width:60px;text-align:center;padding:5px 10px;border-radius:20px;transition:background .3s}
 .pagination a:hover{background:rgba(255,255,255,.4);opacity:1}
 .pagination span.disabled{color:#666;cursor:default;opacity:.8}
@@ -48,7 +48,7 @@ header{background:#e8e8e8;border-radius:6px;min-height:60px;margin-bottom:20px;d
 </ul>
 </main>
 {% if paginator.total_pages > 1 %}
-<div class="pagination">
+<div class="pagination" id="rainbowPag">
 {% if paginator.previous_page %}<a href="{{ paginator.previous_page_path | relative_url }}">上一页</a>{% else %}<span class="disabled">上一页</span>{% endif %}
 <div class="contact-email"><a href="mailto:jtstv@outlook.com">jtstv@outlook.com</a></div>
 {% if paginator.next_page %}<a href="{{ paginator.next_page_path | relative_url }}">下一页</a>{% else %}<span class="disabled">下一页</span>{% endif %}
@@ -66,7 +66,15 @@ let h1=(h+120+Math.random()*120)%360,h2=(h1+30+Math.random()*60)%360;
 h=h1;
 t.style.background=`linear-gradient(135deg,hsla(${h1},65%,85%,.85),hsla(${h2},65%,75%,.85))`;
 t.style.boxShadow=`0 0 40px 10px rgba(232,232,232,1)`;
-})
+});
+const pag=document.getElementById('rainbowPag');
+if(pag){
+let c=[];
+for(let i=0;i<7;i++){c.push(`hsla(${Math.random()*360},70%,85%,.3)`)}
+pag.style.background=`linear-gradient(90deg,${c.join(',')})`;
+pag.onmouseenter=()=>pag.style.filter='blur(10px)';
+pag.onmouseleave=()=>pag.style.filter='blur(30px)';
+}
 });
 </script>
 </body>
