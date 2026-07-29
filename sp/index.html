@@ -24,7 +24,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .modal-content{width:90%;max-width:900px;position:relative;max-height:100vh;display:flex;justify-content:center}
 video{width:100%;height:auto;max-height:100vh;border-radius:8px;object-fit:contain;background:#000}
 .close-modal{position:absolute;bottom:15px;right:15px;width:40px;height:40px;background:rgba(255,255,255,.9);color:#000;border-radius:50%;text-align:center;line-height:40px;font-size:28px;font-weight:bold;cursor:pointer;z-index:1002;box-shadow:0 2px 10px rgba(0,0,0,.3);border:none;outline:none;padding:0}
-.speed-control{position:absolute;bottom:15px;left:15px;background:rgba(0,0,0,.6);color:#fff;padding:5px 10px;border-radius:20px;font-size:.8rem;z-index:1001;backdrop-filter:blur(4px);display:flex;gap:5px}
+.speed-control{position:absolute;top:15px;left:15px;background:rgba(0,0,0,.6);color:#fff;padding:5px 10px;border-radius:20px;font-size:.8rem;z-index:1001;backdrop-filter:blur(4px);display:flex;gap:5px}
 .speed-btn{background:none;border:none;color:#fff;cursor:pointer;padding:2px 6px;font-size:.8rem;border-radius:4px;transition:background .2s}
 .speed-btn:hover,.speed-btn.active{background:rgba(255,255,255,.3)}
 @media(max-width:600px){.container{padding:0}.header{padding:15px 20px}.header h2{font-size:18px}.file-item{padding:12px 15px 30px}.name-text{font-size:.95rem}.icon{font-size:1.2rem;margin-right:8px}.btn{padding:6px 12px;font-size:.8rem}.modal-content{width:100%;height:100%;border-radius:0}video{border-radius:0;height:100%}}
@@ -48,9 +48,6 @@ video{width:100%;height:auto;max-height:100vh;border-radius:8px;object-fit:conta
         <div class="speed-control" id="speedControl">
             <button class="speed-btn" onclick="setSpeed(0.5)">0.5x</button>
             <button class="speed-btn" onclick="setSpeed(1.0)">1.0x</button>
-            <button class="speed-btn" onclick="setSpeed(1.25)">1.25x</button>
-            <button class="speed-btn" onclick="setSpeed(1.5)">1.5x</button>
-            <button class="speed-btn" onclick="setSpeed(2.0)">2.0x</button>
         </div>
         <button class="close-modal" onclick="closeVideo()">&times;</button>
     </div>
