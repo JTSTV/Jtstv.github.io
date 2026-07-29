@@ -4,82 +4,68 @@ layout: null
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ site.title }}</title>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{background:#e8e8e8;color:#444;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-        .container{max-width:680px;margin:0 auto;padding:20px 30px}
-        a{color:#444;text-decoration:none;transition:opacity .2s}
-        a:hover{opacity:.7}
-        header{background:#e8e8e8;border-radius:6px;min-height:60px;margin-bottom:20px;display:flex;align-items:center;justify-content:flex-end;padding:15px 30px}
-        .site-title{font:600 20px/1.4 sans-serif;color:#444;text-align:right}
-        .post-list{list-style:none}
-        .post-item{padding:12px 0}
-        
-        /* 核心修改：去除所有边框，仅保留圆角和磨砂效果 */
-        .post-title{
-            font-family:"STKaiti","KaiTi","楷体","AR PL UKai CN",serif;
-            font-size:18px;line-height:1.5;padding:15px 20px 35px;
-            position:relative;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-            border-radius:12px;color:#444;border:none;
-        }
-        
-        .post-title a{color:#444;display:block}
-        .post-date{position:absolute;bottom:10px;right:15px;font:11px -apple-system,sans-serif;color:#666;white-space:nowrap;letter-spacing:1px}
-        .pagination{display:flex;justify-content:center;align-items:center;gap:20px;margin-top:24px;padding-top:20px;border-top:1px solid #d0d0d0;font:600 16px sans-serif}
-        .pagination a,.pagination span{color:#444;min-width:60px;text-align:center}
-        .pagination span{color:#aaa}
-        .contact-email{font:400 11px sans-serif}
-        .contact-email a{color:#666}
-        @media(max-width:600px){.container{padding:15px 20px}.site-title{font-size:18px}.post-title{font-size:16px;padding:12px 15px 30px}.post-date{bottom:8px;right:12px;font-size:10px}}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ site.title }}</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#e8e8e8;color:#444;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+a{color:#444;text-decoration:none;transition:opacity .2s}
+a:hover{opacity:.7}
+.container{max-width:680px;margin:0 auto;padding:20px 30px}
+header{background:#e8e8e8;border-radius:6px;min-height:60px;margin-bottom:20px;display:flex;align-items:center;justify-content:flex-end;padding:15px 30px}
+.site-title{font:600 20px/1.4 sans-serif;color:#444;text-align:right}
+.post-list{list-style:none}
+.post-item{padding:12px 0}
+.post-title{font-family:"STKaiti","KaiTi","楷体","AR PL UKai CN",serif;font-size:18px;line-height:1.5;padding:15px 20px 35px;position:relative;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:12px;color:#444}
+.post-title a{color:#444;display:block}
+.post-date{position:absolute;bottom:10px;right:15px;font:11px -apple-system,sans-serif;color:#666;white-space:nowrap;letter-spacing:1px}
+.pagination{display:flex;justify-content:center;align-items:center;gap:15px;margin-top:24px;padding:12px 20px;border-radius:30px;font:600 16px sans-serif;background:linear-gradient(90deg,#ff9a9e,#fecfef,#fdfcfb,#a1c4fd,#c2e9fb,#d4fc79,#96e6a1);box-shadow:0 4px 15px rgba(0,0,0,.1)}
+.pagination a,.pagination span{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.2);min-width:60px;text-align:center;padding:5px 10px;border-radius:20px;transition:background .3s}
+.pagination a:hover{background:rgba(255,255,255,.4);opacity:1}
+.contact-email a{font:400 11px sans-serif;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.2)}
+@media(max-width:600px){.container{padding:15px 20px}.site-title{font-size:18px}.post-title{font-size:16px;padding:12px 15px 30px}.post-date{bottom:8px;right:12px;font-size:10px}.pagination{padding:10px 15px;gap:10px;font-size:14px}}
+</style>
 </head>
 <body>
 <div class="container">
-    <header><h1 class="site-title"><a href="/">{{ site.title }}</a></h1></header>
-    <main>
-        <ul class="post-list">
-            {% for post in paginator.posts %}
-            <li class="post-item">
-                <div class="post-title">
-                    {% if post.pw %}
-                        <a class="encrypted-link" data-url="{{ post.url | relative_url }}">🔒 {{ post.title }}</a>
-                    {% else %}
-                        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-                    {% endif %}
-                    <span class="post-date">{{ post.date | date: "%Y-%m-%d" }}</span>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-    </main>
-    {% if paginator.total_pages > 1 %}
-    <div class="pagination">
-        {% if paginator.previous_page %}<a href="{{ paginator.previous_page_path | relative_url }}">上一页</a>{% else %}<span></span>{% endif %}
-        <div class="contact-email"><a href="mailto:jtstv@outlook.com">jtstv@outlook.com</a></div>
-        {% if paginator.next_page %}<a href="{{ paginator.next_page_path | relative_url }}">下一页</a>{% else %}<span></span>{% endif %}
-    </div>
-    {% endif %}
+<header><h1 class="site-title"><a href="/">{{ site.title }}</a></h1></header>
+<main>
+<ul class="post-list">
+{% for post in paginator.posts %}
+<li class="post-item">
+<div class="post-title">
+{% if post.pw %}
+<a class="encrypted-link" data-url="{{ post.url | relative_url }}">🔒 {{ post.title }}</a>
+{% else %}
+<a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+{% endif %}
+<span class="post-date">{{ post.date | date: "%Y-%m-%d" }}</span>
+</div>
+</li>
+{% endfor %}
+</ul>
+</main>
+{% if paginator.total_pages > 1 %}
+<div class="pagination">
+{% if paginator.previous_page %}<a href="{{ paginator.previous_page_path | relative_url }}">上一页</a>{% else %}<span></span>{% endif %}
+<div class="contact-email"><a href="mailto:jtstv@outlook.com">jtstv@outlook.com</a></div>
+{% if paginator.next_page %}<a href="{{ paginator.next_page_path | relative_url }}">下一页</a>{% else %}<span></span>{% endif %}
+</div>
+{% endif %}
 </div>
 <script>
-document.querySelectorAll('.encrypted-link').forEach(l=>{
-    l.onclick=e=>{e.preventDefault();const p=prompt("🔒 这是一篇加密文章，请输入密码查看：");if(p)location.href=l.dataset.url+"?pwd="+encodeURIComponent(p)}
-});
 document.addEventListener('DOMContentLoaded',()=>{
-    let lastHue = 0; 
-    document.querySelectorAll('.post-title').forEach(t=>{
-        // 确保相邻颜色差异大于 120 度
-        let h1 = (lastHue + 120 + Math.random() * 120) % 360; 
-        let h2 = (h1 + 30 + Math.random() * 60) % 360;
-        lastHue = h1; 
-        
-        // 应用渐变背景，并叠加与背景色完全相同的巨大模糊阴影
-        // 40px 的模糊半径能让边界100%融入 #e8e8e8 背景中，完全看不出方框边缘
-        t.style.background = `linear-gradient(135deg,hsla(${h1},65%,85%,.85),hsla(${h2},65%,75%,.85))`;
-        t.style.boxShadow = `0 0 40px 10px rgba(232, 232, 232, 1)`;
-    })
+document.querySelectorAll('.encrypted-link').forEach(l=>{
+l.onclick=e=>{e.preventDefault();const p=prompt("🔒 这是一篇加密文章，请输入密码查看：");if(p)location.href=l.dataset.url+"?pwd="+encodeURIComponent(p)}
+});
+let h=0;
+document.querySelectorAll('.post-title').forEach(t=>{
+let h1=(h+120+Math.random()*120)%360,h2=(h1+30+Math.random()*60)%360;
+h=h1;
+t.style.background=`linear-gradient(135deg,hsla(${h1},65%,85%,.85),hsla(${h2},65%,75%,.85))`;
+t.style.boxShadow=`0 0 40px 10px rgba(232,232,232,1)`;
+})
 });
 </script>
 </body>
