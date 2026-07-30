@@ -37,19 +37,14 @@
 <script>
 const CFG = {
   owner: 'Jtstv', repo: 'Jtstv.github.io', path: 'sp',
-  signer: 'https://my.hhzj.hair', // 你的 Worker 域名
-  secretKey: 'MySuperSecretKey2024' // 与Worker中设置的密钥一致
+  signer: 'https://my.hhzj.hair',
+  key: 'MySuperSecretKey2024' // 与Worker中设置的密钥一致
 };
 
 // 获取签名链接
 const getLink = async (p) => {
   try {
-    const r = await fetch(`${CFG.signer}?filePath=${encodeURIComponent(p)}`, {
-      mode: 'cors',
-      headers: {
-        'Authorization': `Bearer ${CFG.secretKey}` // 添加密钥
-      }
-    });
+    const r = await fetch(`${CFG.signer}?filePath=${encodeURIComponent(p)}&key=${CFG.key}`, { mode: 'cors' });
     const d = await r.json();
     return d.url || '#';
   } catch(e) { return '#'; }
