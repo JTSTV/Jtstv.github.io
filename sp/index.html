@@ -72,8 +72,8 @@
         const path = 'sp';
         const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
         
-        // ⚠️ 必须替换为你刚刚部署的 link-signer Worker 的实际地址
-        const SIGNER_API = 'https://link-signer.你的子域.workers.dev'; 
+        // ✅ 已更新为你绑定的自定义签名后端域名
+        const SIGNER_API = 'https://my.hhzj.hair'; 
 
         // ================= 核心：异步获取带签名的链接 =================
         async function getFastUrl(filePath) {
