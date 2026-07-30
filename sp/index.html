@@ -37,17 +37,17 @@
 <script>
 const CFG = {
   owner: 'Jtstv', repo: 'Jtstv.github.io', path: 'sp',
-  signer: 'https://my.hhzj.hair',
-  key: 'MySuperSecretKey2024' // 与Worker中设置的密钥一致
+  signer: 'https://my.hhzj.hair' // 你的签名器域名
 };
 
 // 获取签名链接
 const getLink = async (p) => {
   try {
-    const r = await fetch(`${CFG.signer}?filePath=${encodeURIComponent(p)}&key=${CFG.key}`, { mode: 'cors' });
+    // 注意：这里直接请求签名器，不需要额外参数，Worker 会自动处理
+    const r = await fetch(`${CFG.signer}?filePath=${encodeURIComponent(p)}`, { mode: 'cors' });
     const d = await r.json();
     return d.url || '#';
-  } catch(e) { return '#'; }
+  } catch(e) { console.error(e); return '#'; }
 };
 
 // 渲染列表
@@ -58,18 +58,23 @@ const load = async () => {
     const files = await res.json();
     el.innerHTML = '';
     
+    // 排序：文件夹在前，文件在后
     files.sort((a,b) => a.type === b.type ? a.name.localeCompare(b.name) : -1).forEach(f => {
       const isVid = /\.(mp4|mov|m3u8)$/i.test(f.name);
       const icon = f.type === 'dir' ? '📁' : isVid ? '🎬' : '📄';
       
+      // 异步获取链接并渲染
       getLink(f.path).then(url => {
         const li = document.createElement('li');
         li.className = 'item';
+        // 转义单引号防止 JS 报错
+        const safeUrl = url.replace(/'/g,"\\'");
+        
         li.innerHTML = `
           <div class="info"><span>${icon}</span><span>${f.name}</span></div>
           <div class="acts">
-            ${f.type !== 'dir' ? `<a href="${url}" target="_blank" class="btn">下载</a>` : ''}
-            ${isVid ? `<button onclick="play('${url.replace(/'/g,"\\'")}')" class="btn">播放</button>` : ''}
+            ${f.type !== 'dir' ? `<a href="${safeUrl}" target="_blank" class="btn">下载</a>` : ''}
+            ${isVid ? `<button onclick="play('${safeUrl}')" class="btn">播放</button>` : ''}
           </div>`;
         el.appendChild(li);
       });
