@@ -72,7 +72,7 @@ const pag=document.getElementById('rainbowPag');
 if(pag){
 let c=[];
 // 提高饱和度(80%)、亮度(90%)和透明度(0.75)，让彩虹色更鲜艳通透
-for(let i=0;i<7;i++){c.push(`hsla(${Math.random()*360},80%,90%,.30)`)}
+for(let i=0;i<7;i++){c.push(`hsla(${Math.random()*360},60%,70%,.25)`)}
 pag.style.setProperty('--rainbow',`linear-gradient(90deg,${c.join(',')})`);
 }
 });
