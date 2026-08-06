@@ -35,11 +35,11 @@ video{width:100%;height:auto;max-height:100vh;border-radius:8px;object-fit:conta
     color: #fff;
     padding: 5px 10px;
     border-radius: 20px;
-    font-size: 0.7rem; /* 字体缩小一半 */
+    font-size: 0.7rem;
     z-index: 1001;
     backdrop-filter: blur(4px);
     display: flex;
-    flex-direction: column; /* 垂直排列 */
+    flex-direction: column;
     gap: 5px;
 }
 .speed-btn{
@@ -48,7 +48,7 @@ video{width:100%;height:auto;max-height:100vh;border-radius:8px;object-fit:conta
     color: #fff;
     cursor: pointer;
     padding: 2px 6px;
-    font-size: 0.7rem; /* 字体缩小一半 */
+    font-size: 0.7rem;
     border-radius: 4px;
     transition: background .2s;
 }
@@ -71,7 +71,7 @@ video{width:100%;height:auto;max-height:100vh;border-radius:8px;object-fit:conta
 <!-- 视频播放弹窗 -->
 <div id="videoModal" class="modal" onclick="closeVideo()">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <video id="videoPlayer" controls playsinline webkit-playsinline preload="auto">您的浏览器不支持 HTML5 视频播放。​​</video>
+        <video id="videoPlayer" controls playsinline webkit-playsinline preload="auto">您的浏览器不支持 HTML5 视频播放。</video>
         <div class="speed-control" id="speedControl">
             <button class="speed-btn" onclick="setSpeed(0.5)">0.5x</button>
             <button class="speed-btn" onclick="setSpeed(1.0)">1.0x</button>
@@ -117,7 +117,8 @@ async function loadFiles(){
                 btns = `<span style="font-size:0.8rem;color:#999">文件夹</span>`;
             } else {
                 const fastUrl = getFastUrl(f.path);
-                btns += `<a href="${fastUrl}" class="btn" target="_blank">下载</a>`;
+                // 1. 为下载链接添加 download 属性
+                btns += `<a href="${fastUrl}" class="btn" target="_blank" download>下载</a>`;
                 if(isVid) {
                     const safeUrl = fastUrl.replace(/'/g, "\\'");
                     btns += `<button onclick="playVideo('${safeUrl}')" class="btn">播放</button>`;
@@ -133,6 +134,8 @@ async function loadFiles(){
             el.appendChild(li);
         });
         applyItemStyles();
+        // 2. 加载完成后，为所有下载按钮添加长按事件
+        addLongPressHandlers();
     } catch(e) {
         el.innerHTML = `<li class="loading" style="color:red">加载失败: ${e.message}</li>`;
     }
@@ -174,6 +177,36 @@ const setSpeed = s => {
         b.classList.toggle('active', parseFloat(b.textContent) === s);
     });
 };
+
+// 3. 新增：为 iOS 设备添加长按提示功能
+function addLongPressHandlers() {
+    // 检测是否为 iOS 设备
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (!isIOS) return;
+
+    let pressTimer;
+    const longPressDuration = 500; // 长按500毫秒触发
+
+    document.querySelectorAll('.file-item a.btn[download]').forEach(link => {
+        // 触摸开始
+        link.addEventListener('touchstart', function(e) {
+            const url = this.href;
+            pressTimer = setTimeout(() => {
+                // 阻止默认行为，显示自定义提示
+                e.preventDefault();
+                alert('在 Safari 中，长按此链接并选择“下载链接文件”即可保存视频。');
+            }, longPressDuration);
+        });
+
+        // 触摸结束或取消时，清除计时器
+        link.addEventListener('touchend', function() {
+            clearTimeout(pressTimer);
+        });
+        link.addEventListener('touchcancel', function() {
+            clearTimeout(pressTimer);
+        });
+    });
+}
 
 loadFiles();
 </script>
