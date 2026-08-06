@@ -26,23 +26,7 @@ header{background:#e8e8e8;border-radius:6px;min-height:60px;margin-bottom:20px;d
 .pagination a:hover{background:rgba(255,255,255,.4);opacity:1}
 .pagination span.disabled{color:#666;cursor:default;opacity:.8}
 .contact-email a{font:400 11px sans-serif;color:#333}
-
-/* 视频下载提示样式 */
-.video-download-tip {
-  display: none;
-  font-size: 12px;
-  color: #888;
-  margin-top: 4px;
-  font-family: -apple-system, sans-serif;
-}
-
-@media(max-width:600px){
-  .container{padding:15px 20px}
-  .site-title{font-size:18px}
-  .post-title{font-size:16px;padding:12px 15px 30px}
-  .post-date{bottom:8px;right:12px;font-size:10px}
-  .pagination{padding:10px 15px;gap:10px;font-size:14px}
-}
+@media(max-width:600px){.container{padding:15px 20px}.site-title{font-size:18px}.post-title{font-size:16px;padding:12px 15px 30px}.post-date{bottom:8px;right:12px;font-size:10px}.pagination{padding:10px 15px;gap:10px;font-size:14px}}
 </style>
 </head>
 <body>
@@ -74,42 +58,23 @@ header{background:#e8e8e8;border-radius:6px;min-height:60px;margin-bottom:20px;d
 </div>
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
-  // 1. 处理加密文章逻辑
-  document.querySelectorAll('.encrypted-link').forEach(l=>{
-    l.onclick=e=>{
-      e.preventDefault();
-      const p=prompt("🔒 这是一篇加密文章，请输入密码查看：");
-      if(p) location.href=l.dataset.url+"?pwd="+encodeURIComponent(p);
-    }
-  });
-
-  // 2. 处理视频下载逻辑
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  document.querySelectorAll('a[download]').forEach(link => {
-    // 如果是 iOS 设备，显示长按提示
-    if (isIOS) {
-      const tip = document.createElement('div');
-      tip.className = 'video-download-tip';
-      tip.innerText = '📱 苹果设备请长按链接，选择“下载链接文件”';
-      link.parentNode.insertBefore(tip, link.nextSibling);
-      tip.style.display = 'block';
-    }
-  });
-
-  // 3. 原有的彩虹卡片与分页样式逻辑
-  let h=0;
-  document.querySelectorAll('.post-title').forEach(t=>{
-    let h1=(h+120+Math.random()*120)%360,h2=(h1+30+Math.random()*60)%360;
-    h=h1;
-    t.style.background=`linear-gradient(135deg,hsla(${h1},65%,85%,.85),hsla(${h2},65%,75%,.85))`;
-    t.style.boxShadow=`0 0 40px 10px rgba(232,232,232,1)`;
-  });
-  const pag=document.getElementById('rainbowPag');
-  if(pag){
-    let c=[];
-    for(let i=0;i<7;i++){c.push(`hsla(${Math.random()*360},60%,70%,.25)`)}
-    pag.style.setProperty('--rainbow',`linear-gradient(90deg,${c.join(',')})`);
-  }
+document.querySelectorAll('.encrypted-link').forEach(l=>{
+l.onclick=e=>{e.preventDefault();const p=prompt("🔒 这是一篇加密文章，​请输入密码查看：​");if(p)location.href=l.dataset.url+"?pwd="+encodeURIComponent(p)}
+});
+let h=0;
+document.querySelectorAll('.post-title').forEach(t=>{
+let h1=(h+120+Math.random()*120)%360,h2=(h1+30+Math.random()*60)%360;
+h=h1;
+t.style.background=`linear-gradient(135deg,hsla(${h1},65%,85%,.85),hsla(${h2},65%,75%,.85))`;
+t.style.boxShadow=`0 0 40px 10px rgba(232,232,232,1)`;
+});
+const pag=document.getElementById('rainbowPag');
+if(pag){
+let c=[];
+// 提高饱和度(80%)、亮度(90%)和透明度(0.75)，​让彩虹色更鲜艳通透
+for(let i=0;i<7;i++){c.push(`hsla(${Math.random()*360},60%,70%,.25)`)}
+pag.style.setProperty('--rainbow',`linear-gradient(90deg,${c.join(',')})`);
+}
 });
 </script>
 <style>
