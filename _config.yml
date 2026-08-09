@@ -1,9 +1,9 @@
-# --- 核心配置 ---
+# --- 核心基础配置 ---
 title: KsirBlog
 SEOTitle: ksirBlog
 description: "抖音风GitHub博客，汇聚网红创意与技术分享"
 baseurl: ""
-url: "https://jy365.github.io"
+url: "https://Jtstv.github.io"
 
 # --- 性能与构建优化 ---
 future: false                # 关闭未来文章检查，提升构建速度
@@ -11,11 +11,11 @@ permalink: pretty            # 保持美观链接
 paginate: 6                  # 首页显示6篇
 paginate_path: "/page:num/"
 
-# --- 插件 ---
+# --- 核心插件（仅保留分页） ---
 plugins:
   - jekyll-paginate
 
-# --- Markdown 渲染 ---
+# --- Markdown 渲染优化 ---
 markdown: kramdown
 kramdown:
   input: GFM
