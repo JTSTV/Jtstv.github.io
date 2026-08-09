@@ -5,46 +5,105 @@ layout: null
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>ksirblog - 抖音风github博客 | 抖音网红快手主播网红blog</title>
-<meta name="description" content="ksirblog是一个极具抖音风特色的github博客，汇聚抖音网红、快手主播与各类网红的创意内容，打造别具一格的blog体验。">
-<meta name="keywords" content="github博客,github,ksirblog,blog,抖音风,抖音网红,快手主播,网红,个人博客,技术分享">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ site.title }} - 抖音风GitHub博客</title>
+<meta name="description" content="{{ site.description }}">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{background:#e8e8e8;color:#444;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}a{color:#444;text-decoration:none;transition:opacity .2s}a:hover{opacity:.7}.container{max-width:680px;margin:0 auto;padding:20px 30px}header{background:#e8e8e8;border-radius:6px;min-height:60px;margin-bottom:20px;display:flex;align-items:center;justify-content:flex-end;padding:15px 30px}.site-title{font:600 20px/1.4 sans-serif;color:#444;text-align:right}.post-list{list-style:none}.post-item{padding:12px 0}.post-title{font-family:"STKaiti","KaiTi","楷体","AR PL UKai CN",serif;font-size:18px;line-height:1.5;padding:15px 20px 35px;position:relative;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:12px;color:#444}.post-title a{color:#444;display:block}.post-date{position:absolute;bottom:10px;right:15px;font:11px -apple-system,sans-serif;color:#666;white-space:nowrap;letter-spacing:1px}.pagination{position:relative;display:flex;justify-content:center;align-items:center;gap:15px;margin-top:24px;padding:12px 20px;border-radius:30px;font:600 16px sans-serif;z-index:1}.pagination::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;border-radius:30px;filter:blur(20px);opacity:.9;z-index:-1;box-shadow:0 0 30px 10px rgba(232,232,232,1)}.pagination a,.pagination span{color:#333;min-width:60px;text-align:center;padding:5px 10px;border-radius:20px;transition:background .3s}.pagination a:hover{background:rgba(255,255,255,.4);opacity:1}.pagination span.disabled{color:#666;cursor:default;opacity:.8}.contact-email a{font:400 11px sans-serif;color:#333}@media(max-width:600px){.container{padding:15px 20px}.site-title{font-size:18px}.post-title{font-size:16px;padding:12px 15px 30px}.post-date{bottom:8px;right:12px;font-size:10px}.pagination{padding:10px 15px;gap:10px;font-size:14px}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#e8e8e8;color:#444;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+a{color:#444;text-decoration:none;transition:opacity .2s}
+a:hover{opacity:.7}
+.container{max-width:680px;margin:0 auto;padding:20px 30px}
+header{min-height:60px;margin-bottom:20px;display:flex;align-items:center;justify-content:flex-end;padding:15px 30px}
+.site-title{font:600 20px/1.4 sans-serif;text-align:right}
+.post-list{list-style:none}
+.post-item{padding:12px 0}
+/* 核心特效：毛玻璃 + GPU加速 */
+.post-title{
+  font-family:"STKaiti","KaiTi","楷体",serif;
+  font-size:18px;line-height:1.5;
+  padding:15px 20px 35px;
+  position:relative;border-radius:12px;color:#444;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  will-change:transform;transform:translateZ(0);
+}
+.post-title a{color:#444;display:block}
+.post-date{position:absolute;bottom:10px;right:15px;font:11px -apple-system,sans-serif;color:#666;white-space:nowrap;letter-spacing:1px}
+/* 分页彩虹底 */
+.pagination{
+  position:relative;display:flex;justify-content:center;align-items:center;gap:15px;
+  margin-top:24px;padding:12px 20px;border-radius:30px;font:600 16px sans-serif;z-index:1;
+  will-change:transform;transform:translateZ(0);
+}
+.pagination::before{
+  content:'';position:absolute;inset:0;border-radius:30px;
+  filter:blur(20px);opacity:.9;z-index:-1;
+  background:var(--rainbow,linear-gradient(90deg,#ff9a9e,#fecfef,#fdfcfb,#a1c4fd,#c2e9fb,#d4fc79,#96e6a1));
+}
+.pagination a,.pagination span{color:#333;min-width:60px;text-align:center;padding:5px 10px;border-radius:20px;transition:background .3s}
+.pagination a:hover{background:rgba(255,255,255,.4);opacity:1}
+.pagination .disabled{color:#666;cursor:default;opacity:.8}
+.contact-email a{font:400 11px sans-serif;color:#333}
+@media(max-width:600px){
+  .container{padding:15px 20px}
+  .site-title{font-size:18px}
+  .post-title{font-size:16px;padding:12px 15px 30px}
+  .post-date{bottom:8px;right:12px;font-size:10px}
+  .pagination{padding:10px 15px;gap:10px;font-size:14px}
+}
 </style>
 </head>
 <body>
 <div class="container">
-<header><h1 class="site-title"><a href="/">{{ site.title }}</a></h1></header>
-<main>
-<ul class="post-list">
-{% for post in paginator.posts %}
-<li class="post-item">
-<div class="post-title">
-{% if post.pw %}
-<a class="encrypted-link" data-url="{{ post.url | relative_url }}">🔒 {{ post.title }}</a>
-{% else %}
-<a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-{% endif %}
-<span class="post-date">{{ post.date | date: "%Y-%m-%d" }}</span>
-</div>
-</li>
-{% endfor %}
-</ul>
-</main>
-{% if paginator.total_pages > 1 %}
-<div class="pagination" id="rainbowPag">
-{% if paginator.previous_page %}<a href="{{ paginator.previous_page_path | relative_url }}">上一页</a>{% else %}<span class="disabled">上一页</span>{% endif %}
-<div class="contact-email"><a href="mailto:jtstv@outlook.com">jtstv@outlook.com</a></div>
-{% if paginator.next_page %}<a href="{{ paginator.next_page_path | relative_url }}">下一页</a>{% else %}<span class="disabled">下一页</span>{% endif %}
-</div>
-{% endif %}
+  <header><h1 class="site-title"><a href="/">{{ site.title }}</a></h1></header>
+  <main>
+    <ul class="post-list">
+      {% for post in paginator.posts %}
+      <li class="post-item">
+        <div class="post-title">
+          {% if post.pw %}
+          <a class="encrypted-link" data-url="{{ post.url | relative_url }}">🔒 {{ post.title }}</a>
+          {% else %}
+          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          {% endif %}
+          <span class="post-date">{{ post.date | date: "%Y-%m-%d" }}</span>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </main>
+  {% if paginator.total_pages > 1 %}
+  <div class="pagination" id="rainbowPag">
+    {% if paginator.previous_page %}<a href="{{ paginator.previous_page_path | relative_url }}">上一页</a>{% else %}<span class="disabled">上一页</span>{% endif %}
+    <div class="contact-email"><a href="mailto:jtstv@outlook.com">jtstv@outlook.com</a></div>
+    {% if paginator.next_page %}<a href="{{ paginator.next_page_path | relative_url }}">下一页</a>{% else %}<span class="disabled">下一页</span>{% endif %}
+  </div>
+  {% endif %}
 </div>
 <script>
-document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('.encrypted-link').forEach(l=>{l.onclick=e=>{e.preventDefault();const p=prompt("🔒 这是一篇加密文章，请输入密码查看：");if(p)location.href=l.dataset.url+"?pwd="+encodeURIComponent(p)}});let h=0;document.querySelectorAll('.post-title').forEach(t=>{let h1=(h+120+Math.random()*120)%360,h2=(h1+30+Math.random()*60)%360;h=h1;t.style.background=`linear-gradient(135deg,hsla(${h1},65%,85%,.85),hsla(${h2},65%,75%,.85))`;t.style.boxShadow=`0 0 40px 10px rgba(232,232,232,1)`});const pag=document.getElementById('rainbowPag');if(pag){let c=[];for(let i=0;i<7;i++){c.push(`hsla(${Math.random()*360},60%,70%,.25)`)}pag.style.setProperty('--rainbow',`linear-gradient(90deg,${c.join(',')})`);}});
+document.addEventListener('DOMContentLoaded',()=>{
+  // 1. 加密文章拦截
+  document.querySelectorAll('.encrypted-link').forEach(l=>{
+    l.onclick=e=>{
+      e.preventDefault();
+      const p=prompt("🔒 请输入密码查看：");
+      if(p)location.href=l.dataset.url+"?pwd="+encodeURIComponent(p);
+    }
+  });
+  // 2. 卡片随机渐变（精简算法）
+  let h=0;
+  document.querySelectorAll('.post-title').forEach(t=>{
+    let h1=(h+120+Math.random()*120)%360,h2=(h1+30+Math.random()*60)%360;
+    h=h1;
+    t.style.background=`linear-gradient(135deg,hsla(${h1},65%,85%,.85),hsla(${h2},65%,75%,.85))`;
+  });
+  // 3. 分页彩虹背景
+  const pag=document.getElementById('rainbowPag');
+  if(pag){
+    let c=[];for(let i=0;i<7;i++)c.push(`hsla(${Math.random()*360},60%,70%,.25)`);
+    pag.style.setProperty('--rainbow',`linear-gradient(90deg,${c.join(',')})`);
+  }
+});
 </script>
-<style>
-.pagination::before{background:var(--rainbow,linear-gradient(90deg,#ff9a9e,#fecfef,#fdfcfb,#a1c4fd,#c2e9fb,#d4fc79,#96e6a1))}
-</style>
 </body>
 </html>
