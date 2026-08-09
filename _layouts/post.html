@@ -1,129 +1,43 @@
----
-layout: null
----
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ page.title }} - {{ site.title }}</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>{% if page.title %}{{ page.title }} - ksirblog抖音风github博客{% else %}ksirblog - 抖音网红快手主播网红blog{% endif %}</title>
+<meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | truncate: 160 }}{% else %}ksirblog是一个极具抖音风特色的github博客，汇聚抖音网红、快手主播与各类网红的创意内容。{% endif %}">
+<link rel="canonical" href="{{ page.url | absolute_url }}">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#fff;color:#2c2c2c;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-.container{max-width:680px;margin:0 auto;padding:20px 30px}
-a{color:#a0522d;text-decoration:none;transition:opacity .2s}
-a:hover{opacity:.7}
-.nav-header{margin-bottom:30px;padding-bottom:15px;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#999}
-.post-header{margin-bottom:30px}
-.post-title{font-family:"STKaiti","KaiTi","楷体",serif;font-size:28px;line-height:1.4;color:#333;margin-bottom:10px}
-.post-meta{font-size:12px;color:#bbb}
-.post-content{font-size:17px;line-height:1.8;color:#444}
-.post-content p{margin-bottom:20px}
-.post-content img{max-width:100%;height:auto;border-radius:4px;margin:10px 0}
-blockquote{border-left:3px solid #a0522d;padding-left:15px;margin:20px 0;color:#666;font-style:italic}
-.footer{margin-top:50px;padding-top:20px;border-top:1px solid #f0f0f0;text-align:center;font-size:12px;color:#ccc}
-
-/* 加密遮罩层样式 */
-#encrypt-mask{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,.98);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-.lock-icon{font-size:40px;margin-bottom:20px;color:#a0522d}
-.lock-msg{font-size:18px;margin-bottom:30px;color:#333}
-.pwd-input{padding:10px 15px;font-size:16px;border:1px solid #ddd;border-radius:4px;width:200px;text-align:center;outline:none}
-.pwd-input:focus{border-color:#a0522d}
-.unlock-btn{margin-top:15px;padding:8px 25px;background:#a0522d;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:14px}
-.unlock-btn:hover{background:#8a4524}
-.error-msg{color:#d9534f;font-size:14px;margin-top:10px;display:none}
-
-@media(max-width:600px){
-    .container{padding:15px 20px}
-    .post-title{font-size:22px}
-    .post-content{font-size:16px}
-    .pwd-input{width:80%}
-}
+*{margin:0;padding:0;box-sizing:border-box}body{background:#fff;color:#2c2c2c;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}.container{max-width:680px;margin:0 auto;padding:20px 30px}a{color:#a0522d;text-decoration:none;transition:opacity .2s}a:hover{opacity:.7}.nav-header{margin-bottom:30px;padding-bottom:15px;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#999}.post-header{margin-bottom:30px}.post-title{font-family:"STKaiti","KaiTi","楷体",serif;font-size:28px;line-height:1.4;color:#333;margin-bottom:10px}.post-meta{font-size:12px;color:#bbb}.post-content{font-size:17px;line-height:1.8;color:#444}.post-content p{margin-bottom:20px}.post-content img{max-width:100%;height:auto;border-radius:4px;margin:10px 0}blockquote{border-left:3px solid #a0522d;padding-left:15px;margin:20px 0;color:#666;font-style:italic}.footer{margin-top:50px;padding-top:20px;border-top:1px solid #f0f0f0;text-align:center;font-size:12px;color:#ccc}#encrypt-mask{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,.98);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.lock-icon{font-size:40px;margin-bottom:20px;color:#a0522d}.lock-msg{font-size:18px;margin-bottom:30px;color:#333}.pwd-input{padding:10px 15px;font-size:16px;border:1px solid #ddd;border-radius:4px;width:200px;text-align:center;outline:none}.pwd-input:focus{border-color:#a0522d}.unlock-btn{margin-top:15px;padding:8px 25px;background:#a0522d;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:14px}.unlock-btn:hover{background:#8a4524}.error-msg{color:#d9534f;font-size:14px;margin-top:10px;display:none}@media(max-width:600px){.container{padding:15px 20px}.post-title{font-size:22px}.post-content{font-size:16px}.pwd-input{width:80%}}
 </style>
 </head>
 <body>
 <div class="container">
     <div class="nav-header">
-        <a href="/" class="back-link">← 返回首页</a>
-        <span>{{ site.title }}</span>
+        <a href="/" class="back-link" title="返回ksirblog首页">← 返回首页</a>
+        <span>ksirblog</span>
     </div>
     <article class="post">
         <header class="post-header">
             <h1 class="post-title">{{ page.title }}</h1>
             <div class="post-meta">{{ page.date | date: "%Y年%m月%d日" }}</div>
         </header>
-        
         {% if page.pw %}
-        <!-- 加密文章的内容区，默认隐藏 -->
         <div id="secret-content" class="post-content" style="display:none">{{ content }}</div>
-        
-        <!-- 密码输入遮罩层 -->
         <div id="encrypt-mask">
-            <div class="lock-icon">🔒</div>
-            <div class="lock-msg">这篇文章受密码保护 请输入密码继续阅读</div>
+            <div class="lock-icon"></div>
+            <div class="lock-msg">这篇文章受密码保护，请输入密码继续阅读</div>
             <input type="password" id="pwd-input" class="pwd-input" placeholder="输入密码">
             <button onclick="checkPwd()" class="unlock-btn">确 定</button>
             <div id="error-msg" class="error-msg">密码错误，请重试</div>
         </div>
         {% else %}
-        <!-- 普通文章直接显示 -->
         <div class="post-content">{{ content }}</div>
         {% endif %}
     </article>
-    <div class="footer">&copy; {{ site.time | date: '%Y' }} {{ site.title }}</div>
+    <div class="footer">&copy; {{ site.time | date: '%Y' }} ksirblog 抖音风github博客</div>
 </div>
-
 <script>
-var mask = document.getElementById('encrypt-mask');
-if (mask) {
-    // 【核心修复】使用 .trim() 去除 Liquid 渲染时可能产生的前后空格
-    var correctPwd = "{{ page.pw }}".trim(); 
-    var contentDiv = document.getElementById('secret-content');
-    var input = document.getElementById('pwd-input');
-    var errorDiv = document.getElementById('error-msg');
-
-    function checkPwd() {
-        var val = input.value;
-        if (!val) return;
-        
-        if (val === correctPwd) {
-            // 密码正确：隐藏遮罩，显示内容，并记录到 sessionStorage
-            mask.style.display = 'none';
-            contentDiv.style.display = 'block';
-            sessionStorage.setItem('post_pwd_' + location.pathname, val);
-            errorDiv.style.display = 'none';
-        } else {
-            // 密码错误：提示错误并清空输入框
-            errorDiv.style.display = 'block';
-            input.value = '';
-            input.focus();
-        }
-    }
-
-    window.onload = function() {
-        // 1. 优先检查 URL 传参（从首页点击加密链接跳转过来的情况）
-        var urlPwd = new URLSearchParams(location.search).get('pwd');
-        if (urlPwd) {
-            input.value = urlPwd;
-            checkPwd();
-            // 验证后清除 URL 中的密码参数，防止刷新时重复触发或泄露
-            history.replaceState(null, '', location.pathname); 
-        } 
-        // 2. 检查 sessionStorage（同会话内再次访问无需重复输入）
-        else if (sessionStorage.getItem('post_pwd_' + location.pathname) === correctPwd) {
-            mask.style.display = 'none';
-            contentDiv.style.display = 'block';
-        }
-        
-        // 自动聚焦输入框
-        input.focus();
-        
-        // 支持按下回车键触发验证
-        input.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') checkPwd();
-        });
-    }
-}
+var mask=document.getElementById('encrypt-mask');if(mask){var correctPwd="{{ page.pw }}".trim();var contentDiv=document.getElementById('secret-content');var input=document.getElementById('pwd-input');var errorDiv=document.getElementById('error-msg');function checkPwd(){var val=input.value;if(!val)return;if(val===correctPwd){mask.style.display='none';contentDiv.style.display='block';sessionStorage.setItem('post_pwd_'+location.pathname,val);errorDiv.style.display='none'}else{errorDiv.style.display='block';input.value='';input.focus()}}window.onload=function(){var urlPwd=new URLSearchParams(location.search).get('pwd');if(urlPwd){input.value=urlPwd;checkPwd();history.replaceState(null,'',location.pathname)}else if(sessionStorage.getItem('post_pwd_'+location.pathname)===correctPwd){mask.style.display='none';contentDiv.style.display='block'}input.focus();input.addEventListener('keypress',function(e){if(e.key==='Enter')checkPwd()})}}
 </script>
 </body>
 </html>
