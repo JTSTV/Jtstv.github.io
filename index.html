@@ -1,13 +1,10 @@
----
-layout: null
----
-<!DOCTYPE html>
-<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{{ site.title }} - 抖音风GitHub博客</title>
 <meta name="description" content="{{ site.description }}">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='90' font-size='90'>📝</text></svg>">
+<link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='90' font-size='90'>📝</text></svg>">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#e8e8e8;color:#444;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
@@ -53,57 +50,3 @@ header{min-height:60px;margin-bottom:20px;display:flex;align-items:center;justif
 }
 </style>
 </head>
-<body>
-<div class="container">
-  <header><h1 class="site-title"><a href="/">{{ site.title }}</a></h1></header>
-  <main>
-    <ul class="post-list">
-      {% for post in paginator.posts %}
-      <li class="post-item">
-        <div class="post-title">
-          {% if post.pw %}
-          <a class="encrypted-link" data-url="{{ post.url | relative_url }}">🔒 {{ post.title }}</a>
-          {% else %}
-          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-          {% endif %}
-          <span class="post-date">{{ post.date | date: "%Y-%m-%d" }}</span>
-        </div>
-      </li>
-      {% endfor %}
-    </ul>
-  </main>
-  {% if paginator.total_pages > 1 %}
-  <div class="pagination" id="rainbowPag">
-    {% if paginator.previous_page %}<a href="{{ paginator.previous_page_path | relative_url }}">上一页</a>{% else %}<span class="disabled">上一页</span>{% endif %}
-    <div class="contact-email"><a href="mailto:jtstv@outlook.com">jtstv@outlook.com</a></div>
-    {% if paginator.next_page %}<a href="{{ paginator.next_page_path | relative_url }}">下一页</a>{% else %}<span class="disabled">下一页</span>{% endif %}
-  </div>
-  {% endif %}
-</div>
-<script>
-document.addEventListener('DOMContentLoaded',()=>{
-  // 1. 加密文章拦截
-  document.querySelectorAll('.encrypted-link').forEach(l=>{
-    l.onclick=e=>{
-      e.preventDefault();
-      const p=prompt("🔒 请输入密码查看：");
-      if(p)location.href=l.dataset.url+"?pwd="+encodeURIComponent(p);
-    }
-  });
-  // 2. 卡片随机渐变（精简算法）
-  let h=0;
-  document.querySelectorAll('.post-title').forEach(t=>{
-    let h1=(h+120+Math.random()*120)%360,h2=(h1+30+Math.random()*60)%360;
-    h=h1;
-    t.style.background=`linear-gradient(135deg,hsla(${h1},65%,85%,.85),hsla(${h2},65%,75%,.85))`;
-  });
-  // 3. 分页彩虹背景
-  const pag=document.getElementById('rainbowPag');
-  if(pag){
-    let c=[];for(let i=0;i<7;i++)c.push(`hsla(${Math.random()*360},60%,70%,.25)`);
-    pag.style.setProperty('--rainbow',`linear-gradient(90deg,${c.join(',')})`);
-  }
-});
-</script>
-</body>
-</html> 
