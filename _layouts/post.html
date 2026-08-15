@@ -7,8 +7,8 @@ layout: null
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="index,follow">
-<title>{% if page.title %}{{ page.title }} - {{site.title}}{% else %}{{site.title}}{% endif %}</title>
-<meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | truncate:160 }}{% else %}{{site.description}}{% endif %}">
+<title>{%if page.title%}{{page.title}} - {{site.title}}{%else%}{{site.title}}{%endif%}</title>
+<meta name="description" content="{%if page.excerpt%}{{page.excerpt|strip_html|truncate:160}}{%else%}{{site.description}}{%endif%}">
 <meta name="keywords" content="抖音风 | 反差 ｜小仙云儿 ｜ 小西西 |苏小柠 | 推特 | 弹力摇 ｜快手小欣欣">
 <link rel="canonical" href="{{site.url}}{{page.url | relative_url}}">
 <style>
@@ -16,8 +16,8 @@ layout: null
 body{font:16px/1.6 sans-serif;padding:20px 30px}
 a{color:#444;text-decoration:none}
 .site-back{margin-bottom:20px;text-align:right;font-size:20px;font-weight:600}
-.post-title{font-size:18px;padding:15px 20px 10px;position:relative}
-.post-date{position:relative;bottom:0;right:0;font-size:11px;color:#666;padding:0 20px 20px}
+.post-title{font-size:18px;padding:15px 20px 10px}
+.post-date{font-size:11px;color:#666;padding:0 20px 20px}
 .post-content{font-size:16px;line-height:1.6;padding:0 20px}
 .post-content p{margin-bottom:20px}
 .post-content img{max-width:100%;height:auto;margin:10px 0}
@@ -26,68 +26,31 @@ a{color:#444;text-decoration:none}
 .pwd-input{padding:10px 15px;font-size:16px;border:1px solid #ddd;width:200px;text-align:center}
 .unlock-btn{margin-top:15px;padding:8px 25px;border:none;cursor:pointer;font-size:14px}
 .error-msg{font-size:14px;margin-top:10px;display:none;color:#d9534f}
-@media(max-width:600px){
-body{padding:15px 20px}
-.site-back{font-size:18px}
-.post-title{font-size:16px;padding:12px 15px 10px}
-.post-date{font-size:10px;padding:0 15px 20px}
-.post-content{padding:0 15px}
-.pwd-input{width:80%}
-}
+@media(max-width:600px){body{padding:15px 20px}.site-back{font-size:18px}.post-title{font-size:16px;padding:12px 15px 10px}.post-date{font-size:10px;padding:0 15px 20px}.post-content{padding:0 15px}.pwd-input{width:80%}}
 </style>
 </head>
 <body>
-<div class="site-back">
-<a href="/">{{site.title}}</a>
-</div>
-
-<div class="post-title">{{ page.title }}</div>
-<div class="post-date">{{ page.date | date:"%Y-%m-%d" }}</div>
-
-{% if page.pw %}
-<div id="secret-content" class="post-content" style="display:none">{{ content }}</div>
+<div class="site-back"><a href="/">{{site.title}}</a></div>
+<div class="post-title">{{page.title}}</div>
+<div class="post-date">{{page.date|date:"%Y-%m-%d"}}</div>
+{%if page.pw%}
+<div id="secret-content" class="post-content" style="display:none">{{content}}</div>
 <div id="encrypt-mask">
 <div class="lock-msg">🔒 请输入密码查看：</div>
 <input type="password" id="pwd-input" placeholder="输入密码">
 <button onclick="checkPwd()">确 定</button>
 <div id="error-msg" class="error-msg">密码错误，请重试</div>
 </div>
-{% else %}
-<div class="post-content">{{ content }}</div>
-{% endif %}
-
+{%else%}<div class="post-content">{{content}}</div>{%endif%}
 <script>
-var mask=document.getElementById('encrypt-mask');
+const mask=document.getElementById('encrypt-mask');
 if(mask){
-var correctPwd="{{ page.pw }}".trim(),
-contentDiv=document.getElementById('secret-content'),
-input=document.getElementById('pwd-input'),
-errorDiv=document.getElementById('error-msg');
-function checkPwd(){
-var val=input.value;if(!val)return;
-if(val===correctPwd){
-mask.style.display='none';
-contentDiv.style.display='block';
-sessionStorage.setItem('post_pwd_'+location.pathname,val);
-errorDiv.style.display='none';
-}else{
-errorDiv.style.display='block';
-input.value='';
-input.focus();
-}
-}
-window.onload=function(){
-var urlPwd=new URLSearchParams(location.search).get('pwd');
-if(urlPwd){
-input.value=urlPwd;
-checkPwd();
-history.replaceState(null,'',location.pathname);
-}else if(sessionStorage.getItem('post_pwd_'+location.pathname)===correctPwd){
-mask.style.display='none';
-contentDiv.style.display='block';
-}
-input.focus();
-input.addEventListener('keypress',e=>e.key==='Enter'&&checkPwd());
+const correctPwd="{{page.pw}}".trim(),contentDiv=document.getElementById('secret-content'),input=document.getElementById('pwd-input'),errorDiv=document.getElementById('error-msg');
+function checkPwd(){const val=input.value;if(!val)return;val===correctPwd?(mask.style.display='none',contentDiv.style.display='block',sessionStorage.setItem('post_pwd_'+location.pathname,val),errorDiv.style.display='none'):(errorDiv.style.display='block',input.value='',input.focus())}
+window.onload=()=>{
+const urlPwd=new URLSearchParams(location.search).get('pwd');
+urlPwd?(input.value=urlPwd,checkPwd(),history.replaceState(null,'',location.pathname)):sessionStorage.getItem('post_pwd_'+location.pathname)&&(mask.style.display='none',contentDiv.style.display='block');
+input.focus();input.addEventListener('keypress',e=>e.key==='Enter'&&checkPwd())
 }
 }
 </script>
