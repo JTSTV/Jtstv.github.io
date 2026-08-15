@@ -17,19 +17,34 @@ body{font:16px/1.6 sans-serif;padding:20px 30px}
 a{color:#444;text-decoration:none}
 .site-title{margin-bottom:20px;text-align:right;font-size:20px;font-weight:600}
 .post-item{padding:12px 0}
-.post-item a{display:block;font-size:18px;padding:15px 20px 8px}
-.post-date{text-align:right;font-size:11px;color:#666;padding:0 20px 15px}
+.post-item a{display:block;padding:15px 20px}
+.post-row{display:flex;justify-content:space-between;align-items:center}
+.post-title-text{font-size:18px}
+.post-date{font-size:11px;color:#666;white-space:nowrap}
 .pagination{margin-top:24px}
 .pagination a,.pagination span{font-size:16px;color:#444;margin-right:8px}
-@media(max-width:600px){body{padding:15px 20px}.site-title{font-size:18px}.post-item a{font-size:16px;padding:12px 15px 6px}.post-date{padding:0 15px 12px;font-size:10px}}
+@media(max-width:600px){body{padding:15px 20px}.site-title{font-size:18px}.post-item a{padding:12px 15px}.post-title-text{font-size:16px}.post-date{font-size:10px}}
 </style>
 </head>
 <body>
 <div class="site-title"><a href="/">{{site.title}}</a></div>
 {%for post in paginator.posts%}
 <div class="post-item">
-{%if post.pw%}<a class="encrypted-link" data-url="{{post.url | relative_url}}">🔒 {{post.title}}</a>{%else%}<a href="{{post.url | relative_url}}">{{post.title}}</a>{%endif%}
-<div class="post-date">{{post.date | date:"%Y-%m-%d"}}</div>
+{%if post.pw%}
+<a class="encrypted-link" data-url="{{post.url | relative_url}}">
+<div class="post-row">
+<span class="post-title-text">🔒 {{post.title}}</span>
+<span class="post-date">{{post.date | date:"%Y-%m-%d"}}</span>
+</div>
+</a>
+{%else%}
+<a href="{{post.url | relative_url}}">
+<div class="post-row">
+<span class="post-title-text">{{post.title}}</span>
+<span class="post-date">{{post.date | date:"%Y-%m-%d"}}</span>
+</div>
+</a>
+{%endif%}
 </div>
 {%endfor%}
 {%if paginator.total_pages>1%}
