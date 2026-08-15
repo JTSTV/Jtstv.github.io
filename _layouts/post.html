@@ -5,7 +5,7 @@ layout: null
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="robots" content="index,follow">
 <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
 <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
@@ -20,79 +20,101 @@ layout: null
 body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c333a;padding:24px 16px;line-height:1.75}
 .container{max-width:720px;margin:0 auto}
 
-/* 使用border‑image实现彩虹边框，替代padding嵌套，大幅降低鸿蒙绘制开销 */
 .rainbow-border{
   border:2px solid;
-  border‑image:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de) 1;
-  border‑radius:12px;
-  box‑shadow:0 1px 4px rgba(0,0,0,.07);
-  margin‑bottom:16px;
+  border-image:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de) 1;
+  border-radius:12px;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);
+  margin-bottom:16px;
   overflow:hidden;
 }
-.inner-white{background:#fff;border‑radius:10px;padding:24px 26px;overflow‑x:auto;word‑break:break‑all}
-.post‑content-wrap{
+.inner-white{background:#fff;border-radius:10px;padding:24px 26px;overflow-x:auto;word-break:break-all}
+.post-content-wrap{
   border:2px solid;
-  border‑image:linear‑gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de) 1;
-  border‑radius:12px;
-  box‑shadow:0 1px 4px rgba(0,0,0,.07);
+  border-image:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de) 1;
+  border-radius:12px;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);
   overflow:hidden;
 }
-.post‑content{background:#fff;border‑radius:10px;padding:26px;overflow‑x:auto;word‑break:break‑all}
+.post-content{background:#fff;border-radius:10px;padding:26px;overflow-x:auto;word-break:break-all}
 
-.post‑content p{margin‑bottom:16px}
-.post‑content img{max‑width:100%;height:auto;border‑radius:8px;margin:12px 0}
-.post‑content h1,.post‑content h2,.post‑content h3{margin:20px 0 10px}
-.post‑content ul{padding‑left:1.8em !important;margin:12px 0}
-.post‑content ol{padding‑left:1.8em !important;margin:12px 0}
-.post‑content li{margin‑bottom:8px}
-.post‑content pre,.post‑content table{max‑width:100%;overflow‑x:auto}
+.post-content p{margin-bottom:16px}
+.post-content img{max-width:100%;height:auto;border-radius:8px;margin:12px 0}
+.post-content h1,.post-content h2,.post-content h3{margin:20px 0 10px}
+.post-content ul{padding-left:1.8em !important;margin:12px 0}
+.post-content ol{padding-left:1.8em !important;margin:12px 0}
+.post-content li{margin-bottom:8px}
+.post-content pre,.post-content table{max-width:100%;overflow-x:auto}
 
-#encrypt‑mask{position:fixed;inset:0;background:rgba(0,0,0,.42);display:flex;align‑items:center;justify‑content:center;z‑index:9999;padding:16px}
-.mask‑inner{background:#fff;width:100%;max‑width:380px;padding:28px 24px;border‑radius:14px;text‑align:center}
-.lock‑msg{font‑size:18px;margin‑bottom:18px;color:#1f2937}
-.pwd‑input{width:100%;padding:12px 14px;border:1px solid #d1d5db;border‑radius:10px;font‑size:16px;margin‑bottom:16px}
-.unlock‑btn{width:100%;padding:12px;border:none;border‑radius:10px;background:linear‑gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);color:#fff;font‑size:16px;cursor:pointer}
-.error‑tip{font‑size:14px;color:#dc2626;margin‑top:12px;display:none}
+#encrypt-mask{position:fixed;inset:0;background:rgba(0,0,0,.42);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px}
+.mask-inner{
+  background:#fff;
+  width:100%;
+  max-width:320px;
+  padding:24px 20px;
+  border-radius:14px;
+  text-align:center;
+}
+.lock-msg{font-size:17px;margin-bottom:16px;color:#1f2937}
+.pwd-input{
+  width:100%;
+  padding:12px 14px;
+  border:1px solid #d1d5db;
+  border-radius:10px;
+  font-size:16px;
+  margin-bottom:14px;
+}
+.unlock-btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);
+  color:#fff;
+  font-size:16px;
+  cursor:pointer;
+}
+.error-tip{font-size:14px;color:#dc2626;margin-top:10px;display:none}
 
-.post‑title{font‑size:22px;margin‑bottom:8px}
-.post‑date{font‑size:14px;color:#666}
+.post-title{font-size:22px;margin-bottom:8px}
+.post-date{font-size:14px;color:#666}
 
-@media(max‑width:600px){
+@media(max-width:600px){
 body{padding:16px 12px}
-.inner‑white{padding:18px 16px}
-.post‑content{padding:18px 16px}
-.post‑title{font‑size:20px}
-.post‑content ul,.post‑content ol{padding‑left:1.4em !important}
+.inner-white{padding:18px 16px}
+.post-content{padding:18px 16px}
+.post-title{font-size:20px}
+.post-content ul,.post-content ol{padding-left:1.4em !important}
 }
 </style>
 </head>
 <body>
 <div class="container">
-<div class="rainbow‑border">
-<div class="inner‑white">
-<div class="post‑title">{{ page.title }}</div>
-<div class="post‑date">{{ page.date | date:"%Y‑%m‑%d" }}</div>
+<div class="rainbow-border">
+<div class="inner-white">
+<div class="post-title">{{ page.title }}</div>
+<div class="post-date">{{ page.date | date:"%Y-%m-%d" }}</div>
 </div>
 </div>
 
 {% if page.pw %}
-<div class="post‑content‑wrap" id="secret‑content" style="display:none">
-<div class="post‑content">{{ content }}</div>
+<div class="post-content-wrap" id="secret-content" style="display:none">
+<div class="post-content">{{ content }}</div>
 </div>
-<div id="encrypt‑mask">
-<div class="mask‑inner">
-<div class="lock‑msg">🔒密码查看</div>
-<input type="password" id="pwd‑input" placeholder="输入访问密码" class="pwd‑input">
-<button id="unlock‑btn" class="unlock‑btn">确 定</button>
-<div class="error‑tip" id="error‑tip">密码错误，请重试</div>
+<div id="encrypt-mask">
+<div class="mask-inner">
+<div class="lock-msg">🔒密码查看</div>
+<input type="password" id="pwd-input" placeholder="输入访问密码" class="pwd-input">
+<button id="unlock-btn" class="unlock-btn">确 定</button>
+<div class="error-tip" id="error-tip">密码错误，请重试</div>
 </div>
 </div>
 <script>
-(function(){const mask=document.getElementById('encrypt‑mask');const contentDiv=document.getElementById('secret‑content');const input=document.getElementById('pwd‑input');const btn=document.getElementById('unlock‑btn');const errorTip=document.getElementById('error‑tip');const correctPwd="{{ page.pw }}".trim();btn.onclick=check;input.addEventListener('keypress',e=>e.key==='Enter'&&check());function check(){const val=input.value.trim();if(val===correctPwd){mask.style.display='none';contentDiv.style.display='block';errorTip.style.display='none'}else{errorTip.style.display='block';input.value='';input.focus()}}})();
+(function(){const mask=document.getElementById('encrypt-mask');const contentDiv=document.getElementById('secret-content');const input=document.getElementById('pwd-input');const btn=document.getElementById('unlock-btn');const errorTip=document.getElementById('error-tip');const correctPwd="{{ page.pw }}".trim();btn.onclick=check;input.addEventListener('keypress',e=>e.key==='Enter'&&check());function check(){const val=input.value.trim();if(val===correctPwd){mask.style.display='none';contentDiv.style.display='block';errorTip.style.display='none'}else{errorTip.style.display='block';input.value='';input.focus()}}})();
 </script>
 {% else %}
-<div class="post‑content‑wrap">
-<div class="post‑content">{{ content }}</div>
+<div class="post-content-wrap">
+<div class="post-content">{{ content }}</div>
 </div>
 {% endif %}
 </div>
