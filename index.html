@@ -5,7 +5,7 @@ layout: null
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="robots" content="index,follow">
 <title>{{site.title}} - 抖音风 | 反差 ｜小仙云儿 ｜ 小西西 |苏小柠 | 推特 | 弹力摇 ｜快手小欣欣</title>
 <meta name="description" content="{{site.description}}">
@@ -16,7 +16,7 @@ layout: null
 body{font:16px/1.6 sans-serif;padding:20px 30px}
 a{color:#444;text-decoration:none}
 .site-title{margin-bottom:20px;text-align:right;font-size:20px;font-weight:600}
-.post-item{padding:12px 0}
+.post-item{padding:12px 0;transform:none;will-change:auto}
 .post-item a{display:block;padding:15px 20px}
 .post-row{display:flex;justify-content:space-between;align-items:center}
 .post-title-text{font-size:18px}
@@ -54,6 +54,17 @@ a{color:#444;text-decoration:none}
 {%if paginator.next_page%}<a href="{{paginator.next_page_path}}">下一页</a>{%else%}<span>下一页</span>{%endif%}
 </div>
 {%endif%}
-<script>document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('.encrypted-link').forEach(e=>{e.onclick=t=>{t.preventDefault();const n=prompt("🔒 请输入密码查看：");n&&(location.href=e.dataset.url+"?pwd="+encodeURIComponent(n))}})})</script>
+<!-- setTimeout延迟绑定事件；让浏览器先完成首次页面绘制，再执行JS逻辑，解决清空缓存打开瞬间卡顿 -->
+<script>
+setTimeout(()=>{
+document.querySelectorAll('.encrypted-link').forEach(e=>{
+e.onclick=t=>{
+t.preventDefault();
+const n=prompt("🔒 请输入密码查看：");
+n&&(location.href=e.dataset.url+"?pwd="+encodeURIComponent(n));
+}
+})
+},80);
+</script>
 </body>
 </html>
