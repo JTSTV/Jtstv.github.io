@@ -1,8 +1,8 @@
 # --- 核心基础配置 ---
 title: KsirBlog
-SEOTitle: "KsirBlog - 抖音风 | 反差 ｜小仙云儿 ｜小西西 |苏小柠 | 推特 | 弹力摇 ｜快手小欣欣"
-description: "抖音风GitHub博客，汇聚网红创意与技术分享"
-keywords: "抖音风,反差,小仙云儿,小西西,苏小柠,推特,弹力摇,快手小欣欣"
+SEOTitle: "KsirBlog｜个人技术博客，记录生活与技术分享"
+description: "KsirBlog 个人独立博客，专注技术笔记、创意内容与经验分享，沉淀日常学习与思考。"
+keywords: "KsirBlog,blog,个人博客,技术博客,博客,独立博客,github博客"
 baseurl: ""
 url: "https://hhzj.hair"
 
