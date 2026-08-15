@@ -13,21 +13,31 @@ layout: null
 <link rel="canonical" href="{{site.url}}{{page.url | relative_url}}">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font:16px/1.6 sans-serif;padding:20px 30px}
-a{color:#444;text-decoration:none}
-.site-title{margin-bottom:20px;text-align:right;font-size:20px;font-weight:600}
-.post-item{padding:12px 0}
-.post-item a{display:block;padding:15px 20px}
-.post-row{display:flex;justify-content:space-between;align-items:center}
-.post-title-text{font-size:18px}
-.post-date{font-size:11px;color:#666;white-space:nowrap}
-.pagination{margin-top:24px}
-.pagination a,.pagination span{font-size:16px;color:#444;margin-right:8px}
-@media(max-width:600px){body{padding:15px 20px}.site-title{font-size:18px}.post-item a{padding:12px 15px}.post-title-text{font-size:16px}.post-date{font-size:10px}}
+body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c333a;padding:24px 16px;line-height:1.65}
+.container{max-width:720px;margin:0 auto}
+.site-header{text-align:right;margin-bottom:28px}
+.site-header a{font-size:22px;font-weight:600;color:#2563eb;text-decoration:none}
+.post-item{margin-bottom:14px}
+.post-item a{display:block;background:#ffffff;padding:18px 20px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,0.07);text-decoration:none;transition:0.22s ease}
+.post-item a:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.11)}
+.post-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.post-title-text{font-size:17px;color:#1f2937}
+.post-date{font-size:13px;color:#71717a;white-space:nowrap}
+.pagination{margin-top:36px;display:flex;gap:10px;justify-content:center;align-items:center}
+.pagination a,.pagination span{padding:8px 14px;border-radius:8px;font-size:15px;text-decoration:none}
+.pagination a{background:#2563eb;color:#fff}
+.pagination span{background:#e4e7ec;color:#6b7280}
+@media(max-width:600px){
+body{padding:16px 12px}
+.post-item a{padding:14px 16px}
+.post-title-text{font-size:16px}
+}
 </style>
 </head>
 <body>
-<div class="site-title"><a href="/">{{site.title}}</a></div>
+<div class="container">
+<div class="site-header"><a href="/">{{site.title}}</a></div>
+
 {%for post in paginator.posts%}
 <div class="post-item">
 {%if post.pw%}
@@ -47,13 +57,16 @@ a{color:#444;text-decoration:none}
 {%endif%}
 </div>
 {%endfor%}
+
 {%if paginator.total_pages>1%}
 <div class="pagination">
 {%if paginator.previous_page%}<a href="{{paginator.previous_page_path}}">上一页</a>{%else%}<span>上一页</span>{%endif%}
-<a href="mailto:jtstv@outlook.com">jtstv@outlook.com</a>
+<a href="mailto:jtstv@outlook.com">联系</a>
 {%if paginator.next_page%}<a href="{{paginator.next_page_path}}">下一页</a>{%else%}<span>下一页</span>{%endif%}
 </div>
 {%endif%}
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded',function(){
 var links=document.querySelectorAll('.encrypted-link');
