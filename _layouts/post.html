@@ -2,74 +2,106 @@
 layout: null
 ---
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh‑CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF‑8">
+<meta name="viewport" content="width=device‑width,initial‑scale=1">
 <meta name="robots" content="index,follow">
 <title>{{site.SEOTitle}}</title>
 <meta name="description" content="{{site.description}}">
 <meta name="keywords" content="{{site.keywords}}">
 <link rel="canonical" href="{{site.url}}{{page.url | relative_url}}">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c333a;padding:24px 16px;line-height:1.7}
-.container{max-width:720px;margin:0 auto}
-.site-back{margin-bottom:24px;text-align:right}
-.site-back a{font-size:16px;color:#2563eb;text-decoration:none}
-.post-head{background:#fff;padding:22px 24px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,0.07);margin-bottom:18px}
-.post-title{font-size:22px;font-weight:600;color:#111827;margin-bottom:8px}
-.post-date{font-size:13px;color:#71717a}
-.post-content{background:#fff;padding:24px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,0.07)}
-.post-content p{margin-bottom:14px}
-.post-content img{max-width:100%;height:auto;border-radius:8px;margin:10px 0}
+*{margin:0;padding:0;box‑sizing:border‑box}
+body{font:16px system‑ui,‑apple‑system,sans‑serif;background:#f8f9fa;color:#2c333a;padding:24px 16px;line‑height:1.7}
+.container{max‑width:720px;margin:0 auto}
+.site‑back{margin‑bottom:24px;text‑align:right}
+.site‑back a{
+  font‑size:16px;
+  background:linear‑gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);
+  ‑webkit‑background‑clip:text;
+  background‑clip:text;
+  color:transparent;
+  text‑decoration:none;
+  font‑weight:600;
+}
+.post‑head{
+  background:#fff;
+  padding:22px 24px;
+  border‑radius:12px;
+  border:2px solid;
+  border‑image:linear‑gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de) 1;
+  box‑shadow:0 1px 3px rgba(0,0,0,0.06);
+  margin‑bottom:18px;
+}
+.post‑title{font‑size:22px;font‑weight:600;color:#111827;margin‑bottom:8px}
+.post‑date{font‑size:13px;color:#71717a}
+.post‑content{
+  background:#fff;
+  padding:24px;
+  border‑radius:12px;
+  border:2px solid;
+  border‑image:linear‑gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de) 1;
+  box‑shadow:0 1px 3px rgba(0,0,0,0.06);
+}
+.post‑content p{margin‑bottom:14px}
+.post‑content img{max‑width:100%;height:auto;border‑radius:8px;margin:10px 0}
 
-/*密码弹窗美化*/
-#encrypt-mask{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px}
-.mask-inner{background:#fff;width:100%;max-width:380px;padding:28px 24px;border-radius:14px;text-align:center}
-.lock-msg{font-size:18px;margin-bottom:18px;color:#1f2937}
-.pwd-input{width:100%;padding:12px 14px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;margin-bottom:16px}
-.unlock-btn{width:100%;padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-size:16px;cursor:pointer}
-.error-msg{font-size:14px;color:#dc2626;margin-top:12px;display:none}
+/*密码弹窗美化，七彩虹按钮，轻量遮罩*/
+#encrypt‑mask{position:fixed;inset:0;background:rgba(0,0,0,0.42);display:flex;align‑items:center;justify‑content:center;z‑index:9999;padding:16px}
+.mask‑inner{background:#fff;width:100%;max‑width:380px;padding:28px 24px;border‑radius:14px;text‑align:center}
+.lock‑msg{font‑size:18px;margin‑bottom:18px;color:#1f2937}
+.pwd‑input{width:100%;padding:12px 14px;border:1px solid #d1d5db;border‑radius:10px;font‑size:16px;margin‑bottom:16px}
+.unlock‑btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  border‑radius:10px;
+  background:linear‑gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);
+  color:#fff;
+  font‑size:16px;
+  cursor:pointer;
+}
+.error‑msg{font‑size:14px;color:#dc2626;margin‑top:12px;display:none}
 
-@media(max-width:600px){
+@media(max‑width:600px){
 body{padding:16px 12px}
-.post-head,.post-content{padding:16px}
-.post-title{font-size:20px}
+.post‑head,.post‑content{padding:16px}
+post‑title{font‑size:20px}
 }
 </style>
 </head>
 <body>
 <div class="container">
-<div class="site-back"><a href="/">← 返回首页</a></div>
+<div class="site‑back"><a href="/">← 返回首页</a></div>
 
-<div class="post-head">
-<div class="post-title">{{page.title}}</div>
-<div class="post-date">{{page.date|date:"%Y-%m-%d"}}</div>
+<div class="post‑head">
+<div class="post‑title">{{page.title}}</div>
+<div class="post‑date">{{page.date|date:"%Y‑%m‑%d"}}</div>
 </div>
 
 {%if page.pw%}
-<div id="secret-content" class="post-content" style="display:none">{{content}}</div>
-<div id="encrypt-mask">
-<div class="mask-inner">
-<div class="lock-msg">🔒 该文章已加密，请输入密码</div>
-<input type="password" id="pwd-input" placeholder="输入访问密码" class="pwd-input">
-<button onclick="checkPwd()" class="unlock-btn">确 定</button>
-<div id="error-msg" class="error-msg">密码错误，请重新输入</div>
+<div id="secret‑content" class="post‑content" style="display:none">{{content}}</div>
+<div id="encrypt‑mask">
+<div class="mask‑inner">
+<div class="lock‑msg">🔒 该文章已加密，请输入密码</div>
+<input type="password" id="pwd‑input" placeholder="输入访问密码" class="pwd‑input">
+<button onclick="checkPwd()" class="unlock‑btn">确 定</button>
+<div id="error‑msg" class="error‑msg">密码错误，请重新输入</div>
 </div>
 </div>
 {%else%}
-<div class="post-content">{{content}}</div>
+<div class="post‑content">{{content}}</div>
 {%endif%}
 </div>
 
 <script>
-var mask=document.getElementById('encrypt-mask');
+var mask=document.getElementById('encrypt‑mask');
 if(mask){
 var correctPwd="{{page.pw}}".trim();
-var contentDiv=document.getElementById('secret-content');
-var input=document.getElementById('pwd-input');
-var errorDiv=document.getElementById('error-msg');
+var contentDiv=document.getElementById('secret‑content');
+var input=document.getElementById('pwd‑input');
+var errorDiv=document.getElementById('error‑msg');
 function checkPwd(){
 var v=input.value;
 if(!v)return;
