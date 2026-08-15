@@ -21,9 +21,9 @@ body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c33
 .container{max-width:720px;margin:0 auto}
 .site-back{margin-bottom:20px;text-align:right}
 .site-back a{font-size:16px;background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);-webkit-background-clip:text;background-clip:text;color:transparent;text-decoration:none;font-weight:600}
-.wrap-gradient{background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);padding:2px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:16px}
+.wrap-gradient{background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);padding:2px;border-radius:12px;transform:translateZ(0);box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:16px}
 .inner-white{background:#fff;border-radius:10px;padding:24px 26px;overflow-x:auto;word-break:break-all}
-.post-content-wrap{background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);padding:2px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.post-content-wrap{background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);padding:2px;border-radius:12px;transform:translateZ(0);box-shadow:0 1px 4px rgba(0,0,0,.07)}
 .post-content{background:#fff;border-radius:10px;padding:26px;overflow-x:auto;word-break:break-all}
 .post-content p{margin-bottom:16px}
 .post-content img{max-width:100%;height:auto;border-radius:8px;margin:12px 0}
@@ -32,7 +32,8 @@ body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c33
 .post-content ol{padding-left:1.8em !important;margin:12px 0}
 .post-content li{margin-bottom:8px}
 .post-content pre,.post-content table{max-width:100%;overflow-x:auto}
-#encrypt-mask{position:fixed;inset:0;background:rgba(0,0,0,.42);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px}
+
+#encrypt-mask{position:fixed;inset:0;background:rgba(0,0,0,.42);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px;transform:translateZ(0);will-change:transform}
 .mask-inner{background:#fff;width:100%;max-width:380px;padding:28px 24px;border-radius:14px;text-align:center}
 .lock-msg{font-size:18px;margin-bottom:18px;color:#1f2937}
 .pwd-input{width:100%;padding:12px 14px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;margin-bottom:16px}
@@ -40,6 +41,7 @@ body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c33
 .error-tip{font-size:14px;color:#dc2626;margin-top:12px;display:none}
 .post-title{font-size:22px;margin-bottom:8px}
 .post-date{font-size:14px;color:#666}
+
 @media(max-width:600px){
 body{padding:16px 12px}
 .wrap-gradient .inner-white{padding:18px 16px}
@@ -58,6 +60,7 @@ body{padding:16px 12px}
 <div class="post-date">{{ page.date | date:"%Y-%m-%d" }}</div>
 </div>
 </div>
+
 {% if page.pw %}
 <div class="post-content-wrap" id="secret-content" style="display:none">
 <div class="post-content">{{ content }}</div>
@@ -99,6 +102,7 @@ input.focus();
 <div class="post-content">{{ content }}</div>
 </div>
 {% endif %}
+
 </div>
 </body>
 </html>
