@@ -28,12 +28,33 @@ header{min-height:60px;margin-bottom:20px;display:flex;align-items:center;justif
 .post-title{font:18px/1.5 "STKaiti","KaiTi",楷体,serif;padding:15px 20px 35px;position:relative;border-radius:12px;color:#444}
 .post-title a{color:#444;display:block}
 .post-date{position:absolute;bottom:10px;right:15px;font:11px sans-serif;color:#666;white-space:nowrap;letter-spacing:1px}
-.pagination{position:relative;display:flex;justify-content:center;align-items:center;gap:12px;margin-top:24px;padding:12px 16px;border-radius:30px;font:600 16px sans-serif;z-index:1;flex-wrap:nowrap;white-space:nowrap}
-.pagination::before{content:"";position:absolute;inset:0;border-radius:30px;filter:blur(20px);opacity:.9;z-index:-1;background:var(--rainbow,linear-gradient(90deg,#ff9a9e,#fecfef,#fdfcfb,#a1c4fd,#c2e9fb,#d4fc79,#96e6a1))}
-.pagination a,.pagination span{color:#333;min-width:52px;text-align:center;padding:5px 8px;border-radius:20px;transition:background .3s;flex-shrink:0}
-.pagination a:hover{background:rgba(255,255,255,.4)}
+/* 分页，移除彩虹模糊背景，保持单行不换行 */
+.pagination{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  margin-top:24px;
+  padding:12px 16px;
+  border-radius:30px;
+  background:#eeeeee;
+  font:600 16px sans-serif;
+  flex-wrap:nowrap;
+  white-space:nowrap;
+}
+.pagination a,.pagination span{
+  color:#333;
+  min-width:52px;
+  text-align:center;
+  padding:5px 8px;
+  border-radius:20px;
+  transition:background .3s;
+  flex-shrink:0;
+}
+.pagination a:hover{background:rgba(255,255,255,.6)}
 .pagination .disabled{color:#666;cursor:default;opacity:.8}
 .contact-email a{font:400 11px sans-serif;color:#333;flex-shrink:1}
+
 @media(max-width:600px){
 .container{padding:15px 20px}
 .site-title{font-size:18px}
@@ -65,7 +86,7 @@ header{min-height:60px;margin-bottom:20px;display:flex;align-items:center;justif
 </ul>
 </main>
 {% if paginator.total_pages > 1 %}
-<div class="pagination" id="rainbowPag">
+<div class="pagination">
 {% if paginator.previous_page %}<a href="{{ paginator.previous_page_path | relative_url }}">上一页</a>{% else %}<span class="disabled">上一页</span>{% endif %}
 <div class="contact-email"><a href="mailto:jtstv@outlook.com">jtstv@outlook.com</a></div>
 {% if paginator.next_page %}<a href="{{ paginator.next_page_path | relative_url }}">下一页</a>{% else %}<span class="disabled">下一页</span>{% endif %}
@@ -74,9 +95,20 @@ header{min-height:60px;margin-bottom:20px;display:flex;align-items:center;justif
 </div>
 <script defer>
 document.addEventListener('DOMContentLoaded',()=>{
-document.querySelectorAll('.encrypted-link').forEach(l=>{l.onclick=e=>{e.preventDefault();const p=prompt("🔒 请输入密码查看：");p&&(location.href=l.dataset.url+"?pwd="+encodeURIComponent(p))}});
-let h=0;document.querySelectorAll('.post-title').forEach(t=>{const h1=(h+120+Math.random()*120)%360,h2=(h1+30+Math.random()*60)%360;h=h1;t.style.background=`linear-gradient(135deg,hsla(${h1},65%,85%,.85),hsla(${h2},65%,75%,.85))`});
-const pag=document.getElementById('rainbowPag');if(pag){let c=[];for(let i=0;i<7;i++)c.push(`hsla(${Math.random()*360},60%,70%,.25)`);pag.style.setProperty('--rainbow',`linear-gradient(90deg,${c.join(',')}`)}
+document.querySelectorAll('.encrypted-link').forEach(l=>{
+l.onclick=e=>{
+e.preventDefault();
+const p=prompt("🔒 请输入密码查看：");
+p&&(location.href=l.dataset.url+"?pwd="+encodeURIComponent(p))
+}
+});
+let h=0;
+document.querySelectorAll('.post-title').forEach(t=>{
+const h1=(h+120+Math.random()*120)%360;
+const h2=(h1+30+Math.random()*60)%360;
+h=h1;
+t.style.background=`linear-gradient(135deg,hsla(${h1},65%,85%,.85),hsla(${h2},65%,75%,.85))`
+});
 })
 </script>
 </body>
