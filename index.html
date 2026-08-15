@@ -75,7 +75,7 @@ header{min-height:60px;margin-bottom:20px;display:flex;align-items:center;justif
 document.addEventListener('DOMContentLoaded',()=>{
 document.querySelectorAll('.encrypted-link').forEach(n=>{
 n.onclick=e=>{
-e.preventDefault();const s=prompt("🔒 请输入密码查看：");s&&(location.href=n.dataset.url+"?pwd="+encodeURIComponent(s))
+e.preventDefault();const s=prompt("🔒 密码查看：");s&&(location.href=n.dataset.url+"?pwd="+encodeURIComponent(s))
 }
 });
 let h=0;
