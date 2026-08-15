@@ -41,4 +41,4 @@ a{color:#444;text-decoration:none}
 {%endif%}
 <script>document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('.encrypted-link').forEach(e=>{e.onclick=t=>{t.preventDefault();const n=prompt("🔒 请输入密码查看：");n&&(location.href=e.dataset.url+"?pwd="+encodeURIComponent(n))}})})</script>
 </body>
-</html> 
+</html>
