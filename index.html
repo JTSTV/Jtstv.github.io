@@ -32,17 +32,11 @@ a{color:#444;text-decoration:none}
 <div class="post-item">
 {%if post.pw%}
 <a class="encrypted-link" data-url="{{post.url | relative_url}}">
-<div class="post-row">
-<span class="post-title-text">🔒 {{post.title}}</span>
-<span class="post-date">{{post.date | date:"%Y-%m-%d"}}</span>
-</div>
+<div class="post-row"><span class="post-title-text">🔒 {{post.title}}</span><span class="post-date">{{post.date | date:"%Y-%m-%d"}}</span></div>
 </a>
 {%else%}
 <a href="{{post.url | relative_url}}">
-<div class="post-row">
-<span class="post-title-text">{{post.title}}</span>
-<span class="post-date">{{post.date | date:"%Y-%m-%d"}}</span>
-</div>
+<div class="post-row"><span class="post-title-text">{{post.title}}</span><span class="post-date">{{post.date | date:"%Y-%m-%d"}}</span></div>
 </a>
 {%endif%}
 </div>
@@ -54,17 +48,14 @@ a{color:#444;text-decoration:none}
 {%if paginator.next_page%}<a href="{{paginator.next_page_path}}">下一页</a>{%else%}<span>下一页</span>{%endif%}
 </div>
 {%endif%}
-<!-- setTimeout延迟绑定事件；让浏览器先完成首次页面绘制，再执行JS逻辑，解决清空缓存打开瞬间卡顿 -->
 <script>
+requestAnimationFrame(()=>{
 setTimeout(()=>{
 document.querySelectorAll('.encrypted-link').forEach(e=>{
-e.onclick=t=>{
-t.preventDefault();
-const n=prompt("🔒 请输入密码查看：");
-n&&(location.href=e.dataset.url+"?pwd="+encodeURIComponent(n));
-}
+e.onclick=t=>{t.preventDefault();const p=prompt("🔒 请输入密码查看：");p&&(location.href=e.dataset.url+"?pwd="+encodeURIComponent(p));};
 })
-},80);
+},0);
+});
 </script>
 </body>
 </html>
