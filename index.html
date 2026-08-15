@@ -13,85 +13,72 @@ layout: null
 <link rel="canonical" href="{{site.url}}{{page.url | relative_url}}">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font:16px system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#2c333a;padding:24px 16px;line-height:1.65}
+body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c333a;padding:24px 16px;line-height:1.65}
 .container{max-width:720px;margin:0 auto}
-.site-header{text-align:right;margin-bottom:30px}
-/*七彩虹渐变文字 相邻色不重复 红‑橙‑黄‑绿‑蓝‑靛‑紫*/
-.gradient‑text{
-  font-size:24px;
-  font-weight:700;
-  background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);
-  -webkit-background‑clip:text;
-  background‑clip:text;
-  color:transparent;
-  text-decoration:none;
-}
+.site-header{text-align:right;margin-bottom:28px}
+.site-header a{font-size:22px;font-weight:600;color:#2563eb;text-decoration:none}
+
+/*文章列表方框：七彩虹边框*/
 .post-item{margin-bottom:14px}
 .post-item a{
   display:block;
   background:#ffffff;
   padding:18px 20px;
   border-radius:12px;
-  /*细七彩渐变边框，轻量不耗性能*/
   border:2px solid;
-  border‑image:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de) 1;
-  box-shadow:0 1px 3px rgba(0,0,0,0.06);
+  border-image:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de) 1;
+  box-shadow:0 1px 4px rgba(0,0,0,0.07);
   text-decoration:none;
-  transition:background‑color 0.18s ease;
+  transition:background-color 0.22s ease;
 }
-.post-item a:hover{background‑color:#f4f7ff;}
-.post-row{display:flex;justify‑content:space‑between;align‑items:center;gap:12px}
-.post-title-text{font‑size:17px;color:#1f2937}
-.post-date{font‑size:13px;color:#71717a;white‑space:nowrap}
-.pagination{
-  margin‑top:38px;
-  display:flex;
-  gap:10px;
-  justify‑content:center;
-  align‑items:center;
-  flex‑wrap:wrap;
+.post-item a:hover{
+  background-color:#f4f7ff;
 }
-.pagination a,.pagination span{
-  padding:9px 15px;
-  border‑radius:8px;
-  font‑size:15px;
-  text‑decoration:none;
+/*标题整行，日期另起一行靠右*/
+.post-title-text{
+  font-size:17px;
+  color:#1f2937;
+  display:block;
+  margin-bottom:6px;
 }
+.post-date{
+  font-size:13px;
+  color:#71717a;
+  display:block;
+  text-align:right;
+}
+
+/*分页恢复原版蓝色，不要七彩虹*/
+.pagination{margin-top:36px;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap}
+.pagination a,.pagination span{padding:8px 14px;border-radius:8px;font-size:15px;text-decoration:none}
 .pagination a{
-  background:linear‑gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);
-  color:#fff;
-  border:none;
+  background:#2563eb;
+  color:#ffffff;
 }
 .pagination span{background:#e4e7ec;color:#6b7280}
-@media(max‑width:600px){
+
+@media(max-width:600px){
 body{padding:16px 12px}
 .post-item a{padding:14px 16px}
-.post-title-text{font‑size:16px}
-.gradient‑text{font‑size:21px}
+.post-title-text{font-size:16px}
 }
 </style>
 </head>
 <body>
 <div class="container">
-<div class="site-header">
-<a href="/" class="gradient‑text">{{site.title}}</a>
-</div>
+<div class="site-header"><a href="/">{{site.title}}</a></div>
 
 {%for post in paginator.posts%}
 <div class="post-item">
 {%if post.pw%}
 <a class="encrypted-link" data-url="{{post.url | relative_url}}">
-<div class="post-row">
-<span class="post-title-text">🔒 {{post.title}}</span>
-<span class="post-date">{{post.date | date:"%Y‑%m‑%d"}}</span>
-</div>
+  <span class="post-title-text">🔒 {{post.title}}</span>
+  <span class="post-date">{{post.date | date:"%Y-%m-%d"}}</span>
 </a>
 {%else%}
 <a href="{{post.url | relative_url}}">
-<div class="post-row">
-<span class="post-title-text">{{post.title}}</span>
-<span class="post-date">{{post.date | date:"%Y‑%m‑%d"}}</span>
-</div>
+  <span class="post-title-text">{{post.title}}</span>
+  <span class="post-date">{{post.date | date:"%Y-%m-%d"}}</span>
 </a>
 {%endif%}
 </div>
