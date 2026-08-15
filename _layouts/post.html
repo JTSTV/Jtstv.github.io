@@ -27,52 +27,35 @@ body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c33
   font-weight:600;
 }
 
-/* post-head 彩虹边框，伪元素mask方案，移除border-image */
-.post-head{
-  background:#fff;
-  padding:24px 26px;
+/* ====== 双层嵌套彩虹卡片 【不再使用mask伪元素】====== */
+/* 外层：彩虹渐变背景，充当边框，2px厚度靠padding */
+.wrap-gradient{
+  background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);
+  padding:2px; /* 这个值就是彩虹边框粗细 */
   border-radius:12px;
   box-shadow:0 1px 4px rgba(0,0,0,0.07);
   margin-bottom:16px;
-  position:relative;
 }
-.post-head::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:12px;
-  padding:2px;
-  background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);
-  pointer-events:none;
-  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
-  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
-  -webkit-mask-composite:xor;
-  mask-composite:exclude;
+/* 内层：白色内容盒子，所有文字放这里，绝对不会越界 */
+.inner-white{
+  background:#ffffff;
+  border-radius:10px; /* 比外层小2px，避免圆角切掉渐变 */
+  padding:24px 26px;
 }
 
 .post-title{font-size:24px;font-weight:700;color:#111827;margin-bottom:8px}
 .post-date{font-size:14px;color:#71717a;text-align:right;display:block}
 
-/* post-content 内容卡片，修复长文本溢出 */
-.post-content{
-  background:#fff;
-  padding:26px;
+.post-content-wrap{
+  background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);
+  padding:2px;
   border-radius:12px;
   box-shadow:0 1px 4px rgba(0,0,0,0.07);
-  position:relative;
 }
-.post-content::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:12px;
-  padding:2px;
-  background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);
-  pointer-events:none;
-  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
-  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
-  -webkit-mask-composite:xor;
-  mask-composite:exclude;
+.post-content{
+  background:#fff;
+  border-radius:10px;
+  padding:26px;
 }
 
 .post-content p{margin-bottom:16px}
@@ -88,8 +71,8 @@ body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c33
 
 @media(max-width:600px){
 body{padding:16px 12px}
-.post-head{padding:18px 16px}
-.post-content{padding:18px 16px}
+.wrap-gradient .inner-white{padding:18px 16px}
+.post-content-wrap .post-content{padding:18px 16px}
 .post-title{font-size:20px}
 }
 </style>
@@ -98,13 +81,18 @@ body{padding:16px 12px}
 <div class="container">
 <div class="site-back"><a href="/">← 返回首页</a></div>
 
-<div class="post-head">
-<div class="post-title">{{page.title}}</div>
-<div class="post-date">{{page.date | date:"%Y-%m-%d"}}</div>
+<!-- 标题卡片：外层渐变，内层白色 -->
+<div class="wrap-gradient">
+  <div class="inner-white">
+    <div class="post-title">{{page.title}}</div>
+    <div class="post-date">{{page.date | date:"%Y-%m-%d"}}</div>
+  </div>
 </div>
 
 {%if page.pw%}
-<div id="secret-content" class="post-content" style="display:none">{{content}}</div>
+<div class="post-content-wrap" id="secret-content" style="display:none">
+  <div class="post-content">{{content}}</div>
+</div>
 <div id="encrypt-mask">
 <div class="mask-inner">
 <div class="lock-msg">🔒 该文章已加密，请输入访问密码</div>
@@ -140,7 +128,9 @@ input.focus();
 })();
 </script>
 {%else%}
-<div class="post-content">{{content}}</div>
+<div class="post-content-wrap">
+  <div class="post-content">{{content}}</div>
+</div>
 {%endif%}
 </div>
 </body>
