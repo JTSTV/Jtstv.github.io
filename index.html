@@ -45,10 +45,10 @@ pointer-events:none
 .site-title{position:relative;z-index:1;font-size:19px;font-weight:600;text-decoration:none;display:block;padding:10px 14px;border-radius:10px;text-align:right;background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);-webkit-background-clip:text;background-clip:text;color:transparent}
 .post-item{margin-bottom:14px}
 .post-item a{text-decoration:none;display:block}
-.grad-box-1{background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);padding:2px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
-.grad-box-2{background:linear-gradient(90deg,#007aff,#34c759,#ffcc00,#ff2d55,#bf5af2,#5e5ce6,#ff9500);padding:2px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
-.grad-box-3{background:linear-gradient(90deg,#2cd75a,#00c7be,#007aff,#af52de,#ff2d55,#ff9500,#ffcc00);padding:2px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
-.grad-box-4{background:linear-gradient(90deg,#ff2d55,#ff9500,#ffcc00,#2cd75a,#00c7be,#5e5ce6,#bf5af2);padding:2px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.box0{background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);padding:2px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.box1{background:linear-gradient(90deg,#007aff,#34c759,#ffcc00,#ff2d55,#bf5af2,#5e5ce6,#ff9500);padding:2px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.box2{background:linear-gradient(90deg,#2cd75a,#00c7be,#007aff,#af52de,#ff2d55,#ff9500,#ffcc00);padding:2px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.box3{background:linear-gradient(90deg,#ff2d55,#ff9500,#ffcc00,#2cd75a,#00c7be,#5e5ce6,#bf5af2);padding:2px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
 .inner-card{background:#fff;border-radius:10px;padding:18px 20px;overflow-x:auto;word-break:break-all}
 .inner-card:hover{background:#f4f7ff}
 .post-title-text{font-size:17px;color:#1f2937;margin-bottom:6px;display:block}
@@ -76,26 +76,18 @@ body{padding-top:8px;padding-left:12px;padding-right:12px;padding-bottom:16px}
 <div class="site-header">
 <div class="site-title-wrap"><a href="/" class="site-title">{{ site.title }}</a></div>
 </div>
-{% assign mod = 0 %}
+
 {% for post in paginator.posts %}
-{% assign mod = mod | plus:1 %}
 <div class="post-item">
 <a href="{{ post.url | relative_url }}">
-{% if mod | modulo:4 ==1 %}
-<div class="grad-box-1"><div class="inner-card">
-{% elsif mod | modulo:4 ==2 %}
-<div class="grad-box-2"><div class="inner-card">
-{% elsif mod | modulo:4 ==3 %}
-<div class="grad-box-3"><div class="inner-card">
-{% else %}
-<div class="grad-box-4"><div class="inner-card">
-{% endif %}
+<div class="inner-card">
 <span class="post-title-text">{% if post.pw %}🔒 {% endif %}{{ post.title }}</span>
 <span class="post-date-text">{{ post.date | date:"%Y-%m-%d" }}</span>
-</div></div>
+</div>
 </a>
 </div>
 {% endfor %}
+
 {% if paginator.total_pages > 1 %}
 <div class="pagination">
 <div class="pagination-inner">
@@ -118,5 +110,22 @@ body{padding-top:8px;padding-left:12px;padding-right:12px;padding-bottom:16px}
 </div>
 {% endif %}
 </div>
+
+<script>
+(function(){
+  const items=document.querySelectorAll('.post-item');
+  const cls=['box0','box1','box2','box3'];
+  let last=-1;
+  items.forEach(el=>{
+    let idx;
+    // 避免和上一个边框样式相同
+    do{
+      idx=Math.floor(Math.random()*cls.length);
+    }while(idx===last);
+    el.classList.add(cls[idx]);
+    last=idx;
+  })
+})();
+</script>
 </body>
 </html>
