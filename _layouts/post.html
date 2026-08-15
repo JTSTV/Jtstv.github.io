@@ -5,7 +5,7 @@ layout: null
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="robots" content="index,follow">
 <title>{%if page.title%}{{page.title}} - {{site.title}}{%else%}{{site.title}}{%endif%}</title>
 <meta name="description" content="{%if page.excerpt%}{{page.excerpt|strip_html|truncate:160}}{%else%}{{site.description}}{%endif%}">
@@ -49,12 +49,8 @@ a{color:#444;text-decoration:none}
 const mask=document.getElementById('encrypt-mask');
 if(mask){
 const correctPwd="{{page.pw}}".trim(),contentDiv=document.getElementById('secret-content'),input=document.getElementById('pwd-input'),errorDiv=document.getElementById('error-msg');
-function checkPwd(){const val=input.value;if(!val)return;val===correctPwd?(mask.style.display='none',contentDiv.style.display='block',sessionStorage.setItem('post_pwd_'+location.pathname,val),errorDiv.style.display='none'):(errorDiv.style.display='block',input.value='',input.focus())}
-window.onload=()=>{
-const urlPwd=new URLSearchParams(location.search).get('pwd');
-urlPwd?(input.value=urlPwd,checkPwd(),history.replaceState(null,'',location.pathname)):sessionStorage.getItem('post_pwd_'+location.pathname)&&(mask.style.display='none',contentDiv.style.display='block');
-input.focus();input.addEventListener('keypress',e=>e.key==='Enter'&&checkPwd())
-}
+function checkPwd(){const v=input.value;if(!v)return;v===correctPwd?(mask.style.display='none',contentDiv.style.display='block',sessionStorage.setItem('post_pwd_'+location.pathname,v),errorDiv.style.display='none'):(errorDiv.style.display='block',input.value='',input.focus())}
+requestAnimationFrame(()=>{setTimeout(()=>{input.focus();input.addEventListener('keypress',e=>e.key==='Enter'&&checkPwd())},0);});
 }
 </script>
 </body>
