@@ -27,24 +27,22 @@ body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c33
   font-weight:600;
 }
 
-/* ====== 双层嵌套彩虹卡片 【不再使用mask伪元素】====== */
-/* 外层：彩虹渐变背景，充当边框，2px厚度靠padding */
+/* 外层渐变边框，padding充当边框 */
 .wrap-gradient{
   background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);
-  padding:2px; /* 这个值就是彩虹边框粗细 */
+  padding:2px;
   border-radius:12px;
   box-shadow:0 1px 4px rgba(0,0,0,0.07);
   margin-bottom:16px;
 }
-/* 内层：白色内容盒子，所有文字放这里，绝对不会越界 */
 .inner-white{
   background:#ffffff;
-  border-radius:10px; /* 比外层小2px，避免圆角切掉渐变 */
+  border-radius:10px;
   padding:24px 26px;
+  /* 防止标题内容溢出 */
+  overflow-x:auto;
+  word-break:break-all;
 }
-
-.post-title{font-size:24px;font-weight:700;color:#111827;margin-bottom:8px}
-.post-date{font-size:14px;color:#71717a;text-align:right;display:block}
 
 .post-content-wrap{
   background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);
@@ -56,11 +54,19 @@ body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c33
   background:#fff;
   border-radius:10px;
   padding:26px;
+  /* ==========核心防溢出两行========== */
+  overflow-x: auto;
+  word-break: break-all;
 }
 
 .post-content p{margin-bottom:16px}
 .post-content img{max-width:100%;height:auto;border-radius:8px;margin:12px 0}
 .post-content h1,.post-content h2,.post-content h3{margin:20px 0 10px}
+/* 针对表格、代码块强制压缩宽度 */
+.post-content pre,.post-content table{
+  max-width:100%;
+  overflow-x:auto;
+}
 
 #encrypt-mask{position:fixed;inset:0;background:rgba(0,0,0,.42);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px}
 .mask-inner{background:#fff;width:100%;max-width:380px;padding:28px 24px;border-radius:14px;text-align:center}
@@ -81,7 +87,6 @@ body{padding:16px 12px}
 <div class="container">
 <div class="site-back"><a href="/">← 返回首页</a></div>
 
-<!-- 标题卡片：外层渐变，内层白色 -->
 <div class="wrap-gradient">
   <div class="inner-white">
     <div class="post-title">{{page.title}}</div>
