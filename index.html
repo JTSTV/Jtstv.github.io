@@ -15,69 +15,30 @@ layout: null
 *{margin:0;padding:0;box-sizing:border-box}
 body{font:16px/1.6 sans-serif;padding:20px 30px}
 a{color:#444;text-decoration:none}
-/*站点标题，靠右，和原版保持*/
 .site-title{margin-bottom:20px;text-align:right;font-size:20px;font-weight:600}
-/*单篇文章项，扁平化，去掉多余嵌套div层级*/
 .post-item{padding:12px 0;position:relative}
 .post-item a{display:block;font-size:18px;padding:15px 20px 35px}
 .post-date{position:absolute;bottom:10px;right:15px;font-size:11px;color:#666}
-/*分页*/
 .pagination{margin-top:24px}
 .pagination a,.pagination span{font-size:16px;color:#444;margin-right:8px}
-/*移动端，完全复用原版参数*/
-@media(max-width:600px){
-body{padding:15px 20px}
-.site-title{font-size:18px}
-.post-item a{font-size:16px;padding:12px 15px 30px}
-.post-date{bottom:8px;right:12px;font-size:10px}
-}
+@media(max-width:600px){body{padding:15px 20px}.site-title{font-size:18px}.post-item a{font-size:16px;padding:12px 15px 30px}.post-date{bottom:8px;right:12px;font-size:10px}}
 </style>
 </head>
 <body>
-<div class="site-title">
-<a href="/">{{site.title}}</a>
-</div>
-
+<div class="site-title"><a href="/">{{site.title}}</a></div>
 {%for post in paginator.posts%}
 <div class="post-item">
-{%if post.pw%}
-<a class="encrypted-link" data-url="{{post.url | relative_url}}">🔒 {{post.title}}</a>
-{%else%}
-<a href="{{post.url | relative_url}}">{{post.title}}</a>
-{%endif%}
+{%if post.pw%}<a class="encrypted-link" data-url="{{post.url | relative_url}}">🔒 {{post.title}}</a>{%else%}<a href="{{post.url | relative_url}}">{{post.title}}</a>{%endif%}
 <div class="post-date">{{post.date | date:"%Y-%m-%d"}}</div>
 </div>
 {%endfor%}
-
 {%if paginator.total_pages>1%}
 <div class="pagination">
-{%if paginator.previous_page%}
-<a href="{{paginator.previous_page_path}}">上一页</a>
-{%else%}
-<span>上一页</span>
-{%endif%}
+{%if paginator.previous_page%}<a href="{{paginator.previous_page_path}}">上一页</a>{%else%}<span>上一页</span>{%endif%}
 <a href="mailto:jtstv@outlook.com">jtstv@outlook.com</a>
-{%if paginator.next_page%}
-<a href="{{paginator.next_page_path}}">下一页</a>
-{%else%}
-<span>下一页</span>
-{%endif%}
+{%if paginator.next_page%}<a href="{{paginator.next_page_path}}">下一页</a>{%else%}<span>下一页</span>{%endif%}
 </div>
 {%endif%}
-
-<script>
-document.addEventListener('DOMContentLoaded',function(){
-var links=document.querySelectorAll('.encrypted-link');
-links.forEach(function(el){
-el.onclick=function(e){
-e.preventDefault();
-var p=prompt("🔒 请输入密码查看：");
-if(p){
-location.href=this.dataset.url+"?pwd="+encodeURIComponent(p);
-}
-}
-})
-})
-</script>
+<script>document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('.encrypted-link').forEach(e=>{e.onclick=t=>{t.preventDefault();const n=prompt("🔒 请输入密码查看：");n&&(location.href=e.dataset.url+"?pwd="+encodeURIComponent(n))}})})</script>
 </body>
 </html>
