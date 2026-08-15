@@ -1,0 +1,74 @@
+name: Auto‑process post (self‑written shell)
+on:
+  push:
+    branches: [ main ]
+jobs:
+  convert_raw_post:
+    runs-on: ubuntu-latest
+    # bot自己的提交直接跳过，避免无限循环
+    if: "! contains(github.event.head_commit.message, '[SKIP_POST_AUTO]')"
+    steps:
+      - name: Native git clone source
+        run: |
+          git clone https://github.com/${GITHUB_REPOSITORY}.git .
+          git config core.autocrlf false
+
+      - name: Set Beijing timezone UTC+8
+        run: |
+          sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+          echo "Asia/Shanghai" | sudo tee /etc/timezone
+
+      - name: Process raw files inside _posts
+        run: |
+          POST_FOLDER="_posts"
+          TODAY=$(date +%Y-%m-%d)
+          CHANGED=0
+          mkdir -p "${POST_FOLDER}"
+          cd "${POST_FOLDER}"
+
+          for f in *; do
+            # 跳过文件夹
+            [ -d "${f}" ] && continue
+            # 已经是md后缀的旧文章直接跳过，不改动旧内容（包括带pw加密文章）
+            if [[ "${f}" == *.md ]]; then
+              continue
+            fi
+            # 已经是标准YYYY‑MM‑DD‑ 前缀的直接跳过
+            if echo "${f}" | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}-' >/dev/null;then
+              continue
+            fi
+
+            base_name="${f}"
+            out_md="${TODAY}-${base_name}.md"
+
+            # awk原生脚本：front‑matter没有date就插入date，pw、title全部保留不动
+            if ! grep '^date:' "${f}" >/dev/null; then
+              awk '
+                BEGIN{ins=0}
+                /^---/ && ins==0{
+                  print;
+                  print "date: '"${TODAY}"'";
+                  ins=1;
+                  next;
+                }
+                {print}
+              ' "${f}" > _tmp_work.tmp && mv _tmp_work.tmp "${f}"
+            fi
+
+            mv "${f}" "${out_md}"
+            CHANGED=1
+          done
+
+          cd ..
+
+          if [ "${CHANGED}" -eq 0 ]; then
+            echo "No raw post file to convert, exit."
+            exit 0
+          fi
+
+          # bot提交，打上标记，不再触发本workflow
+          git config --global user.name="KBlog‑AutoBot"
+          git config --global user.email="autobot@local.internal"
+          git add "${POST_FOLDER}/"
+          git commit -m "[SKIP_POST_AUTO] auto convert raw file to jekyll post"
+          git push
