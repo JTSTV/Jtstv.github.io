@@ -19,30 +19,8 @@ layout: null
 *{margin:0;padding:0;box-sizing:border-box}
 body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c333a;padding-top:12px;padding-left:16px;padding-right:16px;padding-bottom:24px;line-height:1.65}
 .container{max-width:720px;margin:0 auto}
-.site-header{margin-bottom:2px}
-@keyframes rainbow{
-0%{background-position:0% 50%}
-50%{background-position:100% 50%}
-100%{background-position:0% 50%}
-}
-.site-title-wrap{display:block;position:relative;padding:2px;border-radius:12px;background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de,#ff3b30);background-size:400% 400%;animation:rainbow 6s linear infinite}
-.site-title-wrap::before{
-content:"";
-position:absolute;
-inset:2px;
-border-radius:10px;
-background:linear-gradient(90deg,
-rgba(255,59,48,.08),
-rgba(255,149,0,.08),
-rgba(255,204,0,.08),
-rgba(52,199,89,.08),
-rgba(0,122,255,.08),
-rgba(88,86,214,.08),
-rgba(175,82,222,.08)
-);
-pointer-events:none
-}
-.site-title{position:relative;z-index:1;font-size:19px;font-weight:600;text-decoration:none;display:block;padding:10px 14px;border-radius:10px;text-align:right;background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);-webkit-background-clip:text;background-clip:text;color:transparent}
+.site-header{margin-bottom:2px;text-align:right}
+.site-title{font-size:19px;font-weight:600;text-decoration:none;color:#2c333a}
 .post-item{margin-bottom:14px}
 .post-item a{text-decoration:none;display:block}
 .box0{background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);padding:2px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
@@ -74,7 +52,7 @@ body{padding-top:8px;padding-left:12px;padding-right:12px;padding-bottom:16px}
 <body>
 <div class="container">
 <div class="site-header">
-<div class="site-title-wrap"><a href="/" class="site-title">{{ site.title }}</a></div>
+<a href="/" class="site-title">{{ site.title }}</a>
 </div>
 
 {% for post in paginator.posts %}
@@ -118,7 +96,6 @@ body{padding-top:8px;padding-left:12px;padding-right:12px;padding-bottom:16px}
   let last=-1;
   items.forEach(el=>{
     let idx;
-    // 避免和上一个边框样式相同
     do{
       idx=Math.floor(Math.random()*cls.length);
     }while(idx===last);
