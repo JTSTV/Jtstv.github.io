@@ -1,74 +1,63 @@
-name: Auto‑process post (self‑written shell)
+name: Auto‑Post：文件名做标题
 on:
   push:
     branches: [ main ]
 jobs:
   convert_raw_post:
     runs-on: ubuntu-latest
-    # bot自己的提交直接跳过，避免无限循环
-    if: "! contains(github.event.head_commit.message, '[SKIP_POST_AUTO]')"
+    if: "! contains(github.event.head_commit.message, '[SKIP_AUTO_TITLE]')"
     steps:
-      - name: Native git clone source
+      - name: git原生拉取代码
         run: |
           git clone https://github.com/${GITHUB_REPOSITORY}.git .
           git config core.autocrlf false
 
-      - name: Set Beijing timezone UTC+8
+      - name: 设置北京时间东八区
         run: |
           sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
           echo "Asia/Shanghai" | sudo tee /etc/timezone
 
-      - name: Process raw files inside _posts
+      - name: 核心脚本：文件名作为title自动生成front‑matter
         run: |
-          POST_FOLDER="_posts"
+          POST_DIR="_posts"
           TODAY=$(date +%Y-%m-%d)
           CHANGED=0
-          mkdir -p "${POST_FOLDER}"
-          cd "${POST_FOLDER}"
+          mkdir -p "${POST_DIR}"
+          cd "${POST_DIR}"
 
-          for f in *; do
-            # 跳过文件夹
-            [ -d "${f}" ] && continue
-            # 已经是md后缀的旧文章直接跳过，不改动旧内容（包括带pw加密文章）
-            if [[ "${f}" == *.md ]]; then
-              continue
-            fi
-            # 已经是标准YYYY‑MM‑DD‑ 前缀的直接跳过
-            if echo "${f}" | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}-' >/dev/null;then
-              continue
-            fi
+          for file in *; do
+            [ -d "${file}" ] && continue
+            # 已经是 .md 的旧文章直接跳过
+            [[ "${file}" == *.md ]] && continue
+            # 已经带日期前缀的跳过
+            echo "${file}" | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}-' >/dev/null && continue
 
-            base_name="${f}"
-            out_md="${TODAY}-${base_name}.md"
+            TITLE_FROM_FILENAME="${file}"
+            TMP_RAW=$(mktemp)
+            OUT_MD="${TODAY}-${file}.md"
 
-            # awk原生脚本：front‑matter没有date就插入date，pw、title全部保留不动
-            if ! grep '^date:' "${f}" >/dev/null; then
-              awk '
-                BEGIN{ins=0}
-                /^---/ && ins==0{
-                  print;
-                  print "date: '"${TODAY}"'";
-                  ins=1;
-                  next;
-                }
-                {print}
-              ' "${f}" > _tmp_work.tmp && mv _tmp_work.tmp "${f}"
-            fi
+            # 组装完整jekyll front‑matter
+            {
+              echo '---'
+              echo "title: \"${TITLE_FROM_FILENAME}\""
+              echo "date: ${TODAY}"
+              echo '---'
+              cat "${file}"
+            } > "${TMP_RAW}"
 
-            mv "${f}" "${out_md}"
+            rm -f "${file}"
+            mv "${TMP_RAW}" "${OUT_MD}"
             CHANGED=1
           done
 
           cd ..
-
-          if [ "${CHANGED}" -eq 0 ]; then
-            echo "No raw post file to convert, exit."
+          if [[ ${CHANGED} -eq 0 ]]; then
+            echo "无需要转换的文件，退出"
             exit 0
           fi
 
-          # bot提交，打上标记，不再触发本workflow
-          git config --global user.name="KBlog‑AutoBot"
-          git config --global user.email="autobot@local.internal"
-          git add "${POST_FOLDER}/"
-          git commit -m "[SKIP_POST_AUTO] auto convert raw file to jekyll post"
+          git config user.name "KBot‑Auto"
+          git config user.email "bot@local"
+          git add "${POST_DIR}/"
+          git commit -m "[SKIP_AUTO_TITLE] auto:文件名生成标题"
           git push
