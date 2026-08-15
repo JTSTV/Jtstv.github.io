@@ -16,7 +16,33 @@ layout: null
 body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c333a;padding:24px 16px;line-height:1.65}
 .container{max-width:720px;margin:0 auto}
 .site-header{text-align:right;margin-bottom:28px}
-.site-header a{font-size:22px;font-weight:600;color:#2563eb;text-decoration:none}
+
+/*紧贴文字的彩虹边框，无JS，伪元素实现*/
+.site-title-wrap{
+  display:inline-block;
+  position:relative;
+  padding:2px 6px;
+}
+.site-title-wrap::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:6px;
+  padding:2px;
+  background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;
+  mask-composite:exclude;
+  pointer-events:none;
+}
+.site-title{
+  font-size:22px;
+  font-weight:600;
+  text-decoration:none;
+  color:#2563eb;
+}
+
 .post-item{margin-bottom:14px}
 .post-item a{
   display:block;background:#fff;padding:18px 20px;border-radius:12px;
@@ -25,7 +51,6 @@ body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c33
   text-decoration:none;transition:background-color .22s ease;
 }
 .post-item a:hover{background:#f4f7ff}
-/*循环4套不同渐变边框 nth‑child(4n+1) ~ (4n+4) */
 .post-item:nth-child(4n+1) a {
   border-image:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de) 1;
 }
@@ -38,11 +63,8 @@ body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c33
 .post-item:nth-child(4n+4) a {
   border-image:linear-gradient(90deg,#ff2d55,#ff9500,#ffcc00,#2cd75a,#00c7be,#5e5ce6,#bf5af2) 1;
 }
-
 .post-title-text{font-size:17px;color:#1f2937;display:block;margin-bottom:6px}
 .post-date{font-size:13px;color:#71717a;display:block;text-align:right}
-
-/*分页卡片单独一套渐变，单行不换行，横向滚动*/
 .pagination{
   margin-top:36px;
   padding:16px 20px;
@@ -63,7 +85,6 @@ body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c33
 .pagination a,.pagination span{padding:8px 14px;border-radius:8px;font-size:15px;text-decoration:none;white-space:nowrap}
 .pagination a{background:transparent;color:#2563eb}
 .pagination span{background:transparent;color:#9ca3af}
-
 @media(max-width:600px){
 body{padding:16px 12px}
 .post-item a{padding:14px 16px}
@@ -74,7 +95,11 @@ body{padding:16px 12px}
 </head>
 <body>
 <div class="container">
-<div class="site-header"><a href="/">{{site.title}}</a></div>
+<div class="site-header">
+<div class="site-title-wrap">
+<a href="/" class="site-title">{{site.title}}</a>
+</div>
+</div>
 {%for post in paginator.posts%}
 <div class="post-item">
 <a href="{{post.url | relative_url}}">
