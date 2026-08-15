@@ -3,7 +3,8 @@ layout: null
 ---
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 {% for page in site.pages %}
-{% if page.layout != 'null' and page.sitemap != false and page.url != '/404.html' and page.url %}
+{% assign ext = page.url | split:'.' | last %}
+{% if page.layout != 'null' and page.sitemap != false and page.url != '/404.html' and page.url and ext == 'html' %}
   <url>
     <loc>{{ site.url }}{{ page.url | relative_url }}</loc>
     <lastmod>{{ page.lastmod | default: site.time | date_to_xmlschema }}</lastmod>
@@ -22,4 +23,11 @@ layout: null
   </url>
 {% endif %}
 {% endfor %}
+<!-- 首页单独最高权重 -->
+<url>
+  <loc>{{ site.url }}/</loc>
+  <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+  <changefreq>daily</changefreq>
+  <priority>1.0</priority>
+</url>
 </urlset>
