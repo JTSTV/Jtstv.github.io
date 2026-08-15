@@ -16,31 +16,15 @@ layout: null
 body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c333a;padding:24px 16px;line-height:1.65}
 .container{max-width:720px;margin:0 auto}
 .site-header{text-align:right;margin-bottom:28px}
-
-/*紧贴文字的彩虹边框，无JS，伪元素实现*/
-.site-title-wrap{
-  display:inline-block;
-  position:relative;
-  padding:2px 6px;
-}
-.site-title-wrap::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:6px;
-  padding:2px;
-  background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);
-  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
-  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
-  -webkit-mask-composite:xor;
-  mask-composite:exclude;
-  pointer-events:none;
-}
+/* 和post页面返回链接完全一致的纯CSS七彩虹文字，无JS */
 .site-title{
   font-size:22px;
   font-weight:600;
   text-decoration:none;
-  color:#2563eb;
+  background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
 }
 
 .post-item{margin-bottom:14px}
@@ -96,9 +80,7 @@ body{padding:16px 12px}
 <body>
 <div class="container">
 <div class="site-header">
-<div class="site-title-wrap">
 <a href="/" class="site-title">{{site.title}}</a>
-</div>
 </div>
 {%for post in paginator.posts%}
 <div class="post-item">
