@@ -9,20 +9,26 @@ for file in *; do
   [[ "${file}" == *.md ]] && continue
   echo "${file}" | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}-' >/dev/null && continue
 
-  TMP_RAW=$(mktemp)
   TITLE_FROM_FILENAME="${file}"
-  OUT_MD="${TODAY}-${TITLE_FROM_FILENAME}.md"
+  SAFE_FILENAME=$(echo "$file" | sed 's/[\/:*?"<>|]/_/g')
+  OUT_MD="${TODAY}-${SAFE_FILENAME}.md"
+
   {
     echo '---'
-    echo "title: \"${TITLE_FROM_FILENAME}\""
+    echo "title: |-"
+    echo "  ${TITLE_FROM_FILENAME}"
     echo "date: ${TODAY}"
     echo '---'
+    # 读取源文件内容；空/只有空格也保留输出，不会截断
     cat "${file}"
-  } > "${TMP_RAW}"
+    # cat完全无输出时补一个换行，防止md结尾异常
+    echo ""
+  } > "${OUT_MD}"
 
-  rm -f "${file}"
-  mv "${TMP_RAW}" "${OUT_MD}"
-  CHANGED=1
+  if [ -f "${OUT_MD}" ];then
+    rm -f "${file}"
+    CHANGED=1
+  fi
 done
 
 cd ..
