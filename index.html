@@ -11,19 +11,17 @@ layout: null
 <meta name="description" content="{{ site.description }}">
 <meta name="keywords" content="{{ site.keywords }}">
 <link rel="canonical" href="{{ site.url }}{{ page.url }}">
-<style>*{margin:0;padding:0;box-sizing:border-box}body{font:17px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c333a;padding:32px 24px;line-height:1.8}.container{max-width:720px;margin:0 auto}.site-header{margin-bottom:28px;text-align:right}.site-title{font-size:21px;font-weight:600;color:#2c333a;display:inline-block}.post-item{margin-bottom:28px}.inner-card{padding:0}.post-title-text{font-size:19px;color:#1f2937;margin-bottom:8px;display:block}.post-date-text{font-size:15px;color:#71717a;text-align:right;display:block}.pagination{margin-top:48px}.pagination-inner{display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:nowrap}.pagination-email{font-size:15px;color:#71717a;padding:0 10px}.pagination a,.pagination span{padding:10px 18px;border-radius:8px;font-size:17px;text-decoration:none;white-space:nowrap}.pagination a{color:#2563eb}.pagination span{color:#6b7280}@media(max-width:600px){body{padding:20px 16px}.site-header{margin-bottom:20px}.post-item{margin-bottom:22px}.post-title-text{font-size:18px}.pagination-inner{gap:10px}.pagination-email{font-size:14px;padding:0 6px}.pagination a,.pagination span{padding:8px 14px;font-size:16px}}</style>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font:17px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c333a;padding:32px 24px;line-height:1.8}.container{max-width:720px;margin:0 auto}.site-header{margin-bottom:28px;text-align:right}.site-title{font-size:21px;font-weight:600;color:#2c333a;display:inline-block}.post-item{margin-bottom:28px}.post-link{text-decoration:none;color:inherit}.post-title-text{font-size:19px;color:#1f2937}.post-date-text{font-size:15px;color:#71717a;margin-left:10px}.pagination{margin-top:48px}.pagination-inner{display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:nowrap}.pagination-email{font-size:15px;color:#71717a;padding:0 10px}.pagination a,.pagination span{padding:10px 18px;border-radius:8px;font-size:17px;text-decoration:none;white-space:nowrap}.pagination a{color:#2563eb}.pagination span{color:#6b7280}@media(max-width:600px){body{padding:20px 16px}.site-header{margin-bottom:20px}.post-item{margin-bottom:22px}.post-title-text{font-size:18px}.pagination-inner{gap:10px}.pagination-email{font-size:14px;padding:0 6px}.pagination a,.pagination span{padding:8px 14px;font-size:16px}}</style>
 </head>
 <body>
 <div class="container">
 <div class="site-header"><div class="site-title">{{ site.title }}</div></div>
 {% for post in paginator.posts %}
 <div class="post-item">
-<a href="{{ post.url | relative_url }}">
-<div class="inner-card">
+<a href="{{ post.url | relative_url }}" class="post-link">
 <span class="post-title-text">{{ post.title }}</span>
-<span class="post-date-text">{{ post.date | date:"%Y-%m-%d" }}</span>
-</div>
 </a>
+<span class="post-date-text">{{ post.date | date:"%Y-%m-%d" }}</span>
 </div>
 {% endfor %}
 {% if paginator.total_pages >1 %}
