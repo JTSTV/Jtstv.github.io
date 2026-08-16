@@ -46,7 +46,8 @@ body{padding:8px 12px 16px}
 <div class="site-title">{{ site.title }}</div>
 </div>
 {% for post in paginator.posts %}
-<div class="post-item">
+{% assign mod = forloop.index | minus:1 | modulo:4 %}
+<div class="post-item{% if mod == 0 %} box0{% elsif mod ==1 %} box1{% elsif mod ==2 %} box2{% elsif mod ==3 %} box3{% endif %}">
 <a href="{{ post.url | relative_url }}">
 <div class="inner-card">
 <span class="post-title-text">{% if post.pw %}🔒 {% endif %}{{ post.title }}</span>
@@ -65,18 +66,5 @@ body{padding:8px 12px 16px}
 </div>
 {% endif %}
 </div>
-<script>
-(()=>{
-  const items=document.querySelectorAll(".post-item");
-  const cls=["box0","box1","box2","box3"];
-  let last=-1;
-  items.forEach(el=>{
-    let idx;
-    do{idx=Math.floor(Math.random()*4)}while(idx===last);
-    el.classList.add(cls[idx]);
-    last=idx;
-  })
-})();
-</script>
 </body>
 </html>
