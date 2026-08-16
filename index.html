@@ -17,11 +17,10 @@ layout: null
 <div class="container">
 <div class="site-header"><div class="site-title">{{ site.title }}</div></div>
 {% for post in paginator.posts %}
-{% assign mod = forloop.index | minus:1 | modulo:2 %}
 <div class="post-item">
 <a href="{{ post.url | relative_url }}">
 <div class="inner-card">
-<span class="post-title-text">{% if post.pw %}🔐 {% endif %}{{ post.title }}</span>
+<span class="post-title-text">{{ post.title }}</span>
 <span class="post-date-text">{{ post.date | date:"%Y-%m-%d" }}</span>
 </div>
 </a>
