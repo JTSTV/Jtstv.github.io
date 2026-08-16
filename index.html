@@ -6,36 +6,27 @@ layout: null
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
-<meta name="robots" content="index,follow">
 <title>{{ site.SEOTitle }}</title>
 <meta name="description" content="{{ site.description }}">
 <meta name="keywords" content="{{ site.keywords }}">
 <link rel="canonical" href="{{ site.url }}{{ page.url }}">
-<meta property="og:title" content="{{ site.SEOTitle }}">
-<meta property="og:description" content="{{ site.description }}">
-<meta property="og:url" content="{{ site.url }}{{ page.url }}">
-<meta property="og:type" content="website">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c333a;padding:12px 16px 24px;line-height:1.65}
 .container{max-width:720px;margin:0 auto}
 .site-header{margin-bottom:2px;text-align:right}
 .site-title{font-size:19px;font-weight:600;color:#2c333a;display:inline-block}
-.post-item{margin-bottom:14px}
-.post-item a{text-decoration:none;display:block}
-.box0{background:linear-gradient(90deg,#ff3b30,#ff9500,#ffcc00,#34c759,#007aff,#5856d6,#af52de);padding:2px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
-.box1{background:linear-gradient(90deg,#007aff,#34c759,#ffcc00,#ff2d55,#bf5af2,#5e5ce6,#ff9500);padding:2px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
-.box2{background:linear-gradient(90deg,#2cd75a,#00c7be,#007aff,#af52de,#ff2d55,#ff9500,#ffcc00);padding:2px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
-.box3{background:linear-gradient(90deg,#ff2d55,#ff9500,#ffcc00,#2cd75a,#00c7be,#5e5ce6,#bf5af2);padding:2px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.post-item{margin-bottom:14px;padding:2px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.box0{background:#007aff}
+.box1{background:#34c759}
+.box2{background:#ff9500}
+.box3{background:#ff2d55}
 .inner-card{background:#fff;border-radius:10px;padding:18px 20px;overflow-x:auto;word-break:break-all}
-.inner-card:hover{background:#f4f7ff}
 .post-title-text{font-size:17px;color:#1f2937;margin-bottom:6px;display:block}
 .post-date-text{font-size:13px;color:#71717a;text-align:right;display:block}
-.pagination{margin-top:36px;padding:2px;background:linear-gradient(90deg,#5e5ce6,#bf5af2,#ff2d55,#ff9500,#ffcc00,#2cd75a,#00c7be);border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07);overflow-x:auto}
+.pagination{margin-top:36px;padding:2px;background:#5e5ce6;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
 .pagination-inner{background:#fff;border-radius:10px;padding:16px 20px;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:nowrap}
 .pagination-email{font-size:13px;color:#71717a;padding:0 8px}
-.pagination::-webkit-scrollbar{height:4px}
-.pagination::-webkit-scrollbar-thumb{background:#ccc;border-radius:2px}
 .pagination a,.pagination span{padding:8px 14px;border-radius:8px;font-size:15px;text-decoration:none;white-space:nowrap}
 .pagination a{color:#2563eb}
 .pagination span{color:#6b7280}
@@ -75,7 +66,17 @@ body{padding:8px 12px 16px}
 {% endif %}
 </div>
 <script>
-(function(){const items=document.querySelectorAll('.post-item');const cls=['box0','box1','box2','box3'];let last=-1;items.forEach(el=>{let idx;do{idx=Math.floor(Math.random()*cls.length)}while(idx===last);el.classList.add(cls[idx]);last=idx})})();
+(()=>{
+  const items=document.querySelectorAll(".post-item");
+  const cls=["box0","box1","box2","box3"];
+  let last=-1;
+  items.forEach(el=>{
+    let idx;
+    do{idx=Math.floor(Math.random()*4)}while(idx===last);
+    el.classList.add(cls[idx]);
+    last=idx;
+  })
+})();
 </script>
 </body>
 </html>
