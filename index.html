@@ -15,21 +15,19 @@ layout: null
 </head>
 <body>
 <div class="container">
-<div class="site-header">
-<div class="site-title">{{ site.title }}</div>
-</div>
+<div class="site-header"><div class="site-title">{{ site.title }}</div></div>
 {% for post in paginator.posts %}
 {% assign mod = forloop.index | minus:1 | modulo:2 %}
-<div class="post-item{% if mod == 0 %} box0{% else %} box1{% endif %}">
+<div class="post-item{% if mod ==0 %} box0{% else %} box1{% endif %}">
 <a href="{{ post.url | relative_url }}">
 <div class="inner-card">
-<span class="post-title-text">{% if post.pw %}🔒 {% endif %}{{ post.title }}</span>
+<span class="post-title-text">{% if post.pw %}🔐 {% endif %}{{ post.title }}</span>
 <span class="post-date-text">{{ post.date | date:"%Y-%m-%d" }}</span>
 </div>
 </a>
 </div>
 {% endfor %}
-{% if paginator.total_pages > 1 %}
+{% if paginator.total_pages >1 %}
 <div class="pagination">
 <div class="pagination-inner">
 {% if paginator.previous_page %}<a href="{{ paginator.previous_page_path }}">上一页</a>{% else %}<span>上一页</span>{% endif %}
@@ -39,5 +37,5 @@ layout: null
 </div>
 {% endif %}
 </div>
-</body> 
+</body>
 </html>
