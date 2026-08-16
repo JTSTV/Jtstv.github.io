@@ -11,7 +11,8 @@ timezone: Asia/Shanghai
 
 # --- 性能与构建优化 ---
 future: false
-permalink: pretty
+# 生成带 .html 后缀链接
+permalink: /:year/:month/:day/:title.html
 paginate: 3
 paginate_path: "/page:num/"
 
@@ -22,6 +23,6 @@ plugins:
 # --- Markdown 渲染（保留GFM，删除全部代码块高亮配置） ---
 markdown: kramdown
 kramdown:
-#  input: GFM
+  input: GFM
 
 email: "jtstv@outlook.com"
