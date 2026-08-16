@@ -6,7 +6,7 @@ keywords: "KBlog,blog,个人博客,技术博客,博客,独立博客,github博客
 baseurl: ""
 url: "https://hhzj.hair"
 
-# ========== 修复时区！北京时间东八区，解决当天写的文章被当成未来文章隐藏 ==========
+# ========== 修复时区！北京时间东八区 ==========
 timezone: Asia/Shanghai
 
 # --- 性能与构建优化 ---
@@ -19,14 +19,9 @@ paginate_path: "/page:num/"
 plugins:
   - jekyll-paginate
 
-# --- Markdown 渲染优化 ---
+# --- Markdown 渲染（保留GFM，删除全部代码块高亮配置） ---
 markdown: kramdown
 kramdown:
-  input: GFM
-  syntax_highlighter_opts:
-    span:
-      line_numbers: false
-    block:
-      line_numbers: true
-      start_line: 1
+#  input: GFM
+
 email: "jtstv@outlook.com"
