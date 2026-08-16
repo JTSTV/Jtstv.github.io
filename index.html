@@ -9,7 +9,7 @@ layout: null
 <link rel="icon" href="data:,">
 <title>{{ site.SEOTitle }}</title>
 <meta name="description" content="{{ site.description }}">
-<meta name="keywords" content="{{ site.keywords }}">
+{% if site.keywords %}<meta name="keywords" content="{{ site.keywords }}">{% endif %}
 <link rel="canonical" href="{{ site.url }}{{ page.url }}">
 <style>
 body{font:20px system-ui,-apple-system,sans-serif;padding:56px 40px;line-height:2.2}
@@ -20,9 +20,7 @@ body{font:20px system-ui,-apple-system,sans-serif;padding:56px 40px;line-height:
 .post-link{font-size:24px;letter-spacing:0;line-height:1.1}
 .post-date-text{font-size:18px;margin-left:18px}
 .pagination{margin-top:72px}
-.pagination-inner{display:flex;gap:20px;justify-content:center;align-items:center}
 .pagination-email{font-size:18px;padding:0 14px}
-/* 仅保留图片自适应，不干涉其他原生元素 */
 img{max-width:100%;height:auto}
 @media(max-width:600px){
 body{padding:32px 24px}
@@ -30,7 +28,6 @@ body{padding:32px 24px}
 .post-item{margin-bottom:38px}
 .post-link{font-size:22px;line-height:1.1}
 .post-date-text{font-size:17px;margin-left:14px}
-.pagination-inner{gap:14px}
 .pagination-email{font-size:17px;padding:0 10px}
 }
 </style>
@@ -44,13 +41,11 @@ body{padding:32px 24px}
 <span class="post-date-text">{{ post.date | date:"%Y-%m-%d" }}</span>
 </div>
 {% endfor %}
-{% if paginator.total_pages >1 %}
+{% if paginator.total_pages > 1 %}
 <div class="pagination">
-<div class="pagination-inner">
-{% if paginator.previous_page %}<a href="{{ paginator.previous_page_path }}">上一页</a>{% endif %}
-<div class="pagination-email">jtstv@outlook.com</div>
-{% if paginator.next_page %}<a href="{{ paginator.next_page_path }}">下一页</a>{% endif %}
-</div>
+{% if paginator.previous_page %}<a href="{{ paginator.previous_page_path }}">上页</a>{% endif %}
+<span class="pagination-email">jtstv@outlook.com</span>
+{% if paginator.next_page %}<a href="{{ paginator.next_page_path }}">下页</a>{% endif %}
 </div>
 {% endif %}
 </div>
