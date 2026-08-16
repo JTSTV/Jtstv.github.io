@@ -23,7 +23,6 @@ body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c33
 .title-wrap{
   border:2px solid #5e5ce6;
   border-radius:12px;
-  box-shadow:0 1px 4px rgba(0,0,0,.07);
   margin-bottom:16px;
   overflow:hidden;
 }
@@ -32,14 +31,17 @@ body{font:16px system-ui,-apple-system,sans-serif;background:#f7f8fa;color:#2c33
 .post-content-wrap{
   border:2px solid #5e5ce6;
   border-radius:12px;
-  box-shadow:0 1px 4px rgba(0,0,0,.07);
   overflow:hidden;
 }
 .post-content{background:#fff;border-radius:10px;padding:26px;overflow-x:auto;word-break:break-all}
 
 .post-content p{margin-bottom:16px}
 .post-content img{max-width:100%;height:auto;border-radius:8px;margin:12px 0}
-.post-content h1,.post-content h2,.post-content h3{margin:20px 0 10px}
+.post-content h1,.post-content h2,.post-content h3{
+  margin:20px 0 10px;
+  text-decoration: underline;
+  text-underline-offset:4px;
+}
 .post-content ul{padding-left:1.8em !important;margin:12px 0}
 .post-content ol{padding-left:1.8em !important;margin:12px 0}
 .post-content li{margin-bottom:8px}
