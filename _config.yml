@@ -23,6 +23,4 @@ plugins:
 # --- Markdown 渲染（保留GFM，删除全部代码块高亮配置） ---
 markdown: kramdown
 kramdown:
-  input: GFM
-
-email: "jtstv@outlook.com"
+#  input: GFM
