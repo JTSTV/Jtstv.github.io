@@ -13,7 +13,7 @@ timezone: Asia/Shanghai
 future: false
 # 生成带 .html 后缀链接
 permalink: /:year/:month/:day/:title.html
-paginate: 6
+paginate: 10
 paginate_path: "/page:num/"
 
 # --- 核心插件 ---
