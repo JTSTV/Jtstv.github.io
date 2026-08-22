@@ -6,8 +6,7 @@ layout: null
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="index,follow,max-snippet:220">
-<meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
+<meta name="robots" content="index,follow">
 <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
 <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
 {% if page.keywords %}<meta name="keywords" content="{{ page.keywords }}">{% endif %}
@@ -21,7 +20,7 @@ layout: null
 </head>
 <body>
 <div class="container">
-<h1>{{ page.title }}</h1>
+<div class="post-title">{{ page.title }}</div>
 <div class="post-date">{{ page.date | date:"%Y-%m-%d" }}</div>
 <div class="post-content">{{ content }}</div>
 </div>
