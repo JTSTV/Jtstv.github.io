@@ -10,7 +10,7 @@ url: "https://jtstv.github.io"
 timezone: Asia/Shanghai
 
 # --- 性能与构建优化 ---
-future: false
+future: true
 # 精简链接，取消.html后缀，干净自然URL
 permalink: /:year/:month/:day/:title
 paginate: 10
