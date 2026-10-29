@@ -12,10 +12,7 @@ layout: null
 <link rel="canonical" href="{{ site.url }}{{ page.url }}">
 <meta name="robots" content="index, follow, max-snippet:160">
 <style>
-/* 移除全部自定义边距；整体文字放大2px，其余全部浏览器原生 */
-body {
-  font-size: calc(1rem + 2px);
-}
+/* 字体完全原生，只保留自适应 */
 @media(max-width:600px){
 .container{padding:0;}
 }
@@ -41,7 +38,6 @@ body {
 {% if paginator.total_pages > 1 %}
 <div class="pagination">
 {% if paginator.previous_page %}<a href="{{ paginator.previous_page_path }}">上页</a>{% endif %}
-<span>jtstv@outlook.com</span>
 {% if paginator.next_page %}<a href="{{ paginator.next_page_path }}">下页</a>{% endif %}
 </div>
 {% endif %}
