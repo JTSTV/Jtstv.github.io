@@ -1,4 +1,4 @@
 ---
-layout:null
+layout: null
 ---
 <!DOCTYPE html><html lang=zh-CN><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="index,follow"><title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title><meta name=description content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">{% if page.keywords %}<meta name=keywords content="{{ page.keywords }}">{% endif %}<link rel=canonical href="{{ site.url }}{{ page.url }}"><style>.post-content{overflow-wrap:break-word;word-break:break-all}@media(max-width:600px){.container{padding:0}}</style></head><body><div class=container><div class=post-title>{{ page.title }}</div><div class=post-date>{{ page.date | date:"%Y-%m-%d" }}</div><div class=post-content>{{ content }}</div></div></body></html>
