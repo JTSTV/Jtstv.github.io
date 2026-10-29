@@ -1,7 +1,7 @@
 # --- 核心基础配置 ---
 title: giblog
 SEOTitle: "giblog｜最小的博客源码，体积不到1k，记录生活与技术分享"
-description: "giblig 最小的博客源码，专注技术笔记、创意内容与经验分享，沉淀日常学习与思考。"
+description: "giblog 最小的博客源码，专注技术笔记、创意内容与经验分享，沉淀日常学习与思考。"
 keywords: "giblog,blog,最小的博客源码，个人博客,技术博客,博客,独立博客,github博客"
 baseurl: ""
 url: "https://jtstv.github.io"
