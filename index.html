@@ -8,33 +8,39 @@ layout: null
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{{ site.SEOTitle }}</title>
 <meta name="description" content="{{ site.description }}">
-{% if site.keywords %}<meta name="keywords" content="{{ site.keywords }}">{% endif %}
+{% if site.keywords %}
+<meta name="keywords" content="{{ site.keywords }}">
+{% endif %}
 <link rel="canonical" href="{{ site.url }}{{ page.url }}">
 <meta name="robots" content="index, follow, max-snippet:160">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,sans-serif;font-size:calc(1rem + 4px);background:#fafafa;color:#333;line-height:1.7}
-a{color:#333;text-decoration:none}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:18px;background:#fafafa;color:#333;line-height:1.7}
+a{color:inherit;text-decoration:none}
 .container{max-width:760px;margin:0 auto;padding:0 16px 24px}
 .site-header{text-align:center;padding:6px 0;margin:4px 0}
-.post-item{background:#fff;padding:14px 12px;margin:12px 0;display:flex;justify-content:space-between;align-items:center;border:1px solid #e5e7eb}
-.post-item a{flex:1;padding-right:8px}
-.post-item a:hover,.post-item a:active{color:#999}
-.post-item span{color:#999;white-space:nowrap}
+.post-item{background:#fff;padding:14px 12px;margin:12px 0;border:1px solid #e5e7eb}
+.post-item a{display:block}
+.post-item a:hover{color:#999}
+.post-item span{white-space:nowrap}
 .pagination{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:20px;padding:14px 0}
-.pagination a{padding:6px 14px;background:#f0f0f0;border:1px solid #e5e7eb;font:inherit;color:#333;cursor:pointer}
-.pagination a:hover,.pagination a:active{background:#ddd;color:#999}
-@media(max-width:600px){.post-item{flex-direction:column;align-items:flex-start;gap:4px}.pagination{flex-wrap:wrap}}
+.pagination a{padding:6px 14px;background:#f0f0f0;border:1px solid #e5e7eb;color:#333;cursor:pointer}
+.pagination a:hover{background:#ddd}
+@media(max-width:600px){.post-item{flex-direction:column;gap:4px}.pagination{flex-wrap:wrap}}
 /*留言样式*/
 .cmt-wrap{margin-top:40px;border-top:1px solid #e5e7eb;padding-top:20px}
 .cmt-form{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
-.cmt-form input,.cmt-form textarea{border:1px solid #e5e7eb;padding:10px;background:#fff;font:inherit;color:#333}
-.cmt-form textarea{resize:vertical}
-.cmt-btn{padding:8px 14px;background:#f0f0f0;border:1px solid #e5e7eb;font:inherit;color:#333;cursor:pointer}
-.cmt-btn:hover{background:#ddd;color:#999}
-.cmt-item{background:#fff;border:1px solid #e5e7eb;padding:12px;margin:10px 0}
-.cmt-head{color:#666;margin-bottom:4px}
-.cmt-time{font-size:.9em;color:#999;margin-left:8px}
+.cmt-form input,.cmt-form textarea{border:1px solid #e5e7eb;padding:10px;background:#fff;font-size:16px;color:#333;border-radius:4px}
+.cmt-form textarea{resize:vertical;min-height:100px}
+.cmt-btn{padding:8px 14px;background:#f0f0f0;border:1px solid #e5e7eb;font-size:16px;color:#333;cursor:pointer;border-radius:4px}
+.cmt-btn:hover{background:#ddd}
+.cmt-item{background:#fff;border:1px solid #e5e7eb;padding:12px;margin:10px 0;border-radius:4px}
+.cmt-head{color:#555;margin-bottom:4px;font-size:14px}
+.cmt-time{font-size:14px;margin-left:8px;color:#888}
+.cmt-pager{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:16px}
+.cmt-pager button{padding:6px 14px;background:#f0f0f0;border:1px solid #e5e7eb;font-size:15px;color:#333;cursor:pointer;border-radius:4px}
+.cmt-pager button:disabled{opacity:.4;cursor:not-allowed}
+.cmt-pager .cmt-pageinfo{font-size:15px;color:#666}
 </style>
 </head>
 <body>
@@ -48,7 +54,9 @@ a{color:#333;text-decoration:none}
 {% for post in paginator.posts %}
 <div class="post-item">
 <a href="{{ post.url }}">{{ post.title }}</a>
-{% unless post.hide_date %}<span>{{ post.date | date:"%Y-%m-%d" }}</span>{% endunless %}
+{% unless post.hide_date %}
+<span>{{ post.date | date:"%Y-%m-%d" }}</span>
+{% endunless %}
 </div>
 {% endfor %}
 {% if paginator.page == 1 %}
@@ -56,9 +64,13 @@ a{color:#333;text-decoration:none}
 {% endif %}
 {% if paginator.total_pages > 1 %}
 <div class="pagination">
-{% if paginator.previous_page %}<a href="{{ paginator.previous_page_path }}">上页</a>{% endif %}
+{% if paginator.previous_page %}
+<a href="{{ paginator.previous_page_path }}">上页</a>
+{% endif %}
 <span>jxqt@jxqt.eu.org</span>
-{% if paginator.next_page %}<a href="{{ paginator.next_page_path }}">下页</a>{% endif %}
+{% if paginator.next_page %}
+<a href="{{ paginator.next_page_path }}">下页</a>
+{% endif %}
 </div>
 {% endif %}
 
@@ -66,52 +78,96 @@ a{color:#333;text-decoration:none}
 <div class="cmt-wrap">
   <div class="cmt-form">
     <input id="cmt-name" placeholder="昵称" maxlength="20">
-    <textarea id="cmt-content" rows="3" placeholder="写下留言..." maxlength="500"></textarea>
+    <textarea id="cmt-content" placeholder="写下留言..." maxlength="500"></textarea>
     <button class="cmt-btn" onclick="submitCmt()">提交留言</button>
   </div>
   <div id="cmt-list"></div>
+  <div class="cmt-pager" id="cmt-pager" style="display:none">
+    <button id="cmt-prev" onclick="changePage(-1)">上一页</button>
+    <span class="cmt-pageinfo" id="cmt-pageinfo"></span>
+    <button id="cmt-next" onclick="changePage(1)">下一页</button>
+  </div>
+</div>
 </div>
 
 <script>
-const API = "https://api.jtstv.eu.org";
+const API = "https://api.jxqt.eu.org";
+let currentPage = 1;
+let totalPages = 1;
 
 function escHtml(s){
   return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 
 async function loadCmt(){
-  const res = await fetch(API + "/list");
-  const list = await res.json();
-  const box = document.getElementById("cmt-list");
-  box.innerHTML = list.map(i => {
-    const d = new Date(i.created_at);
-    const t = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-    return `<div class="cmt-item">
-      <div class="cmt-head">${escHtml(i.name)}<span class="cmt-time">${t}</span></div>
-      <div>${escHtml(i.content)}</div>
-    </div>`;
-  }).join("");
+  try{
+    const res = await fetch(API + "/list?page=" + currentPage);
+    const data = await res.json();
+    const list = data.list || [];
+    totalPages = data.totalPages || 1;
+    if(currentPage > totalPages) currentPage = totalPages;
+
+    const box = document.getElementById("cmt-list");
+    if(list.length === 0){
+      box.innerHTML = "<div style='color:#888'>暂无留言，来抢沙发~</div>";
+    } else {
+      box.innerHTML = list.map(i => {
+        const d = new Date(i.created_at);
+        const t = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        return `<div class="cmt-item">
+          <div class="cmt-head">${escHtml(i.name)}<span class="cmt-time">${t}</span></div>
+          <div>${escHtml(i.content)}</div>
+        </div>`;
+      }).join("");
+    }
+
+    // 分页按钮状态
+    const pager = document.getElementById("cmt-pager");
+    if(data.total > 10){
+      pager.style.display = "flex";
+      document.getElementById("cmt-pageinfo").textContent = `第 ${currentPage} / ${totalPages} 页`;
+      document.getElementById("cmt-prev").disabled = currentPage <= 1;
+      document.getElementById("cmt-next").disabled = currentPage >= totalPages;
+    } else {
+      pager.style.display = "none";
+    }
+  }catch(err){
+    console.error("加载留言失败：", err);
+    document.getElementById("cmt-list").innerHTML = "<div style='color:#c00'>留言加载失败，请稍后再试</div>";
+  }
+}
+
+function changePage(dir){
+  const next = currentPage + dir;
+  if(next < 1 || next > totalPages) return;
+  currentPage = next;
+  loadCmt();
 }
 
 async function submitCmt(){
   const name = document.getElementById("cmt-name").value.trim();
   const content = document.getElementById("cmt-content").value.trim();
   if(!name || !content){ alert("昵称和内容不能为空"); return; }
-  const res = await fetch(API + "/submit", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, content })
-  });
-  const ret = await res.json();
-  alert(ret.msg);
-  if(ret.ok){
-    document.getElementById("cmt-name").value = "";
-    document.getElementById("cmt-content").value = "";
-    loadCmt();
+  try{
+    const res = await fetch(API + "/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, content })
+    });
+    const ret = await res.json();
+    alert(ret.msg);
+    if(ret.ok){
+      document.getElementById("cmt-name").value = "";
+      document.getElementById("cmt-content").value = "";
+      currentPage = 1; // 提交后回到第一页看最新留言
+      loadCmt();
+    }
+  }catch(err){
+    alert("请求失败！打开F12控制台查看详情");
+    console.error(err);
   }
 }
 loadCmt();
 </script>
-</div>
 </body>
 </html>
