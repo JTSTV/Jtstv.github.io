@@ -1,4 +1,161 @@
 ---
 layout: null
 ---
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{ site.SEOTitle }}</title><meta name="description" content="{{ site.description }}">{% if site.keywords %}<meta name="keywords" content="{{ site.keywords }}">{% endif %}<link rel="canonical" href="{{ site.url }}{{ page.url }}"><meta name="robots" content="index, follow, max-snippet:160"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif;font-size:18px;background:#fafafa;color:#333;line-height:1.7}a{color:inherit;text-decoration:none}.container{max-width:760px;margin:0 auto;padding:0 16px 24px}.site-header{text-align:center;padding:6px 0;margin:4px 0}.post-item{background:#fff;padding:14px 12px;margin:12px 0;border:1px solid #e5e7eb}.post-item a{display:block}.post-item a:hover{color:#999}.post-item span{white-space:nowrap}.pagination{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:20px;padding:14px 0}.pagination a{padding:6px 14px;background:#f0f0f0;border:1px solid #e5e7eb;color:#333;cursor:pointer}.pagination a:hover{background:#ddd}.cmt-wrap{margin-top:40px;border-top:1px solid #e5e7eb;padding-top:20px}.cmt-form{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}.cmt-form input,.cmt-form textarea{border:1px solid #e5e7eb;padding:10px;background:#fff;font-size:16px;color:#333;border-radius:4px}.cmt-form textarea{resize:vertical;min-height:100px}.cmt-btn,.cmt-pager button{padding:6px 14px;background:#f0f0f0;border:1px solid #e5e7eb;font-size:16px;color:#333;cursor:pointer;border-radius:4px}.cmt-btn:hover,.cmt-pager button:hover{background:#ddd}.cmt-item{background:#fff;border:1px solid #e5e7eb;padding:12px;margin:10px 0;border-radius:4px}.cmt-head{color:#555;margin-bottom:4px;font-size:14px}.cmt-time{font-size:14px;margin-left:8px;color:#888}.cmt-pager{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:16px}.cmt-pager button:disabled{opacity:.4;cursor:not-allowed}.cmt-pageinfo{font-size:15px;color:#666}@media(max-width:600px){.pagination{flex-wrap:wrap}}</style></head><body><div class="container"><div class="site-header"><a href="{{ site.url }}">{{ site.title }}</a></div>{% if paginator.page == 1 %}<div data-nosnippet>{% endif %}{% for post in paginator.posts %}<div class="post-item"><a href="{{ post.url }}">{{ post.title }}</a>{% unless post.hide_date %}<span>{{ post.date | date:"%Y-%m-%d" }}</span>{% endunless %}</div>{% endfor %}{% if paginator.page == 1 %}</div>{% endif %}{% if paginator.total_pages > 1 %}<div class="pagination">{% if paginator.previous_page %}<a href="{{ paginator.previous_page_path }}">上页</a>{% endif %}{% if paginator.next_page %}<a href="{{ paginator.next_page_path }}">下页</a>{% endif %}</div>{% endif %}<div class="cmt-wrap"><div class="cmt-form"><input id="cmt-name" placeholder="昵称" maxlength="20"><textarea id="cmt-content" placeholder="写下留言..." maxlength="500"></textarea><button class="cmt-btn" onclick="submitCmt()">提交留言</button></div><div id="cmt-list"></div><div class="cmt-pager" id="cmt-pager" style="display:none"><button id="cmt-prev" onclick="changePage(-1)">上一页</button><span class="cmt-pageinfo" id="cmt-pageinfo"></span><button id="cmt-next" onclick="changePage(1)">下一页</button></div></div></div><script>const API="https://api.jxqt.eu.org";let currentPage=1,totalPages=1;const dom={cmtList:document.getElementById('cmt-list'),cmtPager:document.getElementById('cmt-pager'),cmtPageinfo:document.getElementById('cmt-pageinfo'),cmtPrev:document.getElementById('cmt-prev'),cmtNext:document.getElement...
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ site.SEOTitle }}</title>
+<meta name="description" content="{{ site.description }}">
+{% if site.keywords %}
+<meta name="keywords" content="{{ site.keywords }}">
+{% endif %}
+<link rel="canonical" href="{{ site.url }}{{ page.url }}">
+<meta name="robots" content="index, follow, max-snippet:160">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:18px;background:#fafafa;color:#333;line-height:1.7}
+a{color:inherit;text-decoration:none}
+.container{max-width:760px;margin:0 auto;padding:0 16px 24px}
+.site-header{text-align:center;padding:6px 0;margin:4px 0}
+.post-item{background:#fff;padding:14px 12px;margin:12px 0;border:1px solid #e5e7eb}
+.post-item a{display:block}
+.post-item a:hover{color:#999}
+.post-item span{white-space:nowrap}
+.pagination{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:20px;padding:14px 0}
+.pagination a{padding:6px 14px;background:#f0f0f0;border:1px solid #e5e7eb;color:#333;cursor:pointer}
+.pagination a:hover{background:#ddd}
+.cmt-wrap{margin-top:40px;border-top:1px solid #e5e7eb;padding-top:20px}
+.cmt-form{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.cmt-form input,.cmt-form textarea{border:1px solid #e5e7eb;padding:10px;background:#fff;font-size:16px;color:#333;border-radius:4px}
+.cmt-form textarea{resize:vertical;min-height:100px}
+.cmt-btn,.cmt-pager button{padding:6px 14px;background:#f0f0f0;border:1px solid #e5e7eb;font-size:16px;color:#333;cursor:pointer;border-radius:4px}
+.cmt-btn:hover,.cmt-pager button:hover{background:#ddd}
+.cmt-item{background:#fff;border:1px solid #e5e7eb;padding:12px;margin:10px 0;border-radius:4px}
+.cmt-head{color:#555;margin-bottom:4px;font-size:14px}
+.cmt-time{font-size:14px;margin-left:8px;color:#888}
+.cmt-pager{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:16px}
+.cmt-pager button:disabled{opacity:.4;cursor:not-allowed}
+.cmt-pageinfo{font-size:15px;color:#666}
+@media(max-width:600px){.pagination{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="site-header"><a href="{{ site.url }}">{{ site.title }}</a></div>
+{% if paginator.page == 1 %}<div data-nosnippet>{% endif %}
+{% for post in paginator.posts %}
+  <div class="post-item">
+    <a href="{{ post.url }}">{{ post.title }}</a>
+{% unless post.hide_date %}<span>{{ post.date | date:"%Y-%m-%d" }}</span>{% endunless %}
+  </div>
+{% endfor %}
+{% if paginator.page == 1 %}</div>{% endif %}
+
+{% if paginator.total_pages > 1 %}
+<div class="pagination">
+{% if paginator.previous_page %}<a href="{{ paginator.previous_page_path }}">上页</a>{% endif %}
+{% if paginator.next_page %}<a href="{{ paginator.next_page_path }}">下页</a>{% endif %}
+</div>
+{% endif %}
+
+<div class="cmt-wrap">
+  <div class="cmt-form">
+    <input id="cmt-name" placeholder="昵称" maxlength="20">
+    <textarea id="cmt-content" placeholder="写下留言..." maxlength="500"></textarea>
+    <button class="cmt-btn" onclick="submitCmt()">提交留言</button>
+  </div>
+  <div id="cmt-list"></div>
+  <div class="cmt-pager" id="cmt-pager" style="display:none">
+    <button id="cmt-prev" onclick="changePage(-1)">上一页</button>
+    <span class="cmt-pageinfo" id="cmt-pageinfo"></span>
+    <button id="cmt-next" onclick="changePage(1)">下一页</button>
+  </div>
+</div>
+</div>
+<script>
+const API = "https://api.jxqt.eu.org";
+let currentPage = 1, totalPages = 1;
+// DOM缓存，避免重复查询
+const dom = {
+  cmtList: document.getElementById('cmt-list'),
+  cmtPager: document.getElementById('cmt-pager'),
+  cmtPageinfo: document.getElementById('cmt-pageinfo'),
+  cmtPrev: document.getElementById('cmt-prev'),
+  cmtNext: document.getElementById('cmt-next'),
+  cmtName: document.getElementById('cmt-name'),
+  cmtContent: document.getElementById('cmt-content')
+};
+
+function escHtml(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+async function loadCmt(){
+  try{
+    const res = await fetch(API + "/list?page=" + currentPage);
+    const data = await res.json();
+    const list = data.list || [];
+    totalPages = data.totalPages || 1;
+    if(currentPage > totalPages) currentPage = totalPages;
+
+    if(!list.length){
+      dom.cmtList.innerHTML = "<div style='color:#888'>暂无留言，来抢沙发~</div>";
+    }else{
+      dom.cmtList.innerHTML = list.map(i=>{
+        const d = new Date(i.created_at);
+        const t = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        return `<div class="cmt-item"><div class="cmt-head">${escHtml(i.name)}<span class="cmt-time">${t}</span></div><div>${escHtml(i.content)}</div></div>`;
+      }).join("");
+    }
+
+    if(data.total > 10){
+      dom.cmtPager.style.display = "flex";
+      dom.cmtPageinfo.textContent = `第 ${currentPage} / ${totalPages} 页`;
+      dom.cmtPrev.disabled = currentPage <= 1;
+      dom.cmtNext.disabled = currentPage >= totalPages;
+    }else{
+      dom.cmtPager.style.display = "none";
+    }
+  }catch(err){
+    console.error("加载留言失败：", err);
+    dom.cmtList.innerHTML = "<div style='color:#c00'>留言加载失败，请稍后再试</div>";
+  }
+}
+
+function changePage(dir){
+  const next = currentPage + dir;
+  if(next <1 || next>totalPages) return;
+  currentPage = next;
+  loadCmt();
+}
+
+async function submitCmt(){
+  const name = dom.cmtName.value.trim();
+  const content = dom.cmtContent.value.trim();
+  if(!name || !content){ alert("昵称和内容不能为空"); return; }
+  try{
+    const res = await fetch(API + "/submit",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({name,content})
+    });
+    const ret = await res.json();
+    alert(ret.msg);
+    if(ret.ok){
+      dom.cmtName.value = "";
+      dom.cmtContent.value = "";
+      currentPage = 1;
+      loadCmt();
+    }
+  }catch(err){
+    alert("请求失败！打开F12控制台查看详情");
+    console.error(err);
+  }
+}
+
+loadCmt();
+</script>
+</body>
+</html>
