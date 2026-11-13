@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>留言管理后台</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:16px;background:#fafafa;color:#333;line-height:1.7}
+.container{max-width:760px;margin:0 auto;padding:20px 16px}
+h1{font-size:20px;margin-bottom:16px}
+.login-box{background:#fff;border:1px solid #e5e7eb;padding:20px;border-radius:6px;max-width:360px}
+.login-box input{width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:4px;font-size:16px;margin-bottom:10px}
+.btn{padding:8px 14px;background:#f0f0f0;border:1px solid #e5e7eb;border-radius:4px;font-size:15px;cursor:pointer}
+.btn:hover{background:#ddd}
+.btn-danger{background:#fdecea;border-color:#f5c6c2;color:#c0392b}
+.btn-danger:hover{background:#f8d7d4}
+.btn-warn{background:#fff3cd;border-color:#ffeeba;color:#856404}
+.btn-warn:hover{background:#ffeeba}
+.cmt-item{background:#fff;border:1px solid #e5e7eb;padding:12px;margin:10px 0;border-radius:4px;display:flex;gap:10px;align-items:flex-start}
+.cmt-info{flex:1}
+.cmt-head{color:#555;font-size:14px;margin-bottom:4px}
+.cmt-time{color:#888;margin-left:8px}
+.cmt-content{margin:6px 0}
+.cmt-actions{margin-top:8px}
+.tip{color:#888;font-size:14px}
+.tool-bar{background:#fff;padding:12px;border:1px solid #e5e7eb;border-radius:6px;margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.check-item{width:18px;height:18px;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>留言管理后台</h1>
+
+<div id="login-view">
+  <div class="login-box">
+    <input type="password" id="pwd" placeholder="请输入管理员密码">
+    <button class="btn" onclick="login()">登录</button>
+  </div>
+</div>
+
+<div id="admin-view" style="display:none">
+  <div class="tool-bar">
+    <label><input type="checkbox" id="checkAll"> 全选</label>
+    <button class="btn btn-danger" onclick="batchDel()">删除选中</button>
+    <button class="btn btn-warn" onclick="clearAll()">⚠️清空全部留言</button>
+    <span class="tip">共 <span id="total">0</span> 条留言</span>
+    <button class="btn" onclick="logout()">退出登录</button>
+  </div>
+  <div id="list"></div>
+</div>
+</div>
+
+<script>
+const API = "https://api.jxqt.eu.org";
+let pwd = sessionStorage.getItem("admin_pwd") || "";
+
+function escHtml(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+async function login(){
+  const v = document.getElementById("pwd").value.trim();
+  if(!v){ alert("请输入密码"); return; }
+  pwd = v;
+  const ok = await loadList();
+  if(ok){ sessionStorage.setItem("admin_pwd", pwd); }
+}
+
+function logout(){
+  pwd = "";
+  sessionStorage.removeItem("admin_pwd");
+  document.getElementById("admin-view").style.display = "none";
+  document.getElementById("login-view").style.display = "block";
+}
+
+async function loadList(){
+  try{
+    const res = await fetch(API + "/admin/list", { headers: { "X-Admin-Password": pwd } });
+    if(res.status === 401){ alert("密码错误"); logout(); return false; }
+    const data = await res.json();
+    const list = data.list || [];
+    document.getElementById("total").textContent = list.length;
+    const box = document.getElementById("list");
+    if(list.length === 0){
+      box.innerHTML = '<p class="tip">暂无留言</p>';
+    } else {
+      box.innerHTML = list.map(i => {
+        const d = new Date(i.created_at);
+        const t = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+        return `<div class="cmt-item">
+          <input class="check-item" type="checkbox" value="${i.id}">
+          <div class="cmt-info">
+            <div class="cmt-head">${escHtml(i.name)}<span class="cmt-time">${t}</span></div>
+            <div class="cmt-content">${escHtml(i.content)}</div>
+            <div class="cmt-actions"><button class="btn btn-danger" onclick="del(${i.id})">单条删除</button></div>
+          </div>
+        </div>`;
+      }).join("");
+    }
+    // 全选框绑定
+    document.getElementById("checkAll").onchange = function(){
+      document.querySelectorAll(".check-item").forEach(cb=>cb.checked = this.checked);
+    }
+    document.getElementById("login-view").style.display = "none";
+    document.getElementById("admin-view").style.display = "block";
+    return true;
+  }catch(err){
+    alert("请求失败，检查接口是否正常");
+    console.error(err);
+    return false;
+  }
+}
+
+async function del(id){
+  if(!confirm("确定删除这条留言吗？")) return;
+  try{
+    const res = await fetch(API + "/admin/delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Admin-Password": pwd },
+      body: JSON.stringify({ id })
+    });
+    const ret = await res.json();
+    alert(ret.msg);
+    if(ret.ok) loadList();
+  }catch(err){
+    alert("删除失败");
+    console.error(err);
+  }
+}
+
+async function batchDel(){
+  const selected = Array.from(document.querySelectorAll(".check-item:checked")).map(cb=>Number(cb.value));
+  if(selected.length === 0){ alert("请先勾选要删除的留言"); return; }
+  if(!confirm(`确定删除选中 ${selected.length} 条留言？`)) return;
+  try{
+    const res = await fetch(API + "/admin/batchdel", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Admin-Password": pwd },
+      body: JSON.stringify({ ids: selected })
+    });
+    const ret = await res.json();
+    alert(ret.msg);
+    if(ret.ok) loadList();
+  }catch(err){
+    alert("批量删除失败");
+    console.error(err);
+  }
+}
+
+async function clearAll(){
+  if(!confirm("⚠️警告：即将删除全部留言，无法恢复！\n确认要清空？")) return;
+  if(!confirm("再次确认：全部留言永久删除，不能找回！")) return;
+  try{
+    const res = await fetch(API + "/admin/clearall", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Admin-Password": pwd },
+      body: JSON.stringify({})
+    });
+    const ret = await res.json();
+    alert(ret.msg);
+    if(ret.ok) loadList();
+  }catch(err){
+    alert("清空失败");
+    console.error(err);
+  }
+}
+
+// 已保存密码自动登录
+if(pwd) loadList();
+</script>
+</body>
+</html>
