@@ -1,0 +1,57 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ site.SEOTitle }}</title>
+<meta name="description" content="{{ site.description }}">
+{% if site.keywords %}<meta name="keywords" content="{{ site.keywords }}">{% endif %}
+<link rel="canonical" href="{{ site.url }}{{ page.url }}">
+<meta name="robots" content="index, follow, max-snippet:160">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:calc(1rem + 4px);background:#fafafa;color:#333;line-height:1.7}
+a{color:#333;text-decoration:none}
+.container{max-width:760px;margin:0 auto;padding:0 16px 24px}
+.site-header{text-align:center;padding:6px 0;margin:4px 0}
+.post-item{background:#fff;padding:14px 12px;margin:12px 0;display:flex;justify-content:space-between;align-items:center;border:1px solid #e5e7eb}
+.post-item a{flex:1;padding-right:8px}
+.post-item a:hover,.post-item a:active{color:#999}
+.post-item span{color:#999;white-space:nowrap}
+.pagination{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:20px;padding:14px 0}
+.pagination a{padding:6px 14px;background:#f0f0f0}
+.pagination a:hover,.pagination a:active{background:#ddd;color:#999}
+.pagination span{color:#999}
+@media(max-width:600px){.post-item{flex-direction:column;align-items:flex-start;gap:4px}.pagination{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="site-header">
+<a href="{{ site.url }}">{{ site.title }}</a>
+</div>
+{% if paginator.page == 1 %}
+<div data-nosnippet>
+{% endif %}
+{% for post in paginator.posts %}
+<div class="post-item">
+<a href="{{ post.url }}">{{ post.title }}</a>
+{% unless post.hide_date %}<span>{{ post.date | date:"%Y-%m-%d" }}</span>{% endunless %}
+</div>
+{% endfor %}
+{% if paginator.page == 1 %}
+</div>
+{% endif %}
+{% if paginator.total_pages > 1 %}
+<div class="pagination">
+{% if paginator.previous_page %}<a href="{{ paginator.previous_page_path }}">上页</a>{% endif %}
+<span>jxqt@jxqt.eu.org</span>
+{% if paginator.next_page %}<a href="{{ paginator.next_page_path }}">下页</a>{% endif %}
+</div>
+{% endif %}
+</div>
+</body>
+</html>
