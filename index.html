@@ -22,10 +22,19 @@ a{color:#333;text-decoration:none}
 .post-item a:hover,.post-item a:active{color:#999}
 .post-item span{color:#999;white-space:nowrap}
 .pagination{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:20px;padding:14px 0}
-.pagination a{padding:6px 14px;background:#f0f0f0}
+.pagination a{padding:6px 14px;background:#f0f0f0;border:1px solid #e5e7eb;font:inherit;color:#333;cursor:pointer}
 .pagination a:hover,.pagination a:active{background:#ddd;color:#999}
-.pagination span{color:#999}
 @media(max-width:600px){.post-item{flex-direction:column;align-items:flex-start;gap:4px}.pagination{flex-wrap:wrap}}
+/*留言样式*/
+.cmt-wrap{margin-top:40px;border-top:1px solid #e5e7eb;padding-top:20px}
+.cmt-form{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.cmt-form input,.cmt-form textarea{border:1px solid #e5e7eb;padding:10px;background:#fff;font:inherit;color:#333}
+.cmt-form textarea{resize:vertical}
+.cmt-btn{padding:8px 14px;background:#f0f0f0;border:1px solid #e5e7eb;font:inherit;color:#333;cursor:pointer}
+.cmt-btn:hover{background:#ddd;color:#999}
+.cmt-item{background:#fff;border:1px solid #e5e7eb;padding:12px;margin:10px 0}
+.cmt-head{color:#666;margin-bottom:4px}
+.cmt-time{font-size:.9em;color:#999;margin-left:8px}
 </style>
 </head>
 <body>
@@ -52,6 +61,57 @@ a{color:#333;text-decoration:none}
 {% if paginator.next_page %}<a href="{{ paginator.next_page_path }}">下页</a>{% endif %}
 </div>
 {% endif %}
+
+<!--留言模块-->
+<div class="cmt-wrap">
+  <div class="cmt-form">
+    <input id="cmt-name" placeholder="昵称" maxlength="20">
+    <textarea id="cmt-content" rows="3" placeholder="写下留言..." maxlength="500"></textarea>
+    <button class="cmt-btn" onclick="submitCmt()">提交留言</button>
+  </div>
+  <div id="cmt-list"></div>
+</div>
+
+<script>
+const API = "https://api.jtstv.eu.org";
+
+function escHtml(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+async function loadCmt(){
+  const res = await fetch(API + "/list");
+  const list = await res.json();
+  const box = document.getElementById("cmt-list");
+  box.innerHTML = list.map(i => {
+    const d = new Date(i.created_at);
+    const t = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    return `<div class="cmt-item">
+      <div class="cmt-head">${escHtml(i.name)}<span class="cmt-time">${t}</span></div>
+      <div>${escHtml(i.content)}</div>
+    </div>`;
+  }).join("");
+}
+
+async function submitCmt(){
+  const name = document.getElementById("cmt-name").value.trim();
+  const content = document.getElementById("cmt-content").value.trim();
+  if(!name || !content){ alert("昵称和内容不能为空"); return; }
+  const res = await fetch(API + "/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, content })
+  });
+  const ret = await res.json();
+  alert(ret.msg);
+  if(ret.ok){
+    document.getElementById("cmt-name").value = "";
+    document.getElementById("cmt-content").value = "";
+    loadCmt();
+  }
+}
+loadCmt();
+</script>
 </div>
 </body>
 </html>
